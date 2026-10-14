@@ -17,7 +17,15 @@
 | **Prajwal** | Student Timetable & Notices Feed | `IN PROGRESS` | 0 / 10 |
 | **Royston** | Master Timetable Blueprint & Profile | `IN PROGRESS` | 0 / 10 |
 | **Shrivatsa** | Daily Overrides & Notification Center | `IN PROGRESS` | 0 / 10 |
-| **Shared / Open** | Authentication & Role System | `OPEN` | 0 / 4 |
+| **Shared / Open** | CR Admin Authentication & Route Guards | `OPEN` | 0 / 4 |
+
+> [!NOTE]
+> **Key Architecture Directives**:
+> 1. **Login is ONLY for the Class Representative (CR)**: Students and general visitors browse the live dashboard, timetable grid, notices, and notifications with **zero friction (no login required)**.
+> 2. **Two Timetable Layers (Both Managed by CR)**:
+>    - **Permanent Master Timetable (`admin-master-timetable.html` by Royston)**: The constant semester-wide template (Monday–Saturday). Updated only when permanent changes occur (e.g., permanent faculty reassignment).
+>    - **Daily / Weekly Overrides (`admin-override-timetable.html` by Shrivatsa)**: Temporary daily adjustments (cancelled lectures, room swaps, substitute professors) for a specific date or week.
+> 3. **Faculty Portal**: Dedicated faculty self-service logins and teacher approvals are planned as a **Future Implementation**.
 
 ---
 
@@ -61,16 +69,17 @@
 
 ## 👤 Royston — Academic Master Setup & User Settings
 
-### 5. Master Timetable Blueprint (`public/admin-master-timetable.html`)
-- [0] **5.1** Administrative recurring weekly grid setup (Monday through Saturday)
+### 5. Permanent Master Timetable Blueprint (`public/admin-master-timetable.html`)
+> *Constant semester-long baseline template. Updated by CR only for permanent structural or faculty changes.*
+- [0] **5.1** Administrative recurring weekly grid setup (Monday through Saturday constant template)
 - [0] **5.2** Slot configuration inputs: Course Code, Subject Title, Default Faculty, Room/Lab
 - [0] **5.3** Slot-level Add / Edit / Remove UI controls
 - [0] **5.4** Connect blueprint saving to `POST /api/master`
 - [0] **5.5** Master schedule table viewer with semester/department switchers
 
 ### 6. User Profile & Preferences (`public/profile.html`)
-- [0] **6.1** User credential overview (Name, Student Roll No / Register No, Email)
-- [0] **6.2** Role display badge (`Student` vs `Class Representative (CR)`)
+- [0] **6.1** User credential overview (Name, Student ID / Faculty ID, Email)
+- [0] **6.2** Role display badge (`Student` vs `Class Representative [CR]`)
 - [0] **6.3** Batch and semester selection dropdown saved to user state
 - [0] **6.4** Dark / Light mode UI theme toggle with `localStorage` persistence
 - [0] **6.5** User alert notification preferences (Email/In-app toggle)
@@ -80,7 +89,8 @@
 ## 👤 Shrivatsa — Daily Overrides & Live Alert Feed
 
 ### 7. Daily / Weekly Override Manager (`public/admin-override-timetable.html`)
-- [0] **7.1** Role-check restriction (Restricted strictly to Class Representative [CR])
+> *Temporary date-specific adjustments & weekly schedule shifts published by the CR.*
+- [0] **7.1** Role-check restriction (Restricted to Class Representative [CR])
 - [0] **7.2** Calendar date-picker to select specific date for schedule modification
 - [0] **7.3** Dynamic loading of the base timetable for the selected date's day
 - [0] **7.4** Slot override action form:
@@ -99,14 +109,14 @@
 
 ---
 
-## 👥 Shared / Open Module — Authentication & Access Control
+## 👥 Shared / Open Module — CR Admin Authentication & Route Guards
 
-> *This module is open for anyone in the team to implement or collaborate on.*
+> *Login is **ONLY for the Class Representative (CR)**. Regular students and visitors browse all public pages without any login.*
 
-- [0] **9.1** Login page / modal with role selection (`Student` vs `Class Representative (CR)`)
-- [0] **9.2** Registration / onboarding form
-- [0] **9.3** Client-side role persistence (`localStorage.setItem('userRole', role)`)
-- [0] **9.4** Navigation bar role-based UI switcher (hide CR management pages from regular students)
+- [0] **9.1** Dedicated CR login portal / modal (`login.html` with CR passcode/credentials)
+- [0] **9.2** CR login session persistence (`localStorage.setItem('isCRLoggedIn', 'true')`) and logout handler
+- [0] **9.3** Client-side route protection guard (redirect unauthorized visitors trying to access `admin-*.html` to `login.html`)
+- [0] **9.4** Navigation bar conditional UI (display "Admin Portal" / "CR Controls" and "Logout" buttons only when CR is authenticated)
 
 ---
 
@@ -137,13 +147,4 @@ These modules form the central innovation of the project and demonstrate advance
 2. **Module H — Profile, Preferences & Theme Engine (`profile.html`)**:
    - Role badges, batch preferences, and CSS custom property dark/light theme switching.
 3. **Module I — Role-Based Access Control (Authentication)**:
-   - Client/server role validation separating Student view rights from Class Representative (CR) edit rights.
-
----
-
-## 🔮 Future Implementation (Roadmap)
-
-The following capabilities are designated as future extensions beyond the core mini-project scope:
-- **Dedicated Faculty Portal**: Independent instructor authentication, faculty self-service leave requests, and teacher-driven substitute approvals.
-- **Automated Instant Alerts**: Automated SMS / WhatsApp / Telegram broadcast webhook integration triggered whenever a CR publishes an override.
-- **Cross-Semester Clash Detection**: Smart backend validator ensuring no classroom or faculty member is double-booked across concurrent semester schedules.
+   - Client/server role validation separating Student view rights from CR/Admin edit rights.

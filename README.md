@@ -23,19 +23,26 @@ Instead of burying schedule shifts, room swaps, and cancellations in noisy chat 
 
 ## 👥 Team Division & Page Architecture
 
-Track detailed subtasks and live progress in [TASKS.md](file:///c:/Codes/MIt/WT/timetable/TASKS.md).
-
-> [!NOTE]
-> **Primary Administrator**: In this system, the administrative manager is the **Class Representative (CR)**. The CR has operational authority to configure semester blueprints, post daily lecture overrides/room swaps, and publish urgent schedule memos.  
-> **Faculty Integration**: Dedicated faculty self-service logins and teacher-initiated schedule requests are planned as a **Future Implementation**.
+> [!IMPORTANT]
+> **1. Administrative Scope: Class Representative (CR) as Sole Administrator**  
+> In **Reschedule**, the designated administrator is the **Class Representative (CR)**. The CR manages both layers of schedule data:
+> - **Permanent Master Blueprint (`admin-master-timetable.html`)**: The baseline semester schedule (Monday–Saturday) that remains constant throughout the semester. The CR updates this only for permanent structural changes (e.g., permanent teacher reallocation or syllabus remakes).
+> - **Daily / Weekly Overrides (`admin-override-timetable.html`)**: Temporary, date-specific adjustments (daily cancellations, temporary room swaps, substitute professors) published by the CR without modifying the underlying permanent blueprint.
+> - **Notice Management (`admin-add-notice.html`)**: Publishing urgent memos and broadcast notifications to students.
+>
+> **2. Authentication Architecture: CR Login Only (Zero Friction for Students)**  
+> - **Students / Visitors**: **No login required.** Students have direct, friction-free access to browse the live dashboard, timetable grid, campus notices, and notifications.
+> - **Class Representative (CR)**: Requires logging in through a secure gateway (`login.html`) to access administrative management tools (`admin-*.html`).
+>
+> **3. Faculty Portal**: Dedicated faculty self-service accounts and teacher-managed approvals are designated as a **Future Implementation**.
 
 | Member | Assigned Pages | Key Responsibilities |
 | :--- | :--- | :--- |
 | **Srijan** | `index.html`<br>`admin-add-notice.html` | **Central Portal & Notice Management**<br>• Real-time "Happening Now" lecture countdown & status banner<br>• Combined "Today's Agenda" view merging master slots with date overrides<br>• Urgent notice broadcast marquee/ticker<br>• CR notice publishing form & management table with Edit/Delete controls |
-| **Prajwal** | `timetable.html`<br>`notices.html` | **Student Schedule View & Announcements**<br>• Interactive Timetable Grid (Current Week vs Permanent Master Grid)<br>• Department / Semester dropdown filters<br>• Color-coded period cards highlighting rescheduled/cancelled classes<br>• Campus Notices Feed with category filter and search modal |
-| **Royston** | `admin-master-timetable.html`<br>`profile.html` | **Academic Master Setup & User Settings**<br>• Master recurring blueprint grid (Monday–Saturday)<br>• Blueprint inputs: Course Code, Subject, Default Faculty, Room/Lab<br>• User Profile with Student vs Class Representative (CR) role badge<br>• Batch selector & Dark / Light mode UI theme switcher |
-| **Shrivatsa** | `admin-override-timetable.html`<br>`notifications.html` | **Daily Overrides & Live Alert Feed**<br>• Daily / Weekly Override Manager (Restricted to Class Representative [CR])<br>• Calendar date-picker & slot status editor (Cancelled, Rescheduled, Substitute)<br>• Live Notification Center displaying all timetable shifts & memos<br>• Unread alert counter pill & "Mark all as read" button |
-| **Shared / Open** | `login.html` / `register.html` | **Authentication & Access Control**<br>• Role-based login and onboarding (Student vs Class Representative [CR])<br>• Client-side session state & access restriction helpers |
+| **Prajwal** | `timetable.html`<br>`notices.html` | **Student Schedule View & Announcements (No Login Required)**<br>• Interactive Timetable Grid (Current Week vs Permanent Master Grid)<br>• Department / Semester dropdown filters<br>• Color-coded period cards highlighting rescheduled/cancelled classes<br>• Campus Notices Feed with category filter and search modal |
+| **Royston** | `admin-master-timetable.html`<br>`profile.html` | **Permanent Academic Master Blueprint & User Settings**<br>• Permanent recurring weekly blueprint grid (Monday–Saturday constant template)<br>• Blueprint inputs: Course Code, Subject, Default Faculty, Room/Lab<br>• User Profile with Student vs Class Representative (CR) badge<br>• Batch selector & Dark / Light mode UI theme switcher |
+| **Shrivatsa** | `admin-override-timetable.html`<br>`notifications.html` | **Daily / Weekly Overrides & Live Alert Feed**<br>• Daily / Weekly Override Manager (CR login required)<br>• Calendar date-picker & slot status editor (Cancelled, Rescheduled, Substitute)<br>• Live Notification Center displaying all timetable shifts & memos<br>• Unread alert counter pill & "Mark all as read" button |
+| **Shared / Open** | `login.html` | **CR Admin Authentication (CR Only)**<br>• Admin login gateway exclusively for the Class Representative (CR)<br>• Protected route redirects (protects `admin-*.html` while keeping student pages public)<br>• CR session persistence & navbar Admin/Logout toggle |
 
 ---
 
@@ -45,18 +52,18 @@ For project documentation, report submission, and viva presentations, the system
 
 ### Tier 1: Core Engine (High Importance)
 - **Module 1: Schedule Aggregation & Merging Engine**: MongoDB Aggregation Pipeline (`$lookup`, `$match`, `$addFields`) dynamically merging static master schedules with date-specific overrides.
-- **Module 2: Daily Override Manager**: Non-destructive slot adjustment system (status change, room reassignment, substitute faculty) that preserves the master semester template.
+- **Module 2: Daily & Weekly Override Manager**: Non-destructive slot adjustment system (status change, room reassignment, substitute faculty) published by the CR without altering the permanent semester blueprint.
 - **Module 3: Real-Time Central Dashboard**: Client-side countdown calculation evaluating current device time against lecture periods with visual state chips.
 
 ### Tier 2: Academic Setup & Communications (Medium Importance)
-- **Module 4: Master Schedule Blueprint**: Administrative recurring Monday–Saturday grid setup per department and semester.
+- **Module 4: Permanent Master Schedule Blueprint**: Recurring Monday–Saturday baseline schedule template maintained by the CR for the entire semester.
 - **Module 5: Campus Notice & Announcement System**: Categorized notice publishing with instant keyword search and modal details.
-- **Module 6: Interactive Student Timetable Grid**: Multi-view schedule display with visual alert chips for cancellations and room changes.
+- **Module 6: Interactive Student Timetable Grid**: Multi-view schedule display with visual alert chips for cancellations and room changes (no student login required).
 
 ### Tier 3: User Experience & Utility (Supporting Importance)
 - **Module 7: Live Notification Center**: Chronological audit feed of timetable events with unread tracking.
 - **Module 8: User Profile & Theme Customization**: Batch selection, role display badge, and CSS theme persistence (`localStorage`).
-- **Module 9: Role-Based Access Control**: Route and UI element guard separating student read access from administrative write access.
+- **Module 9: Access Control & Admin Login Gatekeeper**: Single administrative login protecting CR management routes (`admin-*.html`), while keeping all student pages accessible without authentication.
 
 ---
 
@@ -144,8 +151,7 @@ Team members update their task status from `[0]` to `[1]` in [TASKS.md](file:///
 
 ## 🔮 Future Implementation (Roadmap)
 
-The following features represent the extended roadmap beyond the current mini-project scope:
-- **Dedicated Faculty Portal**: Independent instructor authentication, faculty self-service leave requests, and teacher-driven substitute approvals.
+- **Dedicated Faculty Portal**: Independent instructor authentication, faculty self-service leave requests, and teacher-driven substitute approvals (in current scope, all operational administrative duties are managed by the **Class Representative**).
 - **Automated Instant Alerts**: Automated SMS / WhatsApp / Telegram broadcast webhook integration triggered whenever a CR publishes an override.
 - **Cross-Semester Clash Detection**: Smart backend validator ensuring no classroom or faculty member is double-booked across concurrent semester schedules.
 
