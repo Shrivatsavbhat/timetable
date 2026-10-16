@@ -14,12 +14,44 @@ app.use(express.static('public'));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log(' Connected to MongoDB'))
+    .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB Connection Error:', err));
 
 app.get('/health', (req, res) => {
     return res.send('ok');
 });
+
+//gets all the posts
+app.get('/api/notices', async (req, res) => {
+    try {
+        const notices = await Notice.find().sort({ createdAt: -1 });
+        res.json({ success: true, notices });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Failed to fetch notices', error: err.message });
+    }
+});
+
+//create the notice
+app.post('/api/notices', async (req, res) => {
+    try {
+        const notice = await Notice.create(req.body);
+        res.status(201).json(notice);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+//delete the post by id
+app.delete('/api/notices/:id', async (req, res) => {
+    try {
+        await Notice.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Notice deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
