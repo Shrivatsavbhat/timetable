@@ -4,42 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReScheduled</title>
+    <title>ReScheduled — Campus Timetable</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-    <header>
-        <section id="running_notice">
-            <ul>
-                <li>
-                    <a href="#"></a>
-                </li>
-                <li>
-                    <a href="#"></a>
-                </li>
-                <li>
-                    <a href="#"></a>
-                </li>
-                <li>
-                    <a href="#"></a>
-                </li>
-                <li>
-                    <a href="#"></a>
-                </li>
-            </ul>
-        </section>
-    </header>
-    <main>
-        <section class="hero">
-            <div class="hero-text">
-                <h1>ReScheduled</h1>
-                <p>Never show up to the wrong lecture again.</p>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-box">R</span>
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <div class="nav-links">
+                <a href="/timetable.html">Timetable</a>
+                <a href="/notices.html">Notices</a>
+                <a href="/notifications.html">Alerts</a>
 
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">ReScheduled</h1>
+                <div class="hero-tagline">YOUR CAMPUS SCHEDULE</div>
+                <p class="hero-description">
+                    Never show up to the wrong lecture hall again. Stay informed with real-time class cancellations,
+                    room relocations, substitute faculty updates, and official circulars from your Class Representative.
+                </p>
+                <div class="hero-actions">
+                    <a href="/dashboard.html" class="btn-pill">Go To Dashboard</a>
+                </div>
+            </div>
+        </section>
+        <section class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <h3>Real-Time Updates</h3>
+                <p>Get instant notifications about class changes, cancellations, and room relocations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏫</div>
+                <h3>Smart Room Finder</h3>
+                <p>Never get lost again. Find the exact location of your next class with ease.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📢</div>
+                <h3>Official Notices</h3>
+                <p>Stay updated with official announcements and circulars from your Class Representative.</p>
             </div>
         </section>
     </main>
+
     <footer>
-        <p>&copy; Copyrights reserved 2026 :|</p>
+        <div class="footer-container">
+            <div class="footer-content">
+
+
+                <div class="footer-logo">
+                    <span class="logo-box">R</span>
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/admin-add-notice.html">+ Post Notice</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="/notifications.html">View Alerts</a>
+                </div>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
     </footer>
 </body>
 
