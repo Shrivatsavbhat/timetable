@@ -25,6 +25,8 @@ body {
     background-color: var(--bg-page);
     color: var(--text-main);
     line-height: 1.5;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 /* Navbar */
@@ -135,7 +137,7 @@ body {
     text-align: left;
 }
 
-/* Outline Pill Button */
+
 .btn-pill {
     display: inline-block;
     border: 2px solid var(--primary);
@@ -250,4 +252,24 @@ body {
     color: var(--text-muted);
     font-size: 14px;
     font-weight: 600;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+}
+
+.footer-logo .logo-box {
+    background: var(--primary);
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
 }
