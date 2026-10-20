@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReScheduled - Tasks</title>
+    <link rel="stylesheet" href="./css/tasks.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="top">
+        <div class="brand">
+            <div class="logo">R</div>
+            <span>ReScheduled</span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="timetable.html">Timetable</a>
+            <a href="notices.html">Notices</a>
+            <a href="notifications.html">Alerts</a>
+        </nav>
+    </header>
+
+    <!-- TASK FORM -->
+    <section class="card">
+        <h1 id="formTitle">Post a Task</h1>
+
+        <form id="taskForm">
+
+            <label for="name">Task Name</label>
+            <input
+                type="text"
+                id="name"
+                placeholder="e.g. DAA Quiz 1"
+                required
+            >
+
+            <div class="row">
+
+                <div class="field">
+                    <label for="type">Type</label>
+
+                    <select id="type" required>
+                        <option value="Assignment">Assignment</option>
+                        <option value="Quiz">Quiz</option>
+                        <option value="Lab Submission">Lab Submission</option>
+                        <option value="Project">Project</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="room">Classroom</label>
+
+                    <input
+                        type="text"
+                        id="room"
+                        placeholder="e.g. LH-204"
+                    >
+                </div>
+
+            </div>
+
+            <label for="date">Due Date</label>
+
+            <input
+                type="date"
+                id="date"
+                required
+            >
+
+            <p class="date-note">
+                Due date must be today or a future date.
+            </p>
+
+            <label for="description">Description</label>
+
+            <textarea
+                id="description"
+                placeholder="Enter task details..."
+            ></textarea>
+
+            <div class="form-actions">
+
+                <button type="submit" id="submitBtn">
+                    ADD TASK
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelBtn"
+                    class="cancel-btn"
+                    onclick="cancelEdit()"
+                    hidden
+                >
+                    CANCEL
+                </button>
+
+            </div>
+
+        </form>
+    </section>
+
+
+    <!-- PUBLISHED TASKS -->
+    <section class="card">
+
+        <h2>Published Tasks</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Type</th>
+                        <th>Classroom</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="taskList">
+
+                    <tr>
+                        <td colspan="6" class="loading">
+                            Loading tasks...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <div class="brand">
+            <div class="logo">R</div>
+            <span>ReScheduled</span>
+        </div>
+
+        <div class="footer-links">
+            <a href="tasks.html">+ Post Task</a>
+            <a href="tasks.html">View Tasks</a>
+            <a href="timetable.html">View Timetable</a>
+        </div>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+const form = document.getElementById("taskForm");
+const taskList = document.getElementById("taskList");
+const dateInput = document.getElementById("date");
+
+const formTitle = document.getElementById("formTitle");
+const submitBtn = document.getElementById("submitBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+
+let editingTaskId = null;
+
+
+// Set minimum date
+function setMinimumDate() {
+
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    dateInput.min = `${year}-${month}-${day}`;
+}
+
+setMinimumDate();
+
+
+// Load tasks
+async function loadTasks() {
+
+    try {
+
+        const response = await fetch("/api/tasks");
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch tasks");
+        }
+
+        const data = await response.json();
+
+        const tasks = data.tasks || data;
+
+        displayTasks(tasks);
+
+    } catch (error) {
+
+        console.error(error);
+
+        taskList.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    Unable to load tasks.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+// Display tasks
+function displayTasks(tasks) {
+
+    if (!tasks.length) {
+
+        taskList.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    No tasks found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    taskList.innerHTML = tasks.map(task => `
+
+        <tr>
+
+            <td>
+                <strong>${task.name}</strong>
+
+                ${
+                    task.description
+                    ? `<small>${task.description}</small>`
+                    : ""
+                }
+            </td>
+
+            <td>${task.type}</td>
+
+            <td>${task.room || "-"}</td>
+
+            <td>${formatDate(task.date)}</td>
+
+            <td>
+                <span class="${task.isCompleted ? "completed" : "pending"}">
+                    ${task.isCompleted ? "Completed" : "Pending"}
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="edit-btn"
+                    onclick="editTask('${task._id}')">
+                    Edit
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteTask('${task._id}')"
+                    title="Delete task">
+                    Delete
+                </button>
+
+            </td>
+
+        </tr>
+
+    `).join("");
+}
+
+
+// EDIT TASK
+async function editTask(id) {
+
+    try {
+
+        const response = await fetch(`/api/tasks/${id}`);
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch task");
+        }
+
+        const data = await response.json();
+
+        const task = data.task || data;
+
+        // Put existing values into same form fields
+        document.getElementById("name").value = task.name || "";
+
+        document.getElementById("type").value =
+            task.type || "Assignment";
+
+        document.getElementById("room").value =
+            task.room || "";
+
+        document.getElementById("date").value =
+            task.date || "";
+
+        document.getElementById("description").value =
+            task.description || "";
+
+        // Store ID being edited
+        editingTaskId = id;
+
+        // Change form appearance
+        formTitle.textContent = "Edit Task";
+        submitBtn.textContent = "UPDATE TASK";
+        cancelBtn.hidden = false;
+
+        // Scroll to form
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to load task.");
+    }
+}
+
+
+// ADD / UPDATE TASK
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const selectedDate = dateInput.value;
+
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    const dueDate = new Date(
+        selectedDate + "T00:00:00"
+    );
+
+    if (dueDate < today) {
+
+        alert(
+            "Due date must be today or a future date."
+        );
+
+        return;
+    }
+
+
+    const task = {
+
+        name: document.getElementById("name").value.trim(),
+
+        type: document.getElementById("type").value,
+
+        date: selectedDate,
+
+        room: document.getElementById("room").value.trim(),
+
+        description:
+            document.getElementById("description").value.trim()
+    };
+
+
+    try {
+
+        let response;
+
+        // UPDATE
+        if (editingTaskId) {
+
+            response = await fetch(
+                `/api/tasks/${editingTaskId}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(task)
+                }
+            );
+
+        }
+
+        // CREATE
+        else {
+
+            response = await fetch(
+                "/api/tasks",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(task)
+                }
+            );
+
+        }
+
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Operation failed"
+            );
+        }
+
+
+        // Reset form
+        resetForm();
+
+        // Reload table
+        loadTasks();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            editingTaskId
+            ? "Unable to update task."
+            : "Unable to add task."
+        );
+    }
+
+});
+
+
+// CANCEL EDIT
+function cancelEdit() {
+
+    resetForm();
+}
+
+
+// RESET FORM
+function resetForm() {
+
+    form.reset();
+
+    editingTaskId = null;
+
+    formTitle.textContent = "Post a Task";
+
+    submitBtn.textContent = "ADD TASK";
+
+    cancelBtn.hidden = true;
+
+    setMinimumDate();
+}
+
+
+// DELETE TASK
+async function deleteTask(id) {
+
+    if (!confirm("Delete this task?")) {
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `/api/tasks/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        if (!response.ok) {
+            throw new Error("Failed to delete task");
+        }
+
+
+        loadTasks();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to delete task.");
+    }
+}
+
+
+// Format date
+function formatDate(date) {
+
+    if (!date) {
+        return "";
+    }
+
+    const d = new Date(
+        date + "T00:00:00"
+    );
+
+    if (isNaN(d.getTime())) {
+        return date;
+    }
+
+
+    return d.toLocaleDateString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+}
+
+
+loadTasks();
+
+</script>
+
+</body>
+</html>

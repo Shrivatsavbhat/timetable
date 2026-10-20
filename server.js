@@ -7,6 +7,10 @@ const Override = require('./models/Override');
 const Notice = require('./models/Notice');
 const masterRouter = require('./routes/master');
 const timetableRoutes = require('./routes/timetable');
+const Task = require("./models/Task");
+const taskRoutes = require('./routes/taskRoutes');
+const overrideRoutes = require('./routes/overrideRoutes');
+const masterSlotRoutes = require('./routes/masterSlotRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +18,9 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/api/master', masterRouter);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/overrides', overrideRoutes);
+app.use('/api/master-slots', masterSlotRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB_NAME || 'test' })
@@ -127,9 +134,7 @@ app.get('/api/slots-today', async (req, res) => {
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Failed to fetch happening now', error: err.message });
     }
-})
-
-
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

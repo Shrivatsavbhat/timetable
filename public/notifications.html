@@ -220,7 +220,7 @@ function displayNotifications() {
     }
 
 
-    /* DISPLAY */
+    // to display
 
     list.innerHTML = filtered.map(n => {
 
@@ -265,11 +265,7 @@ function displayNotifications() {
 }
 
 
-/* =========================
-   UPDATE COUNTS
-========================= */
-
-function updateCounts() {
+function updateCounts() { //updating the count
 
     document.getElementById("all-count").textContent =
         notifications.length;
@@ -319,23 +315,9 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 
 });
 
-
-/* =========================
-   INITIAL LOAD
-========================= */
-
 getNotifications();
 
-
-/* =========================
-   AUTO REFRESH
-   Every 30 seconds
-========================= */
-
-setInterval(
-    getNotifications,
-    30000
-);
+setInterval(getNotifications,30000);
 
 </script>
 
