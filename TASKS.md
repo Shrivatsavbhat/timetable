@@ -14,7 +14,7 @@
 | Team Member | Assigned Modules / Pages | Status | Completed / Total |
 | :--- | :--- | :---: | :---: |
 | **Srijan** | Central Dashboard & Notice Management | `COMPLETED` | 12 / 12 |
-| **Prajwal** | Student Timetable & Notices Feed | `IN PROGRESS` | 6 / 10 |
+| **Prajwal** | Student Timetable & Notices Feed | `COMPLETED` | 10 / 10 |
 | **Royston** | Master Timetable Blueprint & Profile | `IN PROGRESS` | 0 / 10 |
 | **Shrivatsa** | Daily Overrides & Notification Center | `IN PROGRESS` | 0 / 10 |
 | **Shared / Open** | CR Admin Authentication & Route Guards | `OPEN` | 0 / 4 |
@@ -60,10 +60,10 @@
 - [1] **3.6** Connect frontend fetch to `GET /api/agenda`
 
 ### 4. Campus Notices Feed (`public/notices.html`)
-- [0] **4.1** Filterable notice board feed by categories (`All`, `Urgent`, `Schedule Shift`, `General`)
-- [0] **4.2** Real-time instant search bar for keyword filtering (Subject, Room, Faculty)
-- [0] **4.3** Notice preview cards with priority color tags and publication dates
-- [0] **4.4** Pop-up modal dialog for full text review and announcement memos
+- [1] **4.1** Filterable notice board feed by categories (`All`, `Urgent`, `Schedule Shift`, `General`)
+- [1] **4.2** Real-time instant search bar for keyword filtering (Subject, Room, Faculty)
+- [1] **4.3** Notice preview cards with priority color tags and publication dates
+- [1] **4.4** Pop-up modal dialog for full text review and announcement memos
 
 ---
 
