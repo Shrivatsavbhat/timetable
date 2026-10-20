@@ -31,10 +31,13 @@
 
     <main class="main-container">
         <div class="dashboard">
-            <secttion class="happening-main">
-                <div class="Happening-card">
+            <div style="padding: 2rem 0 0 0;">
+                <h1 style="margin: 0;">Dashboard</h1>
+            </div>
 
-                    <h2>Happening Now</h2>
+            <secttion class="happening-main" style="margin-top: 2rem; padding: 2rem;">
+                <div class="Happening-card">
+                    <h2 style="padding: 0 0 1rem 0;">Happening Now</h2>
                     <div id="happening-now-container">
                         <p>Getting data</p>
                     </div>
@@ -50,16 +53,18 @@
                                 style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Loading
                                 date...</span>
                         </div>
-                        <a href="/timetable.html" class="btn-pill" style="font-size: 11px; padding: 6px 14px;">Full Week
+                        <a href="/timetable.html" class="btn-pill" style="font-size: 11px; padding: 6px 14px;">Full
+                            Timetable
                             &rarr;</a>
                     </div>
                     <!-- Periods Timeline -->
                     <div id="today-schedule-list">
                         <div class="period-card">
-                            <span class="period-time">09:00 - 10:00</span>
+                            <span class="period-time" id="period-time">09:00 - 10:00</span>
                             <div class="period-details">
-                                <span class="period-title">CS501 • Design & Analysis of Algorithms</span>
-                                <span class="period-meta">Dr. Anand Kumar • Classroom LH-204</span>
+                                <span class="period-title" id="period-title">CS501 • Design & Analysis of
+                                    Algorithms</span>
+                                <span class="period-meta" id="period-meta">Dr. Anand Kumar • Classroom LH-204</span>
                             </div>
                             <span
                                 style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Confirmed</span>
@@ -106,7 +111,7 @@
     </footer>
 
     <script>
-        window.onload = loadDashboardData(), getHappeningNow();
+        window.onload = loadDashboardData(), getHappeningNow(), getTodaySchedule();
 
         window.setInterval(() => {
             getHappeningNow();
@@ -167,6 +172,40 @@
                 noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load notices.</p>';
             }
         }
+
+
+        async function getTodaySchedule() {
+            const res = await fetch('/api/slots-today');
+            const data = await res.json();
+            const slots = data.slots;
+            console.log("toddau", slots)
+
+            const todayScheduleList = document.getElementById('today-schedule-list');
+            todayScheduleList.innerHTML = '';
+
+            if (slots.length === 0) {
+                todayScheduleList.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No schedule found.</p>';
+                return;
+            }
+
+            slots.forEach(slot => {
+                document.getElementById("current-day-label").innerText = slot.day;
+                const periodDiv = document.createElement('div');
+                periodDiv.className = 'period-card';
+                periodDiv.innerHTML = `
+            <span class="period-time">${slot.time}</span>
+            <div class="period-details">
+                <span class="period-title">${slot.subject}</span>
+                <span class="period-meta">${slot.faculty}</span>
+                 <span style="background:#dcfce7; color:#15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.room}</span>
+            </div>
+            <span style="background: ${slot.status === 'Confirmed' ? '#dcfce7' : '#fee2e2'}; color: ${slot.status === 'Confirmed' ? '#15803d' : '#991b1b'}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.status}</span>
+        `;
+                todayScheduleList.appendChild(periodDiv);
+            });
+        }
+
+
     </script>
 
 </body>
