@@ -1,0 +1,69 @@
+.happening-main {
+    background: var(--surface);
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.happening-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin: 30px 0;
+
+}
+
+
+.happening-card h2,
+.happening-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 16px;
+}
+
+
+#happening-now-container {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-md);
+}
+
+
+.happening-now-content {
+    color: red;
+    font-weight: 600;
+}
+
+.notice-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 4px 0;
+}
+
+.notice-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.sidebar-notice-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-notice-item:last-child {
+    border-bottom: none;
+}

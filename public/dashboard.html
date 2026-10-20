@@ -5,31 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/admin-notice.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/admin-notice.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
     <style>
-        /* Notice Feed Sidebar Items */
-        .sidebar-notice-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-notice-item:last-child {
-            border-bottom: none;
-        }
-
-        .notice-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin: 4px 0;
-        }
-
-        .notice-desc {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
     </style>
 </head>
 
@@ -51,29 +30,16 @@
     </header>
 
     <main class="main-container">
-        <!-- 1. Live Happening Now Banner -->
-        <section class="happening-banner">
-            <div>
-                <span style="font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #86efac;">
-                    <span class="pulse-dot"></span>HAPPENING NOW • PERIOD 3
-                </span>
-                <h2 style="font-size: 24px; font-weight: 800; margin: 6px 0 2px;">CS502 — Operating Systems</h2>
-                <p style="font-size: 13px; color: #bfdbfe; margin: 0;">Room: <strong
-                        style="color: white;">LH-204</strong> | Faculty: <strong style="color: white;">Dr. Roy</strong>
-                </p>
-            </div>
-            <div
-                style="background: rgba(255,255,255,0.15); padding: 12px 20px; border-radius: var(--radius-sm); text-align: center;">
-                <span
-                    style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #bfdbfe; font-weight: 700;">Class
-                    Ends In</span>
-                <div style="font-size: 26px; font-weight: 800; margin-top: 2px;">24:18</div>
-            </div>
-        </section>
-        <!-- 2. Two-Column Dashboard Grid -->
-        <div class="dashboard-grid">
+        <div class="dashboard">
+            <secttion class="happening-main">
+                <div class="Happening-card">
 
-            <!-- Left Column: Today's TT -->
+                    <h2>Happening Now</h2>
+                    <div id="happening-now-container">
+                        <p>Getting data</p>
+                    </div>
+                </div>
+            </secttion>
             <section class="dashboard-main">
                 <div class="admin-card">
                     <div
@@ -98,39 +64,11 @@
                             <span
                                 style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Confirmed</span>
                         </div>
-                        <div class="period-card" style="border-left: 4px solid var(--primary);">
-                            <span class="period-time">10:00 - 11:00</span>
-                            <div class="period-details">
-                                <span class="period-title">CS502 • Operating Systems</span>
-                                <span class="period-meta">Dr. Roy • Classroom LH-204</span>
-                            </div>
-                            <span
-                                style="background: #e0e7ff; color: #1e40af; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Ongoing</span>
-                        </div>
-                        <div class="period-card">
-                            <span class="period-time">11:30 - 12:30</span>
-                            <div class="period-details">
-                                <span class="period-title">CS503 • Database Management Systems</span>
-                                <span class="period-meta" style="color: #b45309; font-weight: 600;">⚠️ Shifted to
-                                    Seminar Hall 2</span>
-                            </div>
-                            <span
-                                style="background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Room
-                                Shift</span>
-                        </div>
-                        <div class="period-card">
-                            <span class="period-time">14:00 - 16:00</span>
-                            <div class="period-details">
-                                <span class="period-title">CS509L • Web Technology Practical Lab</span>
-                                <span class="period-meta">Computing Center Lab 3 • Batch B1 & B2</span>
-                            </div>
-                            <span
-                                style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Confirmed</span>
-                        </div>
+
                     </div>
                 </div>
             </section>
-            <!-- Right Column: Recent Notices (Dynamic API) -->
+            <!--Notices-->
             <aside class="dashboard-sidebar">
                 <div class="admin-card">
                     <div
@@ -166,6 +104,70 @@
             <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
         </div>
     </footer>
+
+    <script>
+        window.onload = loadDashboardData(), getHappeningNow();
+
+        window.setInterval(() => {
+            getHappeningNow();
+        }, 1000);
+
+
+        async function getHappeningNow() {
+            const res = await fetch('/api/happening-now')
+            const data = await res.json()
+            const happeningNow = data.happeningNow
+            console.log(data.happeningNow)
+
+
+            const happeningNowContainer = document.getElementById('happening-now-container');
+            happeningNowContainer.innerHTML = '';
+
+            if (happeningNow.length === 0) {
+                happeningNowContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No happening now found.</p>';
+                return;
+            }
+
+            const happeningNowDiv = document.createElement('div');
+            happeningNowDiv.className = 'happening-now-item';
+            happeningNowDiv.innerHTML = `
+                <p class="happening-now-content" style="color: var(--primary); font-weight: 600;">Current Slot: ${happeningNow}</p>
+            `;
+            happeningNowContainer.appendChild(happeningNowDiv);
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Fetch Notices
+                const noticeRes = await fetch('/api/notices');
+                const data = await noticeRes.json();
+                const notices = data.notices;
+
+                const noticeContainer = document.getElementById('recent-notices-container');
+                noticeContainer.innerHTML = '';
+
+                if (notices.length === 0) {
+                    noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No notices found.</p>';
+                    return;
+                }
+
+
+                notices.slice(0, 5).forEach(notice => {
+                    const noticeDiv = document.createElement('div');
+                    noticeDiv.className = 'sidebar-notice-item';
+                    noticeDiv.innerHTML = `
+                        <div class="notice-title">${notice.title}</div>
+                        <div class="notice-desc">${notice.content}</div>
+                    `;
+                    noticeContainer.appendChild(noticeDiv);
+                });
+            } catch (err) {
+                console.error('Failed to load dashboard data:', err);
+                const noticeContainer = document.getElementById('recent-notices-container');
+                noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load notices.</p>';
+            }
+        }
+    </script>
 
 </body>
 
