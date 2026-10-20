@@ -38,45 +38,71 @@
   <main class="page-wrap">
     <div class="card-wrap">
 
-      <!-- Top Header -->
+      <!-- Top Header & Actions -->
       <div class="top-bar">
         <div class="title-group">
-          <h1>📢 Campus Notices</h1>
+          <h1>📢 Campus Notices Feed</h1>
           <p>Official announcements, schedule changes, and departmental memos</p>
         </div>
-        <div>
-          <a href="/timetable.html" class="btn-pill">&larr; Back to Timetable</a>
+        <div class="top-actions">
+          <a href="/timetable.html" class="btn-pill">&larr; Timetable</a>
         </div>
       </div>
 
-      <!-- 4.1 Filter Tabs & 4.2 Instant Search -->
-      <div class="toolbar">
-        <div class="filters" role="group" aria-label="Filter notices by category">
-          <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
-          <button class="filter-btn" onclick="setCategory('urgent', this)">Urgent</button>
-          <button class="filter-btn" onclick="setCategory('shift', this)">Schedule Shift</button>
-          <button class="filter-btn" onclick="setCategory('general', this)">General</button>
+      <!-- Filters & Search (Pure Flexbox, Same as Timetable) -->
+      <div class="filter-row">
+        <div class="filter-item">
+          <label>Academic Term</label>
+          <select id="semSelect" onchange="fetchNotices()">
+            <option value="1" selected>1st Sem — I MCA (Sec A)</option>
+            <option value="3">3rd Sem — I MCA (Sec A)</option>
+            <option value="5">5th Sem — I MCA (Sec A)</option>
+          </select>
         </div>
-
-        <input
-          type="search"
-          id="searchInput"
-          class="search-input"
-          placeholder="🔍 Search notices, room, faculty..."
-          oninput="handleSearch(this.value)"
-          aria-label="Search campus notices"
-        />
+        <div class="filter-item">
+          <label>Search Notices by Title, Content, or Keyword</label>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="🔍 Search e.g. Machine Learning, Room 301, Lab 3"
+            oninput="handleSearch(this.value)"
+          />
+        </div>
       </div>
 
-      <!-- 4.3 Notice Cards Feed -->
+      <!-- Category Filter Buttons (Matches timetable.html day buttons) -->
+      <div class="category-row" id="catButtons">
+        <button class="category-btn active" data-cat="all" onclick="selectCategory('all', this)">All Notices</button>
+        <button class="category-btn" data-cat="urgent" onclick="selectCategory('urgent', this)">🚨 Urgent</button>
+        <button class="category-btn" data-cat="shift" onclick="selectCategory('shift', this)">🔄 Schedule Shift</button>
+        <button class="category-btn" data-cat="general" onclick="selectCategory('general', this)">📌 General</button>
+      </div>
+
+      <!-- Legend & Status Row (Matches timetable.html) -->
+      <div class="legend-row">
+        <div id="statusLabel" style="font-weight: 600;">All Campus Notices</div>
+        <div style="display: flex; gap: 14px; align-items: center;">
+          <span><span class="legend-dot" style="background: #dc2626;"></span>Urgent</span>
+          <span><span class="legend-dot" style="background: var(--primary);"></span>Schedule Shift</span>
+          <span><span class="legend-dot" style="background: #64748b;"></span>General</span>
+        </div>
+      </div>
+
+      <!-- Notice Cards Feed (Pure Flexbox) -->
       <div class="notice-list" id="noticeContainer">
         <p style="text-align: center; color: var(--text-muted); padding: 30px;">Loading notices...</p>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="card-footer">
+        <span>🟢 Live sync active with Department Notice Board</span>
+        <span>Class: <strong>I MCA Section A</strong></span>
       </div>
 
     </div>
   </main>
 
-  <!-- 4.4 Pop-up Modal Dialog for Full Memo Review -->
+  <!-- Modal Dialog for Full Memo Review -->
   <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
@@ -102,19 +128,19 @@
         allNotices = data.notices || (Array.isArray(data) ? data : []);
         renderNotices();
       } catch (err) {
-        document.getElementById('noticeContainer').innerHTML = 
+        document.getElementById('noticeContainer').innerHTML =
           '<p style="text-align: center; color: #dc2626; padding: 20px;">Unable to load notices from server.</p>';
       }
     }
 
-    // 2. Render notice cards based on category and search query
+    // 2. Render notice cards
     function renderNotices() {
       const container = document.getElementById('noticeContainer');
       const q = searchQuery.toLowerCase();
 
       const filtered = allNotices.filter(item => {
         const p = (item.priority || item.category || 'general').toLowerCase();
-        
+
         let matchesCategory = (activeCategory === 'all');
         if (activeCategory === 'urgent') matchesCategory = (p === 'urgent' || p === 'high');
         else if (activeCategory === 'shift') matchesCategory = (p.includes('shift'));
@@ -132,37 +158,63 @@
 
       container.innerHTML = filtered.map(item => {
         const p = (item.priority || item.category || 'general').toLowerCase();
-        let badgeClass = 'badge-general';
+        let badgeClass = 'status-general';
+        let cardBorderClass = 'is-general';
         let badgeLabel = 'General';
 
         if (p === 'urgent' || p === 'high') {
-          badgeClass = 'badge-urgent';
+          badgeClass = 'status-urgent';
+          cardBorderClass = 'is-urgent';
           badgeLabel = 'Urgent';
         } else if (p.includes('shift')) {
-          badgeClass = 'badge-shift';
+          badgeClass = 'status-shift';
+          cardBorderClass = 'is-shift';
           badgeLabel = 'Schedule Shift';
         }
 
-        const dateStr = item.date || (item.createdAt ? new Date(item.createdAt).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' }) : 'Recent');
+        // Date breakdown for the left box
+        const rawDate = item.date || item.createdAt;
+        const dObj = rawDate ? new Date(rawDate) : new Date();
+        const dayNum = dObj.getDate();
+        const monthShort = dObj.toLocaleString('en-US', { month: 'short' });
+        const yearNum = dObj.getFullYear();
 
         return `
-          <div class="notice-card" onclick="openModal('${item._id}')">
-            <div class="notice-header">
-              <span class="badge ${badgeClass}">${badgeLabel}</span>
-              <span class="notice-date">📅 ${dateStr}</span>
+          <div class="notice-card ${cardBorderClass}" onclick="openModal('${item._id}')">
+            <div class="notice-date-box">
+              <span class="notice-date-day">${dayNum}</span>
+              <span class="notice-date-month">${monthShort}</span>
+              <span class="notice-date-year">${yearNum}</span>
             </div>
-            <div class="notice-title">${item.title || 'Untitled Notice'}</div>
-            <p class="notice-snippet">${(item.content || item.description || '').slice(0, 140)}...</p>
+            <div class="notice-body">
+              <div class="notice-top">
+                <span class="notice-title">${item.title || 'Untitled Notice'}</span>
+                <span class="status-pill ${badgeClass}">${badgeLabel}</span>
+              </div>
+              <p class="notice-snippet">${(item.content || item.description || '').slice(0, 140)}...</p>
+              <div class="notice-meta">
+                <span>🏛️ Department Memo</span>
+                <span style="color: var(--primary); font-weight: 600;">Read Full Notice &rarr;</span>
+              </div>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    // 3. Category Filter Handler
-    function setCategory(cat, btn) {
+    // 3. Category Selector Handler (Matches Day Selection in Timetable)
+    function selectCategory(cat, btn) {
       activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+
+      const labels = {
+        all: 'All Campus Notices',
+        urgent: '🚨 Urgent & High Priority Notices',
+        shift: '🔄 Schedule Shift Notices',
+        general: '📌 General Department Notices'
+      };
+      document.getElementById('statusLabel').textContent = labels[cat] || 'Campus Notices';
       renderNotices();
     }
 
@@ -178,14 +230,14 @@
       if (!item) return;
 
       const p = (item.priority || item.category || 'general').toLowerCase();
-      let badgeClass = 'badge-general';
+      let badgeClass = 'status-general';
       let badgeLabel = 'General';
-      if (p === 'urgent' || p === 'high') { badgeClass = 'badge-urgent'; badgeLabel = 'Urgent'; }
-      else if (p.includes('shift')) { badgeClass = 'badge-shift'; badgeLabel = 'Schedule Shift'; }
+      if (p === 'urgent' || p === 'high') { badgeClass = 'status-urgent'; badgeLabel = 'Urgent'; }
+      else if (p.includes('shift')) { badgeClass = 'status-shift'; badgeLabel = 'Schedule Shift'; }
 
-      document.getElementById('modalCategory').innerHTML = `<span class="badge ${badgeClass}">${badgeLabel}</span>`;
+      document.getElementById('modalCategory').innerHTML = `<span class="status-pill ${badgeClass}">${badgeLabel}</span>`;
       document.getElementById('modalTitle').textContent = item.title || 'Announcement';
-      document.getElementById('modalDate').textContent = 'Posted: ' + (item.date || (item.createdAt ? new Date(item.createdAt).toLocaleString() : 'Recent'));
+      document.getElementById('modalDate').textContent = '📅 Published: ' + (item.date || (item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent'));
       document.getElementById('modalContent').textContent = item.content || item.description || '';
       document.getElementById('noticeModal').classList.add('show');
     }
@@ -198,7 +250,7 @@
       if (e.key === 'Escape') closeModal();
     });
 
-    fetchNotices();
+    window.onload = fetchNotices;
   </script>
 </body>
 </html>
