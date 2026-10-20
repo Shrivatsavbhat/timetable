@@ -16,4 +16,4 @@ const masterSlotSchema = new mongoose.Schema({
     isLab: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = mongoose.model('MasterSlot', masterSlotSchema);
+module.exports = mongoose.model('MasterSlot', masterSlotSchema, 'masterslots');

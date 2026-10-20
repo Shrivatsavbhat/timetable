@@ -5,15 +5,17 @@ const mongoose = require('mongoose');
 const MasterSlot = require('./models/MasterSlot');
 const Override = require('./models/Override');
 const Notice = require('./models/Notice');
+const masterRouter = require('./routes/master');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/api/master', masterRouter);
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB_NAME || 'test' })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB Connection Error:', err));
 
