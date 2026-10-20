@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Override Timetable - ReScheduled</title>
+    <link rel="stylesheet" href="./css/admin-override.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="top">
+        <div>
+            <h1 class="title">Override Timetable</h1>
+            <p class="subtitle">
+                Create temporary date-specific timetable adjustments.
+            </p>
+        </div>
+    </header>
+
+    <!-- Role Check -->
+    <section id="access-denied" class="message hidden">
+        <h2>Access Restricted</h2>
+        <p>Only the Class Representative can modify the timetable.</p>
+    </section>
+
+    <main id="override-panel" class="hidden">
+
+        <!-- Date Selection -->
+        <section class="card">
+            <h2>Select Date</h2>
+
+            <label for="date">Date</label>
+            <input type="date" id="date" required>
+
+            <p id="day-name" class="hint"></p>
+        </section>
+
+        <!-- Base Timetable -->
+        <section class="card">
+            <div class="section-head">
+                <h2>Base Timetable</h2>
+                <span id="loading" class="hint"></span>
+            </div>
+
+            <div id="timetable" class="slots">
+                <div class="empty">
+                    Select a date to load the timetable.
+                </div>
+            </div>
+        </section>
+
+        <!-- Override Form -->
+        <section class="card">
+
+            <h2>Slot Override</h2>
+
+            <form id="override-form">
+
+                <input type="hidden" id="slotId">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label for="status">Status</label>
+
+                        <select id="status" required>
+                            <option value="">Select status</option>
+                            <option value="CANCELLED">Cancelled</option>
+                            <option value="RESCHEDULED">Rescheduled</option>
+                            <option value="SUBSTITUTE">Substitute</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="time">New Time Slot</label>
+
+                        <input
+                            type="text"
+                            id="time"
+                            placeholder="10:00 AM - 11:00 AM"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="room">New Room</label>
+
+                        <input
+                            type="text"
+                            id="room"
+                            placeholder="Room 204"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="faculty">Substitute Faculty</label>
+
+                        <input
+                            type="text"
+                            id="faculty"
+                            placeholder="Faculty name"
+                        >
+                    </div>
+
+                </div>
+
+                <div>
+                    <label for="reason">
+                        Reason <span>*</span>
+                    </label>
+
+                    <textarea
+                        id="reason"
+                        rows="4"
+                        placeholder="Reason for override"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="selected-slot">
+                    Selected Slot:
+                    <strong id="selected-slot">None</strong>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Publish Override
+                </button>
+
+                <p id="message"></p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+let timetable = [];
+
+const dateInput = document.getElementById("date");
+const timetableBox = document.getElementById("timetable");
+const form = document.getElementById("override-form");
+
+async function checkRole() {
+    try {
+        const response = await fetch("/api/user");
+        const user = await response.json();
+
+        if (user.role !== "CR") {
+            document.getElementById("access-denied")
+                .classList.remove("hidden");
+            return;
+        }
+
+        document.getElementById("override-panel")
+            .classList.remove("hidden");
+
+    } catch {
+        document.getElementById("access-denied")
+            .classList.remove("hidden");
+    }
+}
+
+async function loadTimetable() {
+    const date = dateInput.value;
+
+    if (!date) return;
+
+    const day = new Date(date + "T00:00:00")
+        .toLocaleDateString("en-US", { weekday: "long" });
+
+    document.getElementById("day-name").textContent = day;
+    document.getElementById("loading").textContent = "Loading...";
+
+    try {
+        const response =
+            await fetch(`/api/timetable?day=${day}`);
+
+        if (!response.ok) throw new Error();
+
+        timetable = await response.json();
+        displayTimetable();
+
+    } catch {
+        timetableBox.innerHTML =
+            `<div class="empty">Unable to load timetable.</div>`;
+    }
+
+    document.getElementById("loading").textContent = "";
+}
+
+function displayTimetable() {
+    if (!timetable.length) {
+        timetableBox.innerHTML =
+            `<div class="empty">No classes found.</div>`;
+        return;
+    }
+
+    timetableBox.innerHTML = timetable.map((slot, index) => `
+        <button
+            type="button"
+            class="slot"
+            onclick="selectSlot(${index})"
+        >
+            <strong>${slot.subject}</strong>
+            <span>${slot.time}</span>
+            <small>${slot.room || "Room not assigned"}</small>
+            <small>${slot.faculty || "Faculty not assigned"}</small>
+        </button>
+    `).join("");
+}
+
+function selectSlot(index) {
+    const slot = timetable[index];
+
+    document.getElementById("slotId").value =
+        slot._id || slot.id;
+
+    document.getElementById("selected-slot").textContent =
+        `${slot.subject} - ${slot.time}`;
+
+    document.querySelectorAll(".slot")
+        .forEach(s => s.classList.remove("selected"));
+
+    document.querySelectorAll(".slot")[index]
+        .classList.add("selected");
+}
+
+form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const date = dateInput.value;
+    const slotId = document.getElementById("slotId").value;
+    const status = document.getElementById("status").value;
+    const reason = document.getElementById("reason").value.trim();
+
+    if (!date || !slotId || !status || !reason) {
+        showMessage("Please complete all required fields.", true);
+        return;
+    }
+
+    const data = {
+        date,
+        slotId,
+        status,
+        newTime: document.getElementById("time").value.trim(),
+        newRoom: document.getElementById("room").value.trim(),
+        substituteFaculty:
+            document.getElementById("faculty").value.trim(),
+        reason
+    };
+
+    try {
+        const response = await fetch("/api/overrides", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error();
+
+        showMessage("Override published successfully.");
+
+        form.reset();
+
+        document.getElementById("selected-slot")
+            .textContent = "None";
+
+        document.querySelectorAll(".slot")
+            .forEach(s => s.classList.remove("selected"));
+
+    } catch {
+        showMessage("Unable to publish override.", true);
+    }
+});
+
+function showMessage(text, error = false) {
+    const message = document.getElementById("message");
+
+    message.textContent = text;
+    message.className = error ? "error" : "success";
+}
+
+dateInput.addEventListener("change", loadTimetable);
+
+checkRole();
+</script>
+
+</body>
+</html>
