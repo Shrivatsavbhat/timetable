@@ -1,0 +1,31 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+
+// Get user profile
+router.get('/', async (req, res) => {
+    try {
+        let user = await User.findOne();
+        if (!user) user = await User.create({});
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update user profile and preferences
+router.post('/', async (req, res) => {
+    try {
+        let user = await User.findOne();
+        if (user) {
+            user = await User.findByIdAndUpdate(user._id, req.body, { new: true });
+        } else {
+            user = await User.create(req.body);
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+module.exports = router;

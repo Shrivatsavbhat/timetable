@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReScheduled - Campus Notices</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #fafaf9;
+      color: #1c1917;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Accessibility skip link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 10px;
+      background: #1c1917;
+      color: #ffffff;
+      padding: 8px 12px;
+      z-index: 100;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .skip-link:focus {
+      top: 10px;
+    }
+
+    a:focus, button:focus, input:focus {
+      outline: 2px solid #10b981;
+      outline-offset: 2px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+      padding: 36px 24px 60px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #e7e5e4;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #78716c;
+      font-size: 14px;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      font-size: 12px;
+      color: #57534e;
+      background: #ffffff;
+      border: 1px solid #e7e5e4;
+      padding: 6px 12px;
+      border-radius: 7px;
+      transition: 0.15s;
+    }
+    .nav-btn:hover {
+      background: #f5f5f4;
+    }
+
+    /* 4.2 Search and Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0 16px;
+      flex-wrap: wrap;
+    }
+
+    /* 4.1 Filter tabs */
+    .filters {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      background: #f5f5f4;
+      border: 1px solid #e7e5e4;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .filter-btn {
+      border: none;
+      background: transparent;
+      color: #78716c;
+      padding: 7px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .filter-btn.active {
+      background: #ffffff;
+      color: #1c1917;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      font-weight: 600;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-input {
+      background: #ffffff;
+      border: 1px solid #e7e5e4;
+      color: #1c1917;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 7px;
+      width: 240px;
+    }
+
+    /* 4.3 Notice cards list */
+    .notice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .notice-card {
+      background: #ffffff;
+      border: 1px solid #e7e5e4;
+      border-radius: 9px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .notice-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .notice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+    }
+
+    .badge-urgent {
+      background: #fff1f2;
+      color: #be123c;
+      border-color: #fecdd3;
+    }
+
+    .badge-shift {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    .badge-general {
+      background: #f5f5f4;
+      color: #57534e;
+      border-color: #e7e5e4;
+    }
+
+    .notice-date {
+      font-size: 11px;
+      color: #a8a29e;
+    }
+
+    .notice-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .notice-snippet {
+      font-size: 13px;
+      color: #57534e;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* 4.4 Pop-up Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 550px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-close {
+      float: right;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      cursor: pointer;
+      color: #78716c;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding: 25px 15px 40px;
+      }
+      .top, .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a href="#mainContent" class="skip-link">Skip to notices</a>
+
+  <div class="page">
+    <header class="top" role="banner">
+      <div>
+        <h1 class="title">Campus Notices</h1>
+        <p class="subtitle">Official announcements, schedule changes, and departmental memos.</p>
+      </div>
+      <div class="top-links">
+        <a href="/timetable.html" class="nav-btn">&larr; Back to Timetable</a>
+      </div>
+    </header>
+
+    <main id="mainContent" role="main">
+      <div class="toolbar">
+        <div class="filters" role="group" aria-label="Filter notices by category">
+          <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+          <button class="filter-btn" onclick="setCategory('urgent', this)">Urgent</button>
+          <button class="filter-btn" onclick="setCategory('shift', this)">Schedule Shift</button>
+          <button class="filter-btn" onclick="setCategory('general', this)">General</button>
+        </div>
+
+        <div class="search-box">
+          <input
+            type="search"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search notices, faculty, room..."
+            oninput="handleSearch(this.value)"
+            aria-label="Search campus notices"
+          />
+        </div>
+      </div>
+
+      <div class="notice-list" id="noticeContainer">
+        <p style="text-align: center; color: #78716c; padding: 30px;">Loading notices...</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Dialog -->
+  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
+      <div id="modalCategory" style="margin-bottom: 8px;"></div>
+      <h2 id="modalTitle" style="font-size: 18px; margin: 0 0 8px 0;"></h2>
+      <p id="modalDate" style="font-size: 11px; color: #a8a29e; margin-bottom: 14px;"></p>
+      <hr style="border: none; border-top: 1px solid #e7e5e4; margin-bottom: 14px;" />
+      <p id="modalContent" style="font-size: 13px; color: #44403c; line-height: 1.6;"></p>
+    </div>
+  </div>
+
+  <script>
+    let allNotices = [];
+    let activeCategory = 'all';
+    let searchQuery = '';
+
+    async function fetchNotices() {
+      try {
+        const res = await fetch('/api/notices');
+        const data = await res.json();
+        allNotices = data.notices || (Array.isArray(data) ? data : []);
+        renderNotices();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('noticeContainer').innerHTML = 
+          '<p style="text-align:center; color:#be123c; padding:20px;">Unable to load notices from server.</p>';
+      }
+    }
+
+    function renderNotices() {
+      const container = document.getElementById('noticeContainer');
+      const filtered = allNotices.filter(item => {
+        const priority = (item.priority || item.category || 'general').toLowerCase();
+        const matchesCategory = (activeCategory === 'all') || (priority === activeCategory);
+        
+        const q = searchQuery.toLowerCase();
+        const titleMatch = (item.title || '').toLowerCase().includes(q);
+        const textMatch = (item.content || item.description || '').toLowerCase().includes(q);
+        const matchesSearch = titleMatch || textMatch;
+
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #78716c; padding: 40px; border: 1px dashed #e7e5e4; border-radius: 8px;">No matching notices found.</p>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((item, idx) => {
+        const p = (item.priority || item.category || 'general').toLowerCase();
+        let badgeClass = 'badge-general';
+        let badgeLabel = 'General';
+        if (p === 'urgent') { badgeClass = 'badge-urgent'; badgeLabel = 'Urgent'; }
+        else if (p === 'shift' || p === 'schedule shift') { badgeClass = 'badge-shift'; badgeLabel = 'Schedule Shift'; }
+
+        const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' }) : 'Recent';
+
+        return `
+          <div class="notice-card" onclick="openModal(${idx})">
+            <div class="notice-header">
+              <span class="badge ${badgeClass}">${badgeLabel}</span>
+              <span class="notice-date">${dateStr}</span>
+            </div>
+            <div class="notice-title">${item.title || 'Untitled Notice'}</div>
+            <p class="notice-snippet">${(item.content || item.description || '').slice(0, 140)}...</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderNotices();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      renderNotices();
+    }
+
+    function openModal(idx) {
+      const item = allNotices[idx];
+      if (!item) return;
+      document.getElementById('modalTitle').textContent = item.title || 'Announcement';
+      document.getElementById('modalDate').textContent = item.createdAt ? new Date(item.createdAt).toLocaleString() : '';
+      document.getElementById('modalContent').textContent = item.content || item.description || '';
+      document.getElementById('noticeModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('noticeModal').classList.remove('show');
+    }
+
+    fetchNotices();
+  </script>
+</body>
+</html>
