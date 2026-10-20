@@ -15,4 +15,4 @@ const masterSlotSchema = new mongoose.Schema({
     faculty: { type: String, required: true }
 }, { timestamps: true });
 
-module.exports = mongoose.model('MasterSlot', masterSlotSchema);
+module.exports = mongoose.model('MasterSlot', masterSlotSchema, 'masterslots');
