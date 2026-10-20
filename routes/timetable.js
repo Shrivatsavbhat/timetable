@@ -10,22 +10,21 @@ router.get('/', async (req, res) => {
     let masterFilter = {}
     if (semester) masterFilter.semester = semester;
 
+    const targetDate = date ? new Date(date) : null;
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = targetDate ? days[targetDate.getDay()] : null;
+    const dateString = targetDate ? targetDate.toISOString().split('T')[0] : null;
+
+
+    if (dateString === null) {
+      masterFilter = {};
+    }
+    else {
+      masterFilter = { day: dayName };
+    }
+
     console.log(date, semester, mode);
     if (mode == 'permanent') {
-
-      const targetDate = date ? new Date(date) : null;
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dayName = targetDate ? days[targetDate.getDay()] : null;
-      const dateString = targetDate ? targetDate.toISOString().split('T')[0] : null;
-
-
-
-      if (dateString === null) {
-        masterFilter = {};
-      }
-      else {
-        masterFilter = { day: dayName };
-      }
       const masterSlots = await MasterSlot.find(masterFilter).sort({ slot: 1 });
 
       res.json({
@@ -35,12 +34,7 @@ router.get('/', async (req, res) => {
         schedule: masterSlots
       });
     } else {
-      console.log('else')
-      const targetDate = date ? new Date(date) : new Date();
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dayName = days[targetDate.getDay()];
-      const dateString = targetDate.toISOString().split('T')[0];
-      masterFilter = { day: dayName };
+
       const overrideSlot = await MasterSlot.find(masterFilter).sort({ slot: 1 });
 
 
