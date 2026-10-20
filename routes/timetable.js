@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
 
       const overrideFilter = { date: dateString };
       if (semester) overrideFilter.semester = semester;
-      const overrides = await Override.find(overrideFilter); t
+      const overrides = await Override.find(overrideFilter);
       const mergedSchedule = overrideSlot.map(slot => {
         const override = overrides.find(o => o.slot === slot.slot);
 
