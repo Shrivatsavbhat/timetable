@@ -13,7 +13,7 @@
   <!-- Shared Global Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- Timetable Stylesheet (Pure Flexbox & Simple Table) -->
+  <!-- Timetable Stylesheet -->
   <link rel="stylesheet" href="./css/timetable.css">
 </head>
 <body>
@@ -84,7 +84,7 @@
       <!-- Status Header & Legend -->
       <div class="legend-row">
         <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
-        <div class="legend-dots">
+        <div style="display: flex; gap: 14px; align-items: center;">
           <span><span class="legend-dot" style="background: var(--accent-green);"></span>Theory Class</span>
           <span><span class="legend-dot" style="background: var(--primary);"></span>Practical Lab</span>
         </div>
@@ -95,7 +95,7 @@
         <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading schedule...</p>
       </div>
 
-      <!-- 2. Simple Clean Weekly Schedule Table (Grouped Chronologically Mon-Sat) -->
+      <!-- 2. Simple Clean Weekly Schedule Table (No Today Tag) -->
       <div class="table-container" id="weeklyContainer" style="display: none;">
         <table class="clean-table">
           <thead>
@@ -120,16 +120,14 @@
     </div>
   </main>
 
-  <!-- Client-Side Logic (Simple, Clean, Easy to Explain in Viva) -->
+  <!-- Client-Side Logic -->
   <script>
-    // State Variables
     let currentMode = 'daily';
     let currentDay = 'Monday';
     let allSlots = [];
     let searchQuery = '';
     const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // Midday Break timings for each day
     const BREAK_TIMES = {
       Monday: '12:30 PM — 02:00 PM',
       Tuesday: '10:30 AM — 02:00 PM',
@@ -139,7 +137,6 @@
       Saturday: '01:30 PM — 02:30 PM'
     };
 
-    // Helper: sort slots chronologically by start time
     function sortSlotsChronologically(slots) {
       return [...slots].sort((a, b) => {
         const timeA = (a.time || '').split('-')[0].trim();
@@ -148,7 +145,6 @@
       });
     }
 
-    // 1. Fetch timetable data from server
     async function loadData() {
       try {
         const res = await fetch('/api/timetable');
@@ -161,7 +157,6 @@
       }
     }
 
-    // 2. Switch between Daily View and Weekly Table
     function setView(mode) {
       currentMode = mode;
       const isDaily = (mode === 'daily');
@@ -176,13 +171,11 @@
       else renderWeeklyTable();
     }
 
-    // 3. Render Daily Cards View with single clean midday break
     function renderDailyView() {
       const container = document.getElementById('dailyContainer');
       const rawSlots = allSlots.filter(s => s.day === currentDay);
       const daySlots = sortSlotsChronologically(rawSlots);
 
-      // Search filtering
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         const matches = daySlots.filter(s =>
@@ -204,7 +197,6 @@
         return;
       }
 
-      // Slot split count before the midday break
       const splitCounts = { Monday: 4, Tuesday: 1, Wednesday: 3, Thursday: 1, Friday: 2, Saturday: 2 };
       const split = splitCounts[currentDay] || 2;
       const morningSlots = daySlots.slice(0, split);
@@ -218,7 +210,6 @@
       container.innerHTML = html;
     }
 
-    // Helper: generate slot card HTML
     function makeCardHtml(s) {
       const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
       const badge = isLab
@@ -247,20 +238,17 @@
       `;
     }
 
-    // 4. Render Simple Clean Weekly Table Grouped Chronologically by Day (Mon -> Sat)
+    // Weekly Table: Clean day sections, no today tag
     function renderWeeklyTable() {
       const tbody = document.getElementById('tableBody');
-      const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
       const q = searchQuery.toLowerCase();
 
       let tableHtml = '';
       let totalVisible = 0;
 
       DAYS.forEach(day => {
-        const isToday = (day === today);
         const daySlots = sortSlotsChronologically(allSlots.filter(s => s.day === day));
 
-        // Filter slots if user typed search query
         const matchingSlots = daySlots.filter(s => {
           if (!q) return true;
           return (s.subject || '').toLowerCase().includes(q) ||
@@ -270,35 +258,27 @@
                  (s.day || '').toLowerCase().includes(q);
         });
 
-        // Skip day if searching and no matches
         if (q && !matchingSlots.length) return;
-
         totalVisible += matchingSlots.length;
 
-        // Render Day Group Header Row
+        // Clean Day Group Header (No Today tag)
         tableHtml += `
-          <tr class="day-group-header ${isToday ? 'today' : ''}">
+          <tr class="day-group-header">
             <td colspan="5">
               <div class="day-header-flex">
-                <span class="day-title">
-                  📅 ${day}
-                  ${isToday ? '<span class="today-chip">Today</span>' : ''}
-                </span>
+                <span class="day-title">📅 ${day}</span>
                 <span class="day-count-badge">${matchingSlots.length} Classes</span>
               </div>
             </td>
           </tr>
         `;
 
-        // Render each class row for that day in strict chronological order
         matchingSlots.forEach(s => {
           const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
 
           tableHtml += `
             <tr>
-              <td style="white-space:nowrap; font-weight:600; color:var(--primary);">
-                ${s.time}
-              </td>
+              <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
               <td>
                 <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
                 <span class="code-tag">${s.code}</span>
@@ -322,14 +302,12 @@
       tbody.innerHTML = tableHtml;
     }
 
-    // 5. Search Filtering
     function onSearch(value) {
       searchQuery = value.trim();
       if (currentMode === 'daily') renderDailyView();
       else renderWeeklyTable();
     }
 
-    // 6. Day Selection & Quick Jump
     function selectDay(btn, day) {
       currentDay = day;
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
@@ -351,7 +329,6 @@
       else renderDailyView();
     }
 
-    // 7. Page Initialization
     window.onload = function() {
       const dayIdx = new Date().getDay();
       const realToday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIdx];
