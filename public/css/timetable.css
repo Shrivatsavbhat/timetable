@@ -261,6 +261,50 @@
   color: var(--primary);
 }
 
+.status-cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-swapped {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-rescheduled {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-substitute {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.slot-card.is-cancelled {
+  border-left: 4px solid #ef4444;
+  opacity: 0.85;
+}
+
+.slot-card.is-cancelled .subject-name {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.slot-card.is-swapped {
+  border-left: 4px solid #f59e0b;
+}
+
+.slot-card.is-substitute {
+  border-left: 4px solid #0284c7;
+}
+
+.override-reason {
+  font-size: 11px;
+  color: #b91c1c;
+  font-style: italic;
+}
+
 .slot-details {
   display: flex;
   gap: 14px;

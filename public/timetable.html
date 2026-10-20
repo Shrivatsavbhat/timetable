@@ -5,22 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Timetable — ReScheduled</title>
-
-  <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Shared Global Stylesheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <!-- Shared Global Stylesheet (Variables, Navbar, Base Layout) -->
   <link rel="stylesheet" href="./css/style.css">
-
-  <!-- Timetable Stylesheet -->
+  <!-- Timetable Module Stylesheet (Flexbox & Semantic Table) -->
   <link rel="stylesheet" href="./css/timetable.css">
 </head>
 
 <body>
-
-  <!-- Shared Navigation Bar -->
+  <!-- Shared Team Navbar -->
   <header class="navbar">
     <div class="nav-container">
       <a href="/" class="logo">
@@ -31,16 +27,15 @@
         <a href="/dashboard.html">Dashboard</a>
         <a href="/timetable.html" class="active">Timetable</a>
         <a href="/notices.html">Notices</a>
-        <a href="/notifications.html">Alerts</a>
+        <a href="/profile.html">Profile</a>
       </div>
     </div>
   </header>
 
-  <!-- Main Timetable Container -->
   <main class="page-wrap">
     <div class="card-wrap">
 
-      <!-- Top Title & View Switcher -->
+      <!-- Header Row with Exactly 2 Toggles: Daily View vs Permanent Timetable -->
       <div class="top-bar">
         <div class="title-group">
           <h1>Student Timetable</h1>
@@ -48,10 +43,11 @@
         </div>
 
         <div class="top-actions">
-          <div class="view-switcher">
+          <div class="view-switcher" title="Timetable View">
             <button id="btnDaily" class="view-btn active" onclick="setView('daily')">Daily View</button>
-            <button id="btnWeekly" class="view-btn" onclick="setView('weekly')">Weekly Schedule</button>
+            <button id="btnPermanent" class="view-btn" onclick="setView('permanent')">Permanent Timetable</button>
           </div>
+
           <a href="/notices.html" class="btn-pill">Notices &rarr;</a>
           <button class="btn-primary" onclick="jumpToToday()">Jump to Today</button>
         </div>
@@ -61,7 +57,7 @@
       <div class="filter-row">
         <div class="filter-item">
           <label>Academic Term</label>
-          <select id="semSelect" onchange="loadData()">
+          <select id="semSelect" onchange="onSemesterChange()">
             <option value="I MCA-A" selected>1st Sem — I MCA (Sec A)</option>
             <option value="III MCA-A">3rd Sem — I MCA (Sec A)</option>
             <option value="V MCA-A">5th Sem — I MCA (Sec A)</option>
@@ -86,10 +82,14 @@
 
       <!-- Status Header & Legend -->
       <div class="legend-row">
-        <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
-        <div style="display: flex; gap: 14px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
+          <button id="btnTableToggle" class="btn-pill" style="font-size: 11px; padding: 2px 8px; cursor: pointer;" onclick="toggleTableLayout()">Table View</button>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
           <span><span class="legend-dot" style="background: var(--accent-green);"></span>Theory Class</span>
           <span><span class="legend-dot" style="background: var(--primary);"></span>Practical Lab</span>
+          <span id="legendOverride" style="display: inline-flex; align-items: center; gap: 6px;"><span class="legend-dot" style="background: #ef4444;"></span>Override / Change</span>
         </div>
       </div>
 
@@ -116,7 +116,7 @@
 
       <!-- Footer Info -->
       <div class="card-footer">
-        <span>Live sync active with Department Master</span>
+        <span id="footerSyncStatus">Live sync active with Department Master & Overrides</span>
         <span>Class: <strong>I MCA Section A</strong></span>
       </div>
 
@@ -125,7 +125,8 @@
 
   <!-- Client-Side Logic -->
   <script>
-    let currentMode = 'daily';
+    let currentMode = 'daily'; // 'daily' or 'permanent'
+    let isTableView = false;
     let currentDay = 'Monday';
     let allSlots = [];
     let searchQuery = '';
@@ -155,15 +156,14 @@
         const res = await fetch(`/api/timetable?semester=${sem}`);
         const data = await res.json();
         console.log(data);
-        allSlots = data.schedule;
-        if (currentMode === 'daily') renderDailyView();
-        else renderWeeklyTable();
+        allSlots = data.schedule || [];
+        updateStatusLabel();
+        renderCurrentView();
       } catch (err) {
         document.getElementById('dailyContainer').innerHTML =
           '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
       }
     }
-
 
     async function loadPermanentTimetable() {
       try {
@@ -172,9 +172,10 @@
         const res = await fetch(`/api/timetable?semester=${sem}&mode=permanent`);
         const data = await res.json();
         console.log(data);
-        allSlots = data.schedule;
-        //add logice to display permanent timetable 
-
+        allSlots = data.schedule || [];
+        // add logic to display permanent timetable
+        updateStatusLabel();
+        renderCurrentView();
       } catch (err) {
         document.getElementById('dailyContainer').innerHTML =
           '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
@@ -185,14 +186,55 @@
       currentMode = mode;
       const isDaily = (mode === 'daily');
       document.getElementById('btnDaily').classList.toggle('active', isDaily);
-      document.getElementById('btnWeekly').classList.toggle('active', !isDaily);
-      document.getElementById('dayButtons').style.display = isDaily ? 'flex' : 'none';
-      document.getElementById('dailyContainer').style.display = isDaily ? 'flex' : 'none';
-      document.getElementById('weeklyContainer').style.display = isDaily ? 'none' : 'block';
-      document.getElementById('statusLabel').textContent = isDaily ? (currentDay + ' Slots') : 'Full Weekly Schedule (Monday — Saturday)';
+      document.getElementById('btnPermanent').classList.toggle('active', !isDaily);
 
-      if (isDaily) renderDailyView();
-      else renderWeeklyTable();
+      const legendOverride = document.getElementById('legendOverride');
+      if (legendOverride) legendOverride.style.display = isDaily ? 'inline-flex' : 'none';
+
+      const footerSync = document.getElementById('footerSyncStatus');
+      if (footerSync) {
+        footerSync.textContent = isDaily
+          ? 'Live sync active with Department Master & Overrides'
+          : 'Viewing Baseline Master Timetable (Permanent Blueprint)';
+      }
+
+      if (isDaily) {
+        loadData();
+      } else {
+        loadPermanentTimetable();
+      }
+    }
+
+    function toggleTableLayout() {
+      isTableView = !isTableView;
+      document.getElementById('dayButtons').style.display = isTableView ? 'none' : 'flex';
+      document.getElementById('dailyContainer').style.display = isTableView ? 'none' : 'flex';
+      document.getElementById('weeklyContainer').style.display = isTableView ? 'block' : 'none';
+      document.getElementById('btnTableToggle').textContent = isTableView ? 'Cards View' : 'Table View';
+      updateStatusLabel();
+      renderCurrentView();
+    }
+
+    function renderCurrentView() {
+      if (isTableView) renderWeeklyTable();
+      else renderDailyView();
+    }
+
+    function updateStatusLabel() {
+      const modeSuffix = (currentMode === 'permanent') ? ' (Permanent Master)' : '';
+      if (isTableView) {
+        document.getElementById('statusLabel').textContent = 'Full Weekly Schedule' + modeSuffix;
+      } else {
+        document.getElementById('statusLabel').textContent = currentDay + ' Slots' + modeSuffix;
+      }
+    }
+
+    function onSemesterChange() {
+      if (currentMode === 'permanent') {
+        loadPermanentTimetable();
+      } else {
+        loadData();
+      }
     }
 
     function renderDailyView() {
@@ -236,12 +278,38 @@
 
     function makeCardHtml(s) {
       const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
-      const badge = isLab
+      let badge = isLab
         ? '<span class="status-pill status-lab">Lab</span>'
         : '<span class="status-pill status-confirmed">Theory</span>';
 
+      let cardClass = isLab ? 'is-lab' : '';
+      let overrideNote = '';
+
+      if (s.isOverridden) {
+        if (s.status === 'CANCELLED') {
+          badge = '<span class="status-pill status-cancelled">Cancelled</span>';
+          cardClass += ' is-cancelled';
+          if (s.reason && s.reason !== '--') {
+            overrideNote = `<span class="override-reason">${s.reason}</span>`;
+          }
+        } else if (s.status === 'SWAPPED') {
+          badge = `<span class="status-pill status-swapped">Swapped ${s.newSlot ? `(Slot ${s.newSlot})` : ''}</span>`;
+          cardClass += ' is-swapped';
+        } else if (s.status === 'RESCHEDULED') {
+          badge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
+          cardClass += ' is-swapped';
+        } else if (s.status === 'SUBSTITUTE') {
+          badge = '<span class="status-pill status-substitute">Substitute</span>';
+          cardClass += ' is-substitute';
+        }
+      }
+
+      const facultyDisplay = (s.isOverridden && s.substituteFaculty)
+        ? `${s.faculty} &rarr; <strong>${s.substituteFaculty}</strong>`
+        : s.faculty;
+
       return `
-        <div class="slot-card ${isLab ? 'is-lab' : ''}">
+        <div class="slot-card ${cardClass}">
           <div class="slot-time-box">
             <span class="slot-label">Slot ${s.slot || ''}</span>
             <span class="slot-time">${(s.time || '').split('-')[0]}</span>
@@ -252,10 +320,11 @@
               <span class="code-tag">${s.code}</span>
               <span class="subject-name">${s.subject}</span>
               ${badge}
+              ${overrideNote}
             </div>
             <div class="slot-details">
-              <span>${s.faculty}</span>
-              <span class="venue-pill">${s.room}</span>
+              <span>${facultyDisplay}</span>
+              <span class="venue-pill">${s.newRoom || s.room}</span>
             </div>
           </div>
         </div>
@@ -297,21 +366,38 @@
 
         matchingSlots.forEach(s => {
           const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
+          let typeBadge = isLab
+            ? '<span class="status-pill status-lab">Lab</span>'
+            : '<span class="status-pill status-confirmed">Theory</span>';
+
+          let rowStyle = '';
+          if (s.isOverridden) {
+            if (s.status === 'CANCELLED') {
+              typeBadge = `<span class="status-pill status-cancelled">Cancelled${(s.reason && s.reason !== '--') ? ': ' + s.reason : ''}</span>`;
+              rowStyle = 'style="opacity: 0.7; text-decoration: line-through;"';
+            } else if (s.status === 'SWAPPED') {
+              typeBadge = `<span class="status-pill status-swapped">Swapped ${s.newSlot ? `(Slot ${s.newSlot})` : ''}</span>`;
+            } else if (s.status === 'RESCHEDULED') {
+              typeBadge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
+            } else if (s.status === 'SUBSTITUTE') {
+              typeBadge = '<span class="status-pill status-substitute">Substitute</span>';
+            }
+          }
+
+          const facultyText = (s.isOverridden && s.substituteFaculty)
+            ? `${s.faculty} (${s.substituteFaculty})`
+            : s.faculty;
 
           tableHtml += `
-            <tr>
+            <tr ${rowStyle}>
               <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
               <td>
                 <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
                 <span class="code-tag">${s.code}</span>
               </td>
-              <td><span class="venue-pill">${s.room}</span></td>
-              <td>${s.faculty}</td>
-              <td>
-                ${isLab
-              ? '<span class="status-pill status-lab">Lab</span>'
-              : '<span class="status-pill status-confirmed">Theory</span>'}
-              </td>
+              <td><span class="venue-pill">${s.newRoom || s.room}</span></td>
+              <td>${facultyText}</td>
+              <td>${typeBadge}</td>
             </tr>
           `;
         });
@@ -326,29 +412,32 @@
 
     function onSearch(value) {
       searchQuery = value.trim();
-      if (currentMode === 'daily') renderDailyView();
-      else renderWeeklyTable();
+      renderCurrentView();
     }
 
     function selectDay(btn, day) {
       currentDay = day;
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById('statusLabel').textContent = day + ' Slots';
+      updateStatusLabel();
       renderDailyView();
     }
 
     function jumpToToday() {
       const dayIdx = new Date().getDay();
-      const realToday = DAYS[(dayIdx === 0) ? 0 : dayIdx - 1];
-      currentDay = realToday;
+      const realToday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIdx];
+      const defaultDay = (realToday === 'Sunday') ? 'Monday' : realToday;
+      currentDay = defaultDay;
 
       document.querySelectorAll('.day-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-day') === realToday);
+        btn.classList.toggle('active', btn.getAttribute('data-day') === defaultDay);
       });
 
-      if (currentMode === 'weekly') setView('daily');
-      else renderDailyView();
+      if (isTableView) toggleTableLayout();
+      else {
+        updateStatusLabel();
+        renderDailyView();
+      }
     }
 
     window.onload = function () {
