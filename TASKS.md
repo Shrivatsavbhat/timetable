@@ -14,7 +14,7 @@
 | Team Member | Assigned Modules / Pages | Status | Completed / Total |
 | :--- | :--- | :---: | :---: |
 | **Srijan** | Central Dashboard & Notice Management | `COMPLETED` | 12 / 12 |
-| **Prajwal** | Student Timetable & Notices Feed | `IN PROGRESS` | 0 / 10 |
+| **Prajwal** | Student Timetable & Notices Feed | `IN PROGRESS` | 6 / 10 |
 | **Royston** | Master Timetable Blueprint & Profile | `IN PROGRESS` | 0 / 10 |
 | **Shrivatsa** | Daily Overrides & Notification Center | `IN PROGRESS` | 0 / 10 |
 | **Shared / Open** | CR Admin Authentication & Route Guards | `OPEN` | 0 / 4 |
@@ -52,12 +52,12 @@
 ## 👤 Prajwal — Student Schedule View & Announcements
 
 ### 3. Interactive Student Timetable Grid (`public/timetable.html`)
-- [0] **3.1** Dual-mode top toggle bar: `[ 🗓️ Current Week's Schedule ]` vs `[ 📌 Permanent Master Grid ]`
-- [0] **3.2** Department and Semester dropdown filter controls
-- [0] **3.3** Monday–Saturday day tabs / column layout
-- [0] **3.4** Color-coded lecture period cards (Subject, Faculty, Time, Room)
-- [0] **3.5** Visual alert chips on cards highlighting `RESCHEDULED`, `CANCELLED`, or `SUBSTITUTE`
-- [0] **3.6** Connect frontend fetch to `GET /api/agenda`
+- [1] **3.1** Dual-mode top toggle bar: `[ 🗓️ Current Week's Schedule ]` vs `[ 📌 Permanent Master Grid ]`
+- [1] **3.2** Department and Semester dropdown filter controls
+- [1] **3.3** Monday–Saturday day tabs / column layout
+- [1] **3.4** Color-coded lecture period cards (Subject, Faculty, Time, Room)
+- [1] **3.5** Visual alert chips on cards highlighting `RESCHEDULED`, `CANCELLED`, or `SUBSTITUTE`
+- [1] **3.6** Connect frontend fetch to `GET /api/agenda`
 
 ### 4. Campus Notices Feed (`public/notices.html`)
 - [0] **4.1** Filterable notice board feed by categories (`All`, `Urgent`, `Schedule Shift`, `General`)
