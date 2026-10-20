@@ -1,0 +1,254 @@
+:root {
+    --primary: #b2764b;
+    --bg-page: #FAF0E6;
+    --surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --accent-amber: #d97706;
+    --accent-green: #15803d;
+    --accent-red: #be123c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+.page {
+    max-width: 1000px;
+    margin: auto;
+    padding: 36px 24px 60px;
+}
+
+/* Header */
+.top {
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* Cards */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    margin-top: 18px;
+}
+
+.card h2 {
+    font-size: 17px;
+    margin-bottom: 16px;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Form */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+label span {
+    color: var(--accent-red);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text-main);
+    font: inherit;
+    font-size: 13px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* Timetable */
+.slots {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.slot {
+    text-align: left;
+    padding: 15px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.slot:hover,
+.slot.selected {
+    border-color: var(--primary);
+    background: #fdf6ef;
+}
+
+.slot strong,
+.slot span,
+.slot small {
+    display: block;
+}
+
+.slot strong {
+    font-size: 14px;
+}
+
+.slot span {
+    margin-top: 5px;
+    color: var(--primary);
+    font-size: 12px;
+}
+
+.slot small {
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+/* Selected slot */
+.selected-slot {
+    margin: 16px 0;
+    padding: 10px 12px;
+    background: var(--bg-page);
+    border-radius: 7px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.selected-slot strong {
+    color: var(--text-main);
+}
+
+/* Button */
+.submit-btn {
+    border: 0;
+    background: var(--primary);
+    color: white;
+    padding: 11px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.submit-btn:hover {
+    opacity: .9;
+}
+
+/* Messages */
+.message {
+    margin-top: 20px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.message h2 {
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+
+.message p {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.hint {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.empty {
+    padding: 35px;
+    text-align: center;
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.success {
+    margin-top: 12px;
+    color: var(--accent-green);
+    font-size: 12px;
+}
+
+.error {
+    margin-top: 12px;
+    color: var(--accent-red);
+    font-size: 12px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    .page {
+        padding: 25px 15px 40px;
+    }
+
+    .form-grid,
+    .slots {
+        grid-template-columns: 1fr;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 16px;
+    }
+}

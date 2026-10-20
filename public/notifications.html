@@ -1,346 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>ReScheduled - Notification Center</title>
-
-    <!-- Little Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #fafaf9;
-            color: #1c1917;
-            font-family: Arial, sans-serif;
-        }
-
-        .page {
-            width: 100%;
-            max-width: 1000px;
-            margin: auto;
-            padding: 36px 24px 60px;
-        }
-
-        .top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 20px;
-            padding-bottom: 22px;
-            border-bottom: 1px solid #e7e5e4;
-        }
-
-        .title {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .subtitle {
-            margin-top: 6px;
-            color: #78716c;
-            font-size: 14px;
-        }
-
-        .status {
-            font-size: 11px;
-            color: #57534e;
-            background: #f5f5f4;
-            border: 1px solid #e7e5e4;
-            padding: 6px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            background: #10b981;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            padding: 20px 0 14px;
-        }
-
-        .filters {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            background: #f5f5f4;
-            border: 1px solid #e7e5e4;
-            padding: 4px;
-            border-radius: 8px;
-        }
-
-        .filter-btn {
-            border: none;
-            background: transparent;
-            color: #78716c;
-            padding: 7px 11px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .filter-btn.active {
-            background: white;
-            color: #1c1917;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
-
-        .filter-count {
-            color: #a8a29e;
-            margin-left: 4px;
-        }
-
-        .read-btn {
-            border: 1px solid #e7e5e4;
-            background: white;
-            color: #57534e;
-            padding: 8px 12px;
-            border-radius: 7px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .read-btn:hover {
-            background: #f5f5f4;
-        }
-
-        .unread-box {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: #57534e;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-
-        .unread-badge {
-            background: #1c1917;
-            color: white;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            font-size: 10px;
-        }
-
-        .feed {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .notification {
-            background: white;
-            border: 1px solid #e7e5e4;
-            border-radius: 9px;
-            padding: 16px;
-            display: flex;
-            gap: 13px;
-            transition: 0.15s;
-        }
-
-        .notification:hover {
-            background: #fafaf9;
-            border-color: #d6d3d1;
-        }
-
-        .notification.unread {
-            border-left: 3px solid #10b981;
-        }
-
-        .notification.read {
-            opacity: 0.72;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            margin-top: 7px;
-            flex-shrink: 0;
-        }
-
-        .read .dot {
-            background: #d6d3d1;
-        }
-
-        .notification-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .notification-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 7px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid;
-        }
-
-        .cancelled {
-            background: #fff1f2;
-            color: #be123c;
-            border-color: #fecdd3;
-        }
-
-        .room {
-            background: #fffbeb;
-            color: #b45309;
-            border-color: #fde68a;
-        }
-
-        .general {
-            background: #f5f5f4;
-            color: #57534e;
-            border-color: #e7e5e4;
-        }
-
-        .time {
-            color: #a8a29e;
-            font-size: 11px;
-            white-space: nowrap;
-        }
-
-        .notification-title {
-            margin: 8px 0 5px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .notification-text {
-            margin: 0;
-            color: #57534e;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .empty {
-            padding: 50px 20px;
-            text-align: center;
-            border: 1px dashed #d6d3d1;
-            border-radius: 9px;
-            color: #a8a29e;
-            background: #fafaf9;
-            font-size: 13px;
-        }
-
-        .archive {
-            text-align: center;
-            color: #a8a29e;
-            font-size: 10px;
-            margin-top: 45px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        @media (max-width: 700px) {
-            .page {
-                padding: 25px 15px 40px;
-            }
-
-            .top {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .toolbar {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .filters {
-                width: 100%;
-                overflow-x: auto;
-            }
-
-            .filter-btn {
-                white-space: nowrap;
-            }
-
-            .read-btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .title {
-                font-size: 21px;
-            }
-
-            .subtitle {
-                font-size: 12px;
-            }
-
-            .notification {
-                padding: 13px;
-            }
-
-            .notification-top {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .time {
-                font-size: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./css/notify.css">
 </head>
 
 <body>
 
 <div class="page">
 
-    <!-- Header -->
-    <div class="top">
+    <header class="top">
         <div>
             <h1 class="title">Notification Center</h1>
             <p class="subtitle">
                 Live log of timetable adjustments, room changes and notices.
             </p>
         </div>
+    </header>
 
-        <div class="status">
-            <span class="status-dot"></span>
-            Database Connected
-        </div>
-    </div>
-
-    <!-- Filters -->
     <div class="toolbar">
 
         <div class="filters">
+
             <button class="filter-btn active" data-filter="all">
                 All <span class="filter-count" id="all-count">0</span>
             </button>
@@ -359,25 +43,13 @@
                 General Notices
                 <span class="filter-count" id="notice-count">0</span>
             </button>
+
         </div>
 
-        <button class="read-btn" id="mark-read">
-            Mark all as read
-        </button>
-
     </div>
 
-    <!-- Unread counter -->
-    <div class="unread-box">
-        <span class="unread-badge" id="unread-count">0</span>
-        unread alerts
-    </div>
-
-    <!-- Notification Feed -->
     <section class="feed" id="notification-list">
-        <div class="empty">
-            Loading notifications...
-        </div>
+        <div class="empty">Loading notifications...</div>
     </section>
 
     <div class="archive">
@@ -386,268 +58,284 @@
 
 </div>
 
-
 <script>
 
-    let notifications = [];
-    let currentFilter = "all";
+let notifications = [];
+let currentFilter = "all";
 
 
-    // Get notifications from MongoDB
-    async function getNotifications() {
+/* =========================
+   FETCH NOTIFICATIONS
+========================= */
 
-        try {
-            const response = await fetch("/api/notices");
+async function getNotifications() {
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch notifications");
-            }
+    try {
 
-            notifications = await response.json();
+        const response = await fetch("/api/notices");
 
-            updateCounts();
-            displayNotifications();
-
-        } catch (error) {
-
-            console.log(error);
-
-            document.getElementById("notification-list").innerHTML = `
-                <div class="empty">
-                    Unable to load notifications.
-                </div>
-            `;
+        if (!response.ok) {
+            throw new Error("Failed to fetch notifications");
         }
+
+        const data = await response.json();
+
+        console.log("API response:", data);
+
+        if (!data.success) {
+            throw new Error(data.message || "Failed to load notices");
+        }
+
+        notifications = data.notices || [];
+
+        updateCounts();
+        displayNotifications();
+
+    } catch (error) {
+
+        console.error("Notification Error:", error);
+
+        document.getElementById("notification-list").innerHTML =
+            `<div class="empty">Unable to load notifications.</div>`;
+    }
+}
+
+
+/* =========================
+   FORMAT TIME
+========================= */
+
+function formatTime(date) {
+
+    const d = new Date(date);
+
+    if (isNaN(d.getTime())) {
+        return "";
     }
 
+    const diff = Math.floor((new Date() - d) / 1000);
 
-    // Format time
-    function formatTime(date) {
+    if (diff < 60) {
+        return "Just now";
+    }
 
-        const notificationDate = new Date(date);
-        const now = new Date();
+    if (diff < 3600) {
+        return Math.floor(diff / 60) + " mins ago";
+    }
 
-        const difference = Math.floor(
-            (now - notificationDate) / 1000
+    if (diff < 86400) {
+        return Math.floor(diff / 3600) + " hours ago";
+    }
+
+    return d.toLocaleDateString([], {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+
+/* =========================
+   BADGE
+========================= */
+
+function getBadge(priority) {
+
+    const badges = {
+
+        Urgent: [
+            "Urgent",
+            "cancelled"
+        ],
+
+        High: [
+            "High",
+            "room"
+        ],
+
+        "Schedule Shift": [
+            "Schedule Shift",
+            "room"
+        ],
+
+        General: [
+            "Notice",
+            "general"
+        ]
+
+    };
+
+    return badges[priority] || badges.General;
+}
+
+
+/* =========================
+   DISPLAY NOTIFICATIONS
+========================= */
+
+function displayNotifications() {
+
+    const list = document.getElementById("notification-list");
+
+    let filtered = notifications;
+
+
+    /* FILTER */
+
+    if (currentFilter === "cancellations") {
+
+        filtered = notifications.filter(
+            n => n.priority === "Urgent"
         );
 
-        if (difference < 60) {
-            return "Just now";
-        }
-
-        if (difference < 3600) {
-
-            const minutes = Math.floor(difference / 60);
-
-            return minutes + " min" + (minutes > 1 ? "s" : "") + " ago";
-        }
-
-        if (difference < 86400) {
-
-            const hours = Math.floor(difference / 3600);
-
-            return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
-        }
-
-        if (
-            notificationDate.toDateString() ===
-            now.toDateString()
-        ) {
-
-            return "Today at " +
-                notificationDate.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                });
-        }
-
-        return notificationDate.toLocaleDateString([], {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }) + " at " +
-        notificationDate.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
     }
 
-    // Get badge information
-    function getBadge(type) {
+    else if (currentFilter === "room-swaps") {
 
-        if (type === "cancellations") {
-            return {
-                text: "Cancelled",
-                className: "cancelled"
-            };
-        }
+        filtered = notifications.filter(
+            n =>
+                n.priority === "High" ||
+                n.priority === "Schedule Shift"
+        );
 
-        if (type === "room-swaps") {
-            return {
-                text: "Room Change",
-                className: "room"
-            };
-        }
+    }
 
-        return {
-            text: "Notice",
-            className: "general"
-        };
+    else if (currentFilter === "notices") {
+
+        filtered = notifications.filter(
+            n => n.priority === "General"
+        );
+
     }
 
 
-    // Display notifications
-    function displayNotifications() {
+    /* EMPTY */
 
-        const list = document.getElementById("notification-list");
+    if (!filtered.length) {
 
-        let filtered = notifications;
+        list.innerHTML =
+            `<div class="empty">No notifications found.</div>`;
 
-        if (currentFilter !== "all") {
-
-            filtered = notifications.filter(function(notification) {
-                return notification.type === currentFilter;
-            });
-        }
-
-        if (filtered.length === 0) {
-
-            list.innerHTML = `
-                <div class="empty">
-                    No notifications found.
-                </div>
-            `;
-
-            return;
-        }
+        return;
+    }
 
 
-        list.innerHTML = filtered.map(function(notification) {
+    /* DISPLAY */
 
-            const badge = getBadge(notification.type);
+    list.innerHTML = filtered.map(n => {
 
-            const readClass = notification.isRead
-                ? "read"
-                : "unread";
+        const [text, className] =
+            getBadge(n.priority);
 
-            return `
-                <article class="notification ${readClass}">
+        return `
 
-                    <div class="dot"></div>
+            <article class="notification">
 
-                    <div class="notification-content">
+                <div class="dot"></div>
 
-                        <div class="notification-top">
+                <div class="notification-content">
 
-                            <span class="badge ${badge.className}">
-                                ${badge.text}
-                            </span>
+                    <div class="notification-top">
 
-                            <span class="time">
-                                ${formatTime(notification.createdAt)}
-                            </span>
+                        <span class="badge ${className}">
+                            ${text}
+                        </span>
 
-                        </div>
-
-                        <h2 class="notification-title">
-                            ${notification.title}
-                        </h2>
-
-                        <p class="notification-text">
-                            ${notification.content}
-                        </p>
+                        <span class="time">
+                            ${formatTime(n.createdAt)}
+                        </span>
 
                     </div>
 
-                </article>
-            `;
+                    <h2 class="notification-title">
+                        ${n.title}
+                    </h2>
 
-        }).join("");
-    }
+                    <p class="notification-text">
+                        ${n.content}
+                    </p>
+
+                </div>
+
+            </article>
+
+        `;
+
+    }).join("");
+}
 
 
-    // Update filter counts and unread count
-    function updateCounts() {
+/* =========================
+   UPDATE COUNTS
+========================= */
 
-        document.getElementById("all-count").textContent =
-            notifications.length;
+function updateCounts() {
 
-        document.getElementById("cancel-count").textContent =
-            notifications.filter(function(n) {
-                return n.type === "cancellations";
-            }).length;
+    document.getElementById("all-count").textContent =
+        notifications.length;
 
-        document.getElementById("room-count").textContent =
-            notifications.filter(function(n) {
-                return n.type === "room-swaps";
-            }).length;
 
-        document.getElementById("notice-count").textContent =
-            notifications.filter(function(n) {
-                return n.type === "notices";
-            }).length;
+    document.getElementById("cancel-count").textContent =
+        notifications.filter(
+            n => n.priority === "Urgent"
+        ).length;
 
-        const unread = notifications.filter(function(n) {
-            return !n.isRead;
-        }).length;
 
-        document.getElementById("unread-count").textContent = unread;
-    }
+    document.getElementById("room-count").textContent =
+        notifications.filter(
+            n =>
+                n.priority === "High" ||
+                n.priority === "Schedule Shift"
+        ).length;
 
-    // Filter buttons
-    document.querySelectorAll(".filter-btn").forEach(function(button) {
 
-        button.addEventListener("click", function() {
+    document.getElementById("notice-count").textContent =
+        notifications.filter(
+            n => n.priority === "General"
+        ).length;
+}
 
-            document.querySelectorAll(".filter-btn").forEach(function(btn) {
-                btn.classList.remove("active");
-            });
 
-            button.classList.add("active");
+/* =========================
+   FILTER BUTTONS
+========================= */
 
-            currentFilter = button.getAttribute("data-filter");
+document.querySelectorAll(".filter-btn").forEach(btn => {
 
-            displayNotifications();
-        });
+    btn.addEventListener("click", () => {
 
-    });
-    // Mark all as read
-    document.getElementById("mark-read").addEventListener("click", async function() {
+        document
+            .querySelector(".filter-btn.active")
+            .classList.remove("active");
 
-        try {
+        btn.classList.add("active");
 
-            const response = await fetch(
-                "/api/notices/read-all",
-                {
-                    method: "PATCH"
-                }
-            );
+        currentFilter =
+            btn.dataset.filter;
 
-            if (!response.ok) {
-                throw new Error("Unable to update");
-            }
-
-            notifications.forEach(function(notification) {
-                notification.isRead = true;
-            });
-
-            updateCounts();
-            displayNotifications();
-
-        } catch (error) {
-
-            console.log(error);
-            alert("Unable to mark notifications as read.");
-
-        }
+        displayNotifications();
 
     });
-    // Initial load
-    getNotifications();
-    // Refresh every 30 seconds
-    setInterval(function() {
-        getNotifications();
-    }, 30000);
+
+});
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+getNotifications();
+
+
+/* =========================
+   AUTO REFRESH
+   Every 30 seconds
+========================= */
+
+setInterval(
+    getNotifications,
+    30000
+);
 
 </script>
 
