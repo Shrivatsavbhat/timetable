@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Timetable — ReScheduled</title>
 
-  <!-- Google Fonts: Poppins (matches team typography) -->
+  <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-  <!-- Shared Navigation Bar (Matches Dashboard & Profile) -->
+  <!-- Shared Navigation Bar -->
   <header class="navbar">
     <div class="nav-container">
       <a href="/" class="logo">
@@ -41,14 +41,14 @@
       <!-- Top Title & View Switcher -->
       <div class="top-bar">
         <div class="title-group">
-          <h1>📅 Weekly Timetable Matrix</h1>
+          <h1>Weekly Timetable Matrix</h1>
           <p>Real-time synchronized student schedule for <strong>I MCA — Semester 1 (Sec A)</strong></p>
         </div>
 
         <div class="top-actions">
           <div class="view-switcher">
-            <button id="btnDaily" class="view-btn active" onclick="setView('daily')">📱 Daily View</button>
-            <button id="btnWeekly" class="view-btn" onclick="setView('weekly')">📋 Weekly Schedule</button>
+            <button id="btnDaily" class="view-btn active" onclick="setView('daily')">Daily View</button>
+            <button id="btnWeekly" class="view-btn" onclick="setView('weekly')">Weekly Schedule</button>
           </div>
           <a href="/notices.html" class="btn-pill">Notices &rarr;</a>
           <button class="btn-primary" onclick="jumpToToday()">Jump to Today</button>
@@ -67,7 +67,7 @@
         </div>
         <div class="filter-item">
           <label>Filter by Subject, Faculty, or Room</label>
-          <input type="search" id="searchBox" placeholder="🔍 Search e.g. DBMS, PC 202, Linda, Archana" oninput="onSearch(this.value)">
+          <input type="search" id="searchBox" placeholder="Search subject, faculty, or room..." oninput="onSearch(this.value)">
         </div>
       </div>
 
@@ -95,7 +95,7 @@
         <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading schedule...</p>
       </div>
 
-      <!-- 2. Simple Clean Weekly Schedule Table (No Today Tag) -->
+      <!-- 2. Simple Clean Weekly Schedule Table -->
       <div class="table-container" id="weeklyContainer" style="display: none;">
         <table class="clean-table">
           <thead>
@@ -113,7 +113,7 @@
 
       <!-- Footer Info -->
       <div class="card-footer">
-        <span>🟢 Live sync active with Department Master</span>
+        <span>Live sync active with Department Master</span>
         <span>Class: <strong>I MCA Section A</strong></span>
       </div>
 
@@ -204,7 +204,7 @@
       const breakText = BREAK_TIMES[currentDay] || '12:30 PM — 01:30 PM';
 
       let html = morningSlots.map(makeCardHtml).join('');
-      html += `<div class="break-row">☕ ${breakText} • Midday Break</div>`;
+      html += `<div class="break-row">Midday Break (${breakText})</div>`;
       html += afternoonSlots.map(makeCardHtml).join('');
 
       container.innerHTML = html;
@@ -213,8 +213,8 @@
     function makeCardHtml(s) {
       const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
       const badge = isLab
-        ? '<span class="status-pill status-lab">🔬 Practical Lab</span>'
-        : '<span class="status-pill status-confirmed">✓ Confirmed</span>';
+        ? '<span class="status-pill status-lab">Lab</span>'
+        : '<span class="status-pill status-confirmed">Theory</span>';
 
       return `
         <div class="slot-card ${isLab ? 'is-lab' : ''}">
@@ -230,15 +230,14 @@
               ${badge}
             </div>
             <div class="slot-details">
-              <span>👤 ${s.faculty}</span>
-              <span class="venue-pill">🏛️ ${s.room}</span>
+              <span>${s.faculty}</span>
+              <span class="venue-pill">${s.room}</span>
             </div>
           </div>
         </div>
       `;
     }
 
-    // Weekly Table: Clean day sections, no today tag
     function renderWeeklyTable() {
       const tbody = document.getElementById('tableBody');
       const q = searchQuery.toLowerCase();
@@ -261,12 +260,11 @@
         if (q && !matchingSlots.length) return;
         totalVisible += matchingSlots.length;
 
-        // Clean Day Group Header (No Today tag)
         tableHtml += `
           <tr class="day-group-header">
             <td colspan="5">
               <div class="day-header-flex">
-                <span class="day-title">📅 ${day}</span>
+                <span class="day-title">${day}</span>
                 <span class="day-count-badge">${matchingSlots.length} Classes</span>
               </div>
             </td>
@@ -283,8 +281,8 @@
                 <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
                 <span class="code-tag">${s.code}</span>
               </td>
-              <td><span class="venue-pill">🏛️ ${s.room}</span></td>
-              <td>👤 ${s.faculty}</td>
+              <td><span class="venue-pill">${s.room}</span></td>
+              <td>${s.faculty}</td>
               <td>
                 ${isLab 
                   ? '<span class="status-pill status-lab">Lab</span>' 
@@ -337,7 +335,7 @@
 
       document.querySelectorAll('.day-btn').forEach(btn => {
         const d = btn.getAttribute('data-day');
-        if (d === realToday) btn.innerHTML = d.slice(0, 3) + ' • Today';
+        if (d === realToday) btn.innerHTML = d.slice(0, 3) + ' (Today)';
         btn.classList.toggle('active', d === defaultDay);
       });
 

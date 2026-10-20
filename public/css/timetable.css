@@ -1,6 +1,6 @@
 /* ================================================= */
 /* TIMETABLE MODULE STYLES (timetable.css)           */
-/* Minimal Flexbox & Simple Semantic Table           */
+/* Pure Flexbox & Clean Semantic Table               */
 /* ================================================= */
 
 .page-wrap {
@@ -52,7 +52,6 @@
   border-radius: var(--radius-sm);
   padding: 7px 14px;
   font-size: 12px;
-  font-family: inherit;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -79,7 +78,6 @@
   background: transparent;
   border-radius: 4px;
   font-size: 12px;
-  font-family: inherit;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
@@ -116,7 +114,6 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 13px;
-  font-family: inherit;
   background: var(--surface);
   outline: none;
 }
@@ -137,7 +134,6 @@
   background: #f8fafc;
   border-radius: var(--radius-sm);
   font-size: 12px;
-  font-family: inherit;
   font-weight: 600;
   cursor: pointer;
   color: var(--text-muted);
@@ -293,7 +289,7 @@
   text-align: center;
 }
 
-/* Clean Weekly Table (No Today Highlighting) */
+/* Clean Weekly Table */
 .table-container {
   overflow-x: auto;
   border: 1px solid var(--border);
