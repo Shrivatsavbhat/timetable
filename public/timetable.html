@@ -8,647 +8,17 @@
   <!-- Google Fonts: Poppins (matches team typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* ================================================= */
-    /* 1. TEAM COLOR PALETTE & DESIGN TOKENS             */
-    /* ================================================= */
-    :root {
-      --primary: #b2764b;         /* Warm bronze brand color */
-      --primary-hover: #9c6239;   /* Darker hover bronze */
-      --bg-page: #FAF0E6;         /* Warm linen/cream background */
-      --surface: #ffffff;         /* White card backgrounds */
-      --text-main: #0f172a;       /* Dark slate text */
-      --text-muted: #64748b;      /* Muted gray text */
-      --border: #e2e8f0;          /* Border gray */
-      --accent-green: #15803d;    /* Status confirmed */
-      --accent-amber: #d97706;    /* Break/alert amber */
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
-    }
+  <!-- Shared Global Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-page);
-      color: var(--text-main);
-      font-family: 'Poppins', sans-serif;
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-
-    /* ================================================= */
-    /* 2. SHARED NAVBAR (Matches Dashboard & Profile)    */
-    /* ================================================= */
-    .navbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: var(--text-main);
-    }
-
-    .logo-box {
-      background: var(--primary);
-      color: #ffffff;
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: 600;
-      transition: color 0.15s;
-    }
-
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--primary);
-    }
-
-    /* ================================================= */
-    /* 3. MAIN CONTENT CONTAINER                         */
-    /* ================================================= */
-    .page-wrap {
-      max-width: 1000px;
-      margin: 24px auto;
-      padding: 0 16px 40px;
-    }
-
-    .card-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-    }
-
-    /* Top Title Row */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .title-group h1 {
-      font-size: 22px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-main);
-    }
-
-    .title-group p {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    /* View Switcher: Daily vs Table */
-    .view-switcher {
-      display: flex;
-      background: #f1f5f9;
-      padding: 3px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      gap: 3px;
-    }
-
-    .view-btn {
-      padding: 6px 14px;
-      border: none;
-      background: transparent;
-      border-radius: 4px;
-      font-size: 12px;
-      font-family: inherit;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .view-btn.active {
-      background: var(--surface);
-      color: var(--primary);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-pill {
-      display: inline-block;
-      border: 2px solid var(--primary);
-      border-radius: 9999px;
-      padding: 6px 18px;
-      color: var(--primary);
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.2s;
-    }
-
-    .btn-pill:hover {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #ffffff;
-      border: 1px solid var(--primary);
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-family: inherit;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-hover);
-    }
-
-    /* Filter & Search Bar (Pure Flexbox) */
-    .filter-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .filter-item:first-child {
-      flex: 1;
-    }
-
-    .filter-item:last-child {
-      flex: 1.6;
-    }
-
-    .filter-item label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-    }
-
-    .filter-item select, .filter-item input {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-family: inherit;
-      background: var(--surface);
-      color: var(--text-main);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .filter-item select:focus, .filter-item input:focus {
-      border-color: var(--primary);
-    }
-
-    /* Day Buttons (Mon to Sat) */
-    .day-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    .day-btn {
-      flex: 1;
-      min-width: 80px;
-      padding: 9px 6px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-family: inherit;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-align: center;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: all 0.15s;
-    }
-
-    .day-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #ffffff;
-    }
-
-    /* Legend Row */
-    .legend-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      padding-bottom: 12px;
-      border-bottom: 1px solid #f1f5f9;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .legend-dots {
-      display: flex;
-      gap: 12px;
-    }
-
-    .legend-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 4px;
-      vertical-align: middle;
-    }
-
-    /* ================================================= */
-    /* 4. DAILY CARDS VIEW (Pure Flexbox)                */
-    /* ================================================= */
-    .slot-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .slot-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      display: flex;
-      gap: 14px;
-      transition: all 0.2s;
-    }
-
-    .slot-card:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .slot-card.is-lab {
-      border-left: 4px solid var(--primary);
-    }
-
-    .slot-time-box {
-      min-width: 75px;
-      text-align: center;
-      background: #faf6f2;
-      border: 1px solid #f2e3d5;
-      border-radius: var(--radius-sm);
-      padding: 8px 4px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .slot-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .slot-time {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 2px 0;
-    }
-
-    .slot-end {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .slot-body {
-      flex: 1;
-    }
-
-    .slot-top {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-    }
-
-    .code-tag {
-      background: #faf4ed;
-      color: var(--primary);
-      border: 1px solid #ebd9c8;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-
-    .subject-name {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .slot-details {
-      display: flex;
-      gap: 12px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-      flex-wrap: wrap;
-    }
-
-    .venue-pill {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .status-pill {
-      margin-left: auto;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 12px;
-      align-self: flex-start;
-    }
-
-    .status-confirmed {
-      background: #ecfdf5;
-      color: #047857;
-      border: 1px solid #a7f3d0;
-    }
-
-    .status-lab {
-      background: #fbf2eb;
-      color: var(--primary);
-      border: 1px solid #ebd5c0;
-    }
-
-    /* Single Clean Break Banner */
-    .break-row {
-      background: #faf6f2;
-      border: 1px dashed #e3cfbe;
-      border-radius: var(--radius-sm);
-      padding: 10px;
-      text-align: center;
-      font-size: 11px;
-      color: var(--primary);
-      font-weight: 600;
-    }
-
-    /* ================================================= */
-    /* 5. FULL WEEKLY TABLE VIEW                         */
-    /* ================================================= */
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      background: var(--surface);
-    }
-
-    .matrix-table {
-      width: 100%;
-      min-width: 850px;
-      border-collapse: collapse;
-      font-size: 11px;
-      text-align: left;
-    }
-
-    .matrix-table th {
-      background: #faf6f2;
-      color: var(--text-main);
-      font-weight: 700;
-      padding: 10px 8px;
-      border-bottom: 2px solid var(--border);
-      border-right: 1px solid #f1f5f9;
-      text-align: center;
-      font-size: 11px;
-      white-space: nowrap;
-    }
-
-    .matrix-table th span {
-      display: block;
-      font-size: 9px;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .matrix-table td {
-      border: 1px solid #f1f5f9;
-      padding: 8px;
-      vertical-align: top;
-      height: 70px;
-      background: var(--surface);
-    }
-
-    .matrix-table td.day-name {
-      background: #f8fafc;
-      font-weight: 700;
-      color: var(--text-main);
-      text-align: center;
-      vertical-align: middle;
-      border-right: 2px solid var(--border);
-      font-size: 12px;
-      width: 85px;
-    }
-
-    .matrix-table tr.row-today td.day-name {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    .matrix-table td.lunch-cell, .matrix-table th.lunch-header {
-      background: #fffbeb !important;
-      border-left: 2px dashed #fde68a;
-      border-right: 2px dashed #fde68a;
-      text-align: center;
-      vertical-align: middle;
-      color: #92400e;
-      font-weight: 700;
-      font-size: 10px;
-      width: 50px;
-    }
-
-    .matrix-table td.lunch-cell {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      letter-spacing: 2px;
-    }
-
-    /* Table Cell */
-    .table-cell-content {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 5px 6px;
-      background: var(--surface);
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.2s;
-    }
-
-    .table-cell-content.is-lab {
-      border-left: 3px solid var(--primary);
-      background: #fdf9f6;
-    }
-
-    .table-cell-content.search-match {
-      background: #fef08a !important;
-      border-color: #ca8a04 !important;
-      box-shadow: 0 2px 6px rgba(202, 138, 4, 0.25);
-    }
-
-    .table-cell-content.search-dim {
-      opacity: 0.25;
-    }
-
-    .cell-top {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--primary);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .cell-sub {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      line-height: 1.2;
-      margin: 2px 0;
-    }
-
-    .cell-bottom {
-      font-size: 9px;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      gap: 4px;
-      margin-top: 3px;
-    }
-
-    .cell-room-badge {
-      background: #f1f5f9;
-      color: var(--text-main);
-      padding: 1px 4px;
-      border-radius: 3px;
-      font-weight: 600;
-    }
-
-    .cell-empty {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #cbd5e1;
-      font-size: 10px;
-      font-style: italic;
-      border: 1px dashed var(--border);
-      border-radius: 6px;
-      background: #fafafa;
-    }
-
-    /* Footer */
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-      padding-top: 12px;
-      border-top: 1px solid #f1f5f9;
-      font-size: 11px;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    @media (max-width: 600px) {
-      .filter-row {
-        flex-direction: column;
-      }
-      .slot-card {
-        flex-direction: column;
-      }
-      .slot-time-box {
-        flex-direction: row;
-        justify-content: space-around;
-        width: 100%;
-      }
-    }
-  </style>
+  <!-- Timetable-Specific Stylesheet (Pure Flexbox) -->
+  <link rel="stylesheet" href="./css/timetable.css">
 </head>
 <body>
 
-  <!-- Shared Navbar (Matches Dashboard & Profile) -->
+  <!-- Shared Navigation Bar (Matches Dashboard & Profile) -->
   <header class="navbar">
     <div class="nav-container">
       <a href="/" class="logo">
@@ -664,23 +34,22 @@
     </div>
   </header>
 
-  <div class="page-wrap">
+  <!-- Main Timetable Container -->
+  <main class="page-wrap">
     <div class="card-wrap">
       
-      <!-- Top Header & Actions -->
+      <!-- Top Title & View Switcher -->
       <div class="top-bar">
         <div class="title-group">
           <h1>📅 Weekly Timetable Matrix</h1>
-          <p>Real-time synchronized student timetable for <strong>I MCA — Semester 1 (Sec A)</strong></p>
+          <p>Real-time synchronized student schedule for <strong>I MCA — Semester 1 (Sec A)</strong></p>
         </div>
 
         <div class="top-actions">
-          <!-- View Switcher -->
           <div class="view-switcher">
             <button id="btnDaily" class="view-btn active" onclick="setView('daily')">📱 Daily View</button>
             <button id="btnWeekly" class="view-btn" onclick="setView('weekly')">🗓️ Weekly Table</button>
           </div>
-
           <a href="/notices.html" class="btn-pill">Notices &rarr;</a>
           <button class="btn-primary" onclick="jumpToToday()">Jump to Today</button>
         </div>
@@ -690,7 +59,7 @@
       <div class="filter-row">
         <div class="filter-item">
           <label>Academic Term</label>
-          <select id="semSelect" onchange="onTermChange()">
+          <select id="semSelect" onchange="loadData()">
             <option value="1" selected>1st Sem — I MCA (Sec A)</option>
             <option value="3">3rd Sem — I MCA (Sec A)</option>
             <option value="5">5th Sem — I MCA (Sec A)</option>
@@ -702,7 +71,7 @@
         </div>
       </div>
 
-      <!-- Day Buttons for Daily View -->
+      <!-- Day Selector (Monday–Saturday) -->
       <div class="day-row" id="dayButtons">
         <button class="day-btn" data-day="Monday" onclick="selectDay(this, 'Monday')">Mon (5)</button>
         <button class="day-btn" data-day="Tuesday" onclick="selectDay(this, 'Tuesday')">Tue (3)</button>
@@ -712,21 +81,21 @@
         <button class="day-btn" data-day="Saturday" onclick="selectDay(this, 'Saturday')">Sat (4)</button>
       </div>
 
-      <!-- Legend -->
+      <!-- Status Header & Legend -->
       <div class="legend-row">
-        <div id="statusLabel">Today's Slots</div>
+        <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
         <div class="legend-dots">
-          <span><span class="legend-dot" style="background:#15803d;"></span>Theory Class</span>
-          <span><span class="legend-dot" style="background:var(--primary);"></span>Practical Lab</span>
+          <span><span class="legend-dot" style="background: var(--accent-green);"></span>Theory Class</span>
+          <span><span class="legend-dot" style="background: var(--primary);"></span>Practical Lab</span>
         </div>
       </div>
 
-      <!-- 1. Daily Cards View Container -->
+      <!-- 1. Daily Cards View (Pure Flexbox) -->
       <div class="slot-list" id="dailyContainer">
         <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading schedule...</p>
       </div>
 
-      <!-- 2. Full Weekly Table View Container -->
+      <!-- 2. Weekly Table Matrix (Mon–Sat) -->
       <div class="table-container" id="weeklyContainer" style="display: none;">
         <table class="matrix-table">
           <thead>
@@ -743,153 +112,115 @@
               <th>PERIOD 8<span>16:30 - 17:30</span></th>
             </tr>
           </thead>
-          <tbody id="tableBody">
-            <!-- Populated by JavaScript -->
-          </tbody>
+          <tbody id="tableBody"></tbody>
         </table>
       </div>
 
-      <!-- Footer -->
+      <!-- Footer Info -->
       <div class="card-footer">
         <span>🟢 Live sync active with Department Master</span>
         <span>Class: <strong>I MCA Section A</strong></span>
       </div>
 
     </div>
-  </div>
+  </main>
 
+  <!-- Client-Side Logic (Simple, Clean, Easy to Explain in Viva) -->
   <script>
-    // ==============================================================
-    // 1. STATE VARIABLES
-    // ==============================================================
-    let currentMode = 'daily';     // 'daily' or 'weekly'
-    let currentDay = 'Monday';      // Currently selected day (Monday-Saturday)
-    let allSlots = [];              // All timetable slots from MongoDB
-    let searchQuery = '';           // Current text in search box
-
+    // State Variables
+    let currentMode = 'daily';
+    let currentDay = 'Monday';
+    let allSlots = [];
+    let searchQuery = '';
     const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // ==============================================================
-    // 2. FETCH DATA FROM SERVER
-    // ==============================================================
+    // Midday Break timing map for each day
+    const BREAK_TIMES = {
+      Monday: '12:30 PM — 02:00 PM',
+      Tuesday: '10:30 AM — 02:00 PM',
+      Wednesday: '12:30 PM — 02:00 PM',
+      Thursday: '10:30 AM — 01:00 PM',
+      Friday: '11:30 AM — 02:00 PM',
+      Saturday: '01:30 PM — 02:30 PM'
+    };
+
+    // 1. Fetch timetable data from server
     async function loadData() {
       try {
-        const response = await fetch('/api/timetable');
-        allSlots = await response.json();
-        
+        const res = await fetch('/api/timetable');
+        allSlots = await res.json();
         if (currentMode === 'daily') {
           renderDailyView();
         } else {
           renderWeeklyTable();
         }
       } catch (err) {
-        document.getElementById('dailyContainer').innerHTML = 
+        document.getElementById('dailyContainer').innerHTML =
           '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
       }
     }
 
-    // ==============================================================
-    // 3. SWITCH BETWEEN DAILY VIEW AND WEEKLY TABLE
-    // ==============================================================
+    // 2. Switch between Daily View and Weekly Table
     function setView(mode) {
       currentMode = mode;
-      const btnDaily = document.getElementById('btnDaily');
-      const btnWeekly = document.getElementById('btnWeekly');
-      const dayButtons = document.getElementById('dayButtons');
-      const dailyBox = document.getElementById('dailyContainer');
-      const weeklyBox = document.getElementById('weeklyContainer');
-      const statusLabel = document.getElementById('statusLabel');
+      const isDaily = (mode === 'daily');
+      document.getElementById('btnDaily').classList.toggle('active', isDaily);
+      document.getElementById('btnWeekly').classList.toggle('active', !isDaily);
+      document.getElementById('dayButtons').style.display = isDaily ? 'flex' : 'none';
+      document.getElementById('dailyContainer').style.display = isDaily ? 'flex' : 'none';
+      document.getElementById('weeklyContainer').style.display = isDaily ? 'none' : 'block';
+      document.getElementById('statusLabel').textContent = isDaily ? (currentDay + ' Slots') : 'Full Weekly Timetable';
 
-      if (mode === 'daily') {
-        btnDaily.classList.add('active');
-        btnWeekly.classList.remove('active');
-        dayButtons.style.display = 'flex';
-        dailyBox.style.display = 'flex';
-        weeklyBox.style.display = 'none';
-        statusLabel.textContent = currentDay + ' Slots';
-        renderDailyView();
-      } else {
-        btnWeekly.classList.add('active');
-        btnDaily.classList.remove('active');
-        dayButtons.style.display = 'none';
-        dailyBox.style.display = 'none';
-        weeklyBox.style.display = 'block';
-        statusLabel.textContent = 'Full Monday — Saturday Weekly Timetable';
-        renderWeeklyTable();
-      }
+      if (isDaily) renderDailyView();
+      else renderWeeklyTable();
     }
 
-    // ==============================================================
-    // 4. RENDER DAILY VIEW (Single Clean Midday Break Per Day)
-    // ==============================================================
+    // 3. Render Daily Cards View with single clean midday break
     function renderDailyView() {
       const container = document.getElementById('dailyContainer');
       const daySlots = allSlots.filter(s => s.day === currentDay);
 
-      // Search filter
+      // Search filtering
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        const matches = daySlots.filter(s => 
+        const matches = daySlots.filter(s =>
           (s.subject || '').toLowerCase().includes(q) ||
           (s.code || '').toLowerCase().includes(q) ||
           (s.faculty || '').toLowerCase().includes(q) ||
           (s.room || '').toLowerCase().includes(q)
         );
-
-        if (matches.length === 0) {
-          container.innerHTML = '<div style="text-align: center; padding: 30px; color: #64748b; border: 1px dashed #cbd5e1; border-radius: 10px;">No matching classes found.</div>';
+        if (!matches.length) {
+          container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 8px;">No matching classes found.</div>';
           return;
         }
-
         container.innerHTML = matches.map(makeCardHtml).join('');
         return;
       }
 
-      if (daySlots.length === 0) {
-        container.innerHTML = `<div style="text-align: center; padding: 30px; color: #64748b; border: 1px dashed #cbd5e1; border-radius: 10px;">No classes scheduled for ${currentDay}.</div>`;
+      if (!daySlots.length) {
+        container.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 8px;">No classes scheduled for ${currentDay}.</div>`;
         return;
       }
 
-      let html = '';
+      // Slot split count before the midday break for each day
+      const splitCounts = { Monday: 4, Tuesday: 1, Wednesday: 3, Thursday: 1, Friday: 2, Saturday: 2 };
+      const split = splitCounts[currentDay] || 2;
+      const morningSlots = daySlots.slice(0, split);
+      const afternoonSlots = daySlots.slice(split);
+      const breakText = BREAK_TIMES[currentDay] || '12:30 PM — 01:30 PM';
 
-      if (currentDay === 'Monday') {
-        daySlots.slice(0, 4).forEach(s => html += makeCardHtml(s));
-        html += `<div class="break-row">☕ 12:30 PM — 02:00 PM • Midday Break</div>`;
-        daySlots.slice(4).forEach(s => html += makeCardHtml(s));
-
-      } else if (currentDay === 'Tuesday') {
-        html += makeCardHtml(daySlots[0]);
-        html += `<div class="break-row">☕ 10:30 AM — 02:00 PM • Midday Break</div>`;
-        daySlots.slice(1).forEach(s => html += makeCardHtml(s));
-
-      } else if (currentDay === 'Wednesday') {
-        daySlots.slice(0, 3).forEach(s => html += makeCardHtml(s));
-        html += `<div class="break-row">☕ 12:30 PM — 02:00 PM • Midday Break</div>`;
-        daySlots.slice(3).forEach(s => html += makeCardHtml(s));
-
-      } else if (currentDay === 'Thursday') {
-        html += makeCardHtml(daySlots[0]);
-        html += `<div class="break-row">☕ 10:30 AM — 01:00 PM • Midday Break</div>`;
-        daySlots.slice(1).forEach(s => html += makeCardHtml(s));
-
-      } else if (currentDay === 'Friday') {
-        daySlots.slice(0, 2).forEach(s => html += makeCardHtml(s));
-        html += `<div class="break-row">☕ 11:30 AM — 02:00 PM • Midday Break</div>`;
-        daySlots.slice(2).forEach(s => html += makeCardHtml(s));
-
-      } else if (currentDay === 'Saturday') {
-        daySlots.slice(0, 2).forEach(s => html += makeCardHtml(s));
-        html += `<div class="break-row">☕ 01:30 PM — 02:30 PM • Midday Break</div>`;
-        daySlots.slice(2).forEach(s => html += makeCardHtml(s));
-      }
+      let html = morningSlots.map(makeCardHtml).join('');
+      html += `<div class="break-row">☕ ${breakText} • Midday Break</div>`;
+      html += afternoonSlots.map(makeCardHtml).join('');
 
       container.innerHTML = html;
     }
 
+    // Helper: generate slot card HTML
     function makeCardHtml(s) {
       const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
-      const badge = isLab 
-        ? '<span class="status-pill status-lab">🔬 Practical Lab</span>' 
+      const badge = isLab
+        ? '<span class="status-pill status-lab">🔬 Practical Lab</span>'
         : '<span class="status-pill status-confirmed">✓ Confirmed</span>';
 
       return `
@@ -914,60 +245,46 @@
       `;
     }
 
-    // ==============================================================
-    // 5. RENDER WEEKLY TABLE (Mon-Sat Grid)
-    // ==============================================================
+    // 4. Render Weekly Matrix Table (Monday to Saturday)
     function renderWeeklyTable() {
       const tbody = document.getElementById('tableBody');
       const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
 
-      let rows = '';
-
-      DAYS.forEach(day => {
+      tbody.innerHTML = DAYS.map(day => {
         const isToday = (day === today);
         const daySlots = allSlots.filter(s => s.day === day);
 
-        rows += `<tr class="${isToday ? 'row-today' : ''}">`;
-        rows += `<td class="day-name">${day.slice(0, 3)}${isToday ? '<br><span style="font-size:9px;color:#ffffff;background:var(--primary);padding:1px 4px;border-radius:3px;">TODAY</span>' : ''}</td>`;
+        return `
+          <tr class="${isToday ? 'row-today' : ''}">
+            <td class="day-name">${day.slice(0, 3)}${isToday ? '<br><span style="font-size:9px;color:#fff;background:var(--primary);padding:1px 4px;border-radius:3px;">TODAY</span>' : ''}</td>
+            ${makeTableCell(daySlots, ['08:00-09:00', '08:00-10:30'], '1')}
+            ${makeTableCell(daySlots, ['09:00-10:00', '08:00-10:30'], '2')}
+            ${makeTableCell(daySlots, ['10:30-11:30', '11:00-13:30'], '3')}
+            ${makeTableCell(daySlots, ['11:30-12:30', '11:00-13:30'], '4')}
+            <td class="lunch-cell">BREAK</td>
+            ${makeTableCell(daySlots, ['13:00-14:00'], '5')}
+            ${makeTableCell(daySlots, ['14:00-15:00', '14:00-16:30', '14:30-15:30'], '6')}
+            ${makeTableCell(daySlots, ['15:30-16:30', '14:00-16:30'], '7')}
+            ${makeTableCell(daySlots, ['16:30-17:30'], '8')}
+          </tr>
+        `;
+      }).join('');
 
-        // 8 period columns
-        rows += makeTableCell(daySlots, ['08:00-09:00', '08:00-10:30'], '1');
-        rows += makeTableCell(daySlots, ['09:00-10:00', '08:00-10:30'], '2');
-        rows += makeTableCell(daySlots, ['10:30-11:30', '11:00-13:30'], '3');
-        rows += makeTableCell(daySlots, ['11:30-12:30', '11:00-13:30'], '4');
-        
-        // Lunch column
-        rows += `<td class="lunch-cell">BREAK</td>`;
-
-        rows += makeTableCell(daySlots, ['13:00-14:00'], '5');
-        rows += makeTableCell(daySlots, ['14:00-15:00', '14:00-16:30', '14:30-15:30'], '6');
-        rows += makeTableCell(daySlots, ['15:30-16:30', '14:00-16:30'], '7');
-        rows += makeTableCell(daySlots, ['16:30-17:30'], '8');
-
-        rows += '</tr>';
-      });
-
-      tbody.innerHTML = rows;
       applySearchHighlight();
     }
 
-    function makeTableCell(daySlots, validTimes, slotNumber) {
-      const slot = daySlots.find(s => s.slot === slotNumber || validTimes.includes((s.time || '').trim()));
-
-      if (!slot) {
-        return '<td><div class="cell-empty">— Free —</div></td>';
-      }
+    // Helper: generate single table cell HTML
+    function makeTableCell(daySlots, validTimes, slotNum) {
+      const slot = daySlots.find(s => s.slot === slotNum || validTimes.includes((s.time || '').trim()));
+      if (!slot) return '<td><div class="cell-empty">— Free —</div></td>';
 
       const isLab = slot.isLab || (slot.subject || '').toLowerCase().includes('lab');
+      const searchKey = (slot.subject + ' ' + slot.code + ' ' + slot.room + ' ' + slot.faculty).toLowerCase();
 
       return `
         <td>
-          <div class="table-cell-content ${isLab ? 'is-lab' : ''}" 
-               data-text="${(slot.subject + ' ' + slot.code + ' ' + slot.room + ' ' + slot.faculty).toLowerCase()}">
-            <div class="cell-top">
-              <span>${slot.code}</span>
-              ${isLab ? '<span>🔬</span>' : ''}
-            </div>
+          <div class="table-cell-content ${isLab ? 'is-lab' : ''}" data-text="${searchKey}">
+            <div class="cell-top"><span>${slot.code}</span>${isLab ? '<span>🔬</span>' : ''}</div>
             <div class="cell-sub">${slot.subject}</div>
             <div class="cell-bottom">
               <span class="cell-room-badge">${slot.room}</span>
@@ -978,90 +295,60 @@
       `;
     }
 
-    // ==============================================================
-    // 6. SEARCH & HIGHLIGHT
-    // ==============================================================
+    // 5. Search Filtering & Highlight
     function onSearch(value) {
       searchQuery = value.trim();
-
-      if (currentMode === 'daily') {
-        renderDailyView();
-      } else {
-        applySearchHighlight();
-      }
+      if (currentMode === 'daily') renderDailyView();
+      else applySearchHighlight();
     }
 
     function applySearchHighlight() {
       const q = searchQuery.toLowerCase();
-      const cells = document.querySelectorAll('.table-cell-content');
-
-      cells.forEach(cell => {
+      document.querySelectorAll('.table-cell-content').forEach(cell => {
         if (!q) {
           cell.classList.remove('search-match', 'search-dim');
           return;
         }
-
         const text = cell.getAttribute('data-text') || '';
-        if (text.includes(q)) {
-          cell.classList.add('search-match');
-          cell.classList.remove('search-dim');
-        } else {
-          cell.classList.remove('search-match');
-          cell.classList.add('search-dim');
-        }
+        const isMatch = text.includes(q);
+        cell.classList.toggle('search-match', isMatch);
+        cell.classList.toggle('search-dim', !isMatch);
       });
     }
 
-    // ==============================================================
-    // 7. DAY SELECTION & INITIALIZATION
-    // ==============================================================
-    function selectDay(button, day) {
+    // 6. Day Selection & Quick Jump
+    function selectDay(btn, day) {
       currentDay = day;
-      document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       document.getElementById('statusLabel').textContent = day + ' Slots';
       renderDailyView();
     }
 
     function jumpToToday() {
-      const dayIndex = new Date().getDay();
-      const realToday = DAYS[(dayIndex === 0) ? 0 : dayIndex - 1];
-
+      const dayIdx = new Date().getDay();
+      const realToday = DAYS[(dayIdx === 0) ? 0 : dayIdx - 1];
       currentDay = realToday;
 
       document.querySelectorAll('.day-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-day') === realToday) {
-          btn.classList.add('active');
-        }
+        btn.classList.toggle('active', btn.getAttribute('data-day') === realToday);
       });
 
-      if (currentMode === 'weekly') {
-        setView('daily');
-      } else {
-        renderDailyView();
-      }
+      if (currentMode === 'weekly') setView('daily');
+      else renderDailyView();
     }
 
-    function onTermChange() {
-      loadData();
-    }
-
+    // 7. Page Initialization
     window.onload = function() {
-      const dayIndex = new Date().getDay();
-      const realToday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
+      const dayIdx = new Date().getDay();
+      const realToday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIdx];
       const defaultDay = (realToday === 'Sunday') ? 'Monday' : realToday;
       currentDay = defaultDay;
 
       document.querySelectorAll('.day-btn').forEach(btn => {
-        btn.classList.remove('active');
         const d = btn.getAttribute('data-day');
-        if (d === realToday) {
-          btn.innerHTML = d.slice(0, 3) + ' • Today';
-        }
-        if (d === defaultDay) {
-          btn.classList.add('active');
-        }
+        if (d === realToday) btn.innerHTML = d.slice(0, 3) + ' • Today';
+        btn.classList.toggle('active', d === defaultDay);
       });
 
       loadData();
