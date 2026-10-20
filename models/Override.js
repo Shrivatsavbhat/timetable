@@ -59,7 +59,7 @@ const overrideSchema = new mongoose.Schema({
 
 overrideSchema.index(
     { semester: 1, date: 1, slot: 1 },
-    { unique: true }
+    { unique: true }, { expireAfterSeconds: 604800 }
 );
 
 module.exports = mongoose.model('Override', overrideSchema);

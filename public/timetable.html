@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
   <!-- Timetable Stylesheet -->
   <link rel="stylesheet" href="./css/timetable.css">
 </head>
+
 <body>
 
   <!-- Shared Navigation Bar -->
@@ -37,7 +39,7 @@
   <!-- Main Timetable Container -->
   <main class="page-wrap">
     <div class="card-wrap">
-      
+
       <!-- Top Title & View Switcher -->
       <div class="top-bar">
         <div class="title-group">
@@ -60,14 +62,15 @@
         <div class="filter-item">
           <label>Academic Term</label>
           <select id="semSelect" onchange="loadData()">
-            <option value="1" selected>1st Sem — I MCA (Sec A)</option>
-            <option value="3">3rd Sem — I MCA (Sec A)</option>
-            <option value="5">5th Sem — I MCA (Sec A)</option>
+            <option value="I MCA-A" selected>1st Sem — I MCA (Sec A)</option>
+            <option value="III MCA-A">3rd Sem — I MCA (Sec A)</option>
+            <option value="V MCA-A">5th Sem — I MCA (Sec A)</option>
           </select>
         </div>
         <div class="filter-item">
           <label>Filter by Subject, Faculty, or Room</label>
-          <input type="search" id="searchBox" placeholder="Search subject, faculty, or room..." oninput="onSearch(this.value)">
+          <input type="search" id="searchBox" placeholder="Search subject, faculty, or room..."
+            oninput="onSearch(this.value)">
         </div>
       </div>
 
@@ -147,10 +150,31 @@
 
     async function loadData() {
       try {
-        const res = await fetch('/api/timetable');
-        allSlots = await res.json();
+        let sem = document.getElementById('semSelect').value;
+        sem = sem ? sem : "I MCA-A";
+        const res = await fetch(`/api/timetable?semester=${sem}`);
+        const data = await res.json();
+        console.log(data);
+        allSlots = data.schedule;
         if (currentMode === 'daily') renderDailyView();
         else renderWeeklyTable();
+      } catch (err) {
+        document.getElementById('dailyContainer').innerHTML =
+          '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
+      }
+    }
+
+
+    async function loadPermanentTimetable() {
+      try {
+        let sem = document.getElementById('semSelect').value;
+        sem = sem ? sem : "I MCA-A";
+        const res = await fetch(`/api/timetable?semester=${sem}&mode=permanent`);
+        const data = await res.json();
+        console.log(data);
+        allSlots = data.schedule;
+        //add logice to display permanent timetable 
+
       } catch (err) {
         document.getElementById('dailyContainer').innerHTML =
           '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
@@ -201,7 +225,7 @@
       const split = splitCounts[currentDay] || 2;
       const morningSlots = daySlots.slice(0, split);
       const afternoonSlots = daySlots.slice(split);
-      const breakText = BREAK_TIMES[currentDay] || '12:30 PM — 01:30 PM';
+      const breakText = BREAK_TIMES[currentDay] || '12:30 PM — 02:00 PM';
 
       let html = morningSlots.map(makeCardHtml).join('');
       html += `<div class="break-row">Midday Break (${breakText})</div>`;
@@ -251,10 +275,10 @@
         const matchingSlots = daySlots.filter(s => {
           if (!q) return true;
           return (s.subject || '').toLowerCase().includes(q) ||
-                 (s.code || '').toLowerCase().includes(q) ||
-                 (s.faculty || '').toLowerCase().includes(q) ||
-                 (s.room || '').toLowerCase().includes(q) ||
-                 (s.day || '').toLowerCase().includes(q);
+            (s.code || '').toLowerCase().includes(q) ||
+            (s.faculty || '').toLowerCase().includes(q) ||
+            (s.room || '').toLowerCase().includes(q) ||
+            (s.day || '').toLowerCase().includes(q);
         });
 
         if (q && !matchingSlots.length) return;
@@ -284,9 +308,9 @@
               <td><span class="venue-pill">${s.room}</span></td>
               <td>${s.faculty}</td>
               <td>
-                ${isLab 
-                  ? '<span class="status-pill status-lab">Lab</span>' 
-                  : '<span class="status-pill status-confirmed">Theory</span>'}
+                ${isLab
+              ? '<span class="status-pill status-lab">Lab</span>'
+              : '<span class="status-pill status-confirmed">Theory</span>'}
               </td>
             </tr>
           `;
@@ -327,7 +351,7 @@
       else renderDailyView();
     }
 
-    window.onload = function() {
+    window.onload = function () {
       const dayIdx = new Date().getDay();
       const realToday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIdx];
       const defaultDay = (realToday === 'Sunday') ? 'Monday' : realToday;
@@ -343,4 +367,5 @@
     };
   </script>
 </body>
+
 </html>
