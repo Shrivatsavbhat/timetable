@@ -73,8 +73,7 @@ app.delete('/api/notices/:id', async (req, res) => {
     }
 });
 
-const timetableRoutes = require('./routes/timetable');
-app.use('/api/timetable', timetableRoutes);
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

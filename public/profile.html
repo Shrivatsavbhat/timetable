@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - ReScheduled</title>
+    <link rel="stylesheet" href="./css/profile.css">
+</head>
+<body>
+
+<div class="page">
+    <header class="top" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 class="title">User Profile</h1>
+            <p class="subtitle">Manage credentials, academic state, and preferences.</p>
+        </div>
+        <div>
+            <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px;">← Back to Home</a>
+        </div>
+    </header>
+
+    <!-- Overview Card -->
+    <section class="card">
+        <h2>Credentials Overview</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <strong id="display-name" style="font-size: 18px;">Royston Menezes</strong>
+                <p id="display-info" style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">MCA202401 • royston@rescheduled.edu</p>
+            </div>
+            <span id="role-badge" class="badge">Class Representative [CR]</span>
+        </div>
+    </section>
+
+    <!-- Academic Details Form -->
+    <section class="card">
+        <h2>Academic Details</h2>
+        <form id="profile-form">
+            <div class="form-grid">
+                <div>
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div>
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" required>
+                </div>
+
+                <div>
+                    <label for="role">Role</label>
+                    <select id="role">
+                        <option value="CR">Class Representative [CR]</option>
+                        <option value="Student">Student</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="department">Department</label>
+                    <select id="department">
+                        <option value="MCA">MCA</option>
+                        <option value="MBA">MBA</option>
+                        <option value="BTECH">B.Tech</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="semester">Semester</label>
+                    <select id="semester">
+                        <option value="MCA Sem 1">Semester 1</option>
+                        <option value="MCA Sem 2">Semester 2</option>
+                        <option value="MCA Sem 3">Semester 3</option>
+                        <option value="MCA Sem 4">Semester 4</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="batch">Batch</label>
+                    <input type="text" id="batch" placeholder="2024-2026">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Profile</button>
+        </form>
+    </section>
+
+    <!-- Preferences Card -->
+    <section class="card">
+        <h2>Preferences</h2>
+        <div class="pref-row">
+            <span>Dark Theme</span>
+            <input type="checkbox" id="theme-toggle">
+        </div>
+        <div class="pref-row">
+            <span>Email Alerts (Cancellations & Changes)</span>
+            <input type="checkbox" id="email-alerts" checked>
+        </div>
+        <div class="pref-row">
+            <span>In-App Notifications</span>
+            <input type="checkbox" id="inapp-alerts" checked>
+        </div>
+
+        <button type="button" class="submit-btn" onclick="savePreferences()">Save Preferences</button>
+    </section>
+</div>
+
+<script>
+const form = document.getElementById('profile-form');
+const themeToggle = document.getElementById('theme-toggle');
+
+// Load user profile from DB
+async function loadProfile() {
+    try {
+        const res = await fetch('/api/user');
+        const user = await res.json();
+
+        if (user) {
+            document.getElementById('name').value = user.name || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('studentId').value = user.studentId || '';
+            document.getElementById('role').value = user.role || 'CR';
+            document.getElementById('department').value = user.department || 'MCA';
+            document.getElementById('semester').value = user.semester || 'MCA Sem 2';
+            document.getElementById('batch').value = user.batch || '2024-2026';
+
+            document.getElementById('display-name').textContent = user.name || 'Royston Menezes';
+            document.getElementById('display-info').textContent = `${user.studentId} • ${user.email} • ${user.department}`;
+            document.getElementById('role-badge').textContent = user.role === 'CR' ? 'Class Representative [CR]' : 'Student';
+
+            document.getElementById('email-alerts').checked = user.emailAlerts !== false;
+            document.getElementById('inapp-alerts').checked = user.inAppAlerts !== false;
+
+            if (user.theme === 'dark' || localStorage.getItem('theme') === 'dark') {
+                themeToggle.checked = true;
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+    } catch {
+        console.warn('Could not load profile from DB');
+    }
+}
+
+// Save profile form
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        studentId: document.getElementById('studentId').value,
+        role: document.getElementById('role').value,
+        department: document.getElementById('department').value,
+        semester: document.getElementById('semester').value,
+        batch: document.getElementById('batch').value
+    };
+
+    const res = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+        alert('Profile saved successfully!');
+        loadProfile();
+    } else {
+        alert('Failed to save profile.');
+    }
+});
+
+// Save preferences
+async function savePreferences() {
+    const isDark = themeToggle.checked;
+    const theme = isDark ? 'dark' : 'light';
+
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+
+    const prefs = {
+        theme,
+        emailAlerts: document.getElementById('email-alerts').checked,
+        inAppAlerts: document.getElementById('inapp-alerts').checked
+    };
+
+    const res = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prefs)
+    });
+
+    if (res.ok) {
+        alert('Preferences saved!');
+    }
+}
+
+themeToggle.addEventListener('change', () => {
+    const theme = themeToggle.checked ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+});
+
+// Check theme on page load
+if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>

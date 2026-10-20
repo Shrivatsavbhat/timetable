@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Timetable - ReScheduled</title>
+    <link rel="stylesheet" href="./css/admin-master.css">
+</head>
+<body>
+
+<div class="page">
+    <header class="top">
+        <div>
+            <h1 class="title">Master Timetable</h1>
+            <p class="subtitle">Constant weekly schedule blueprint (Monday - Saturday).</p>
+        </div>
+        <div>
+            <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px;">← Back to Home</a>
+        </div>
+    </header>
+
+    <!-- Slot Configuration Form -->
+    <section class="card">
+        <h2>Add Timetable Slot</h2>
+        <form id="slot-form">
+            <div class="form-grid">
+                <div>
+                    <label for="semester">Semester</label>
+                    <select id="semester" required>
+                        <option value="MCA Sem 2">MCA Sem 2</option>
+                        <option value="MCA Sem 1">MCA Sem 1</option>
+                        <option value="MCA Sem 3">MCA Sem 3</option>
+                        <option value="MCA Sem 4">MCA Sem 4</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="day">Day</label>
+                    <select id="day" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="slot">Slot</label>
+                    <input type="text" id="slot" placeholder="e.g. Slot 1" required>
+                </div>
+
+                <div>
+                    <label for="time">Time</label>
+                    <input type="text" id="time" placeholder="e.g. 09:00 AM - 10:00 AM" required>
+                </div>
+
+                <div>
+                    <label for="code">Course Code</label>
+                    <input type="text" id="code" placeholder="e.g. MCA201" required>
+                </div>
+
+                <div>
+                    <label for="subject">Subject Title</label>
+                    <input type="text" id="subject" placeholder="e.g. Database Systems" required>
+                </div>
+
+                <div>
+                    <label for="faculty">Faculty</label>
+                    <input type="text" id="faculty" placeholder="e.g. Dr. Sharma" required>
+                </div>
+
+                <div>
+                    <label for="room">Room / Lab</label>
+                    <input type="text" id="room" placeholder="e.g. Lab 2" required>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Slot</button>
+        </form>
+    </section>
+
+    <!-- Master Timetable Grid / List -->
+    <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h2>Master Schedule</h2>
+            <select id="filter-day" style="width: auto; padding: 6px 10px;">
+                <option value="">All Days</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+            </select>
+        </div>
+
+        <div id="slots-list" class="slots">
+            <div class="empty">Loading timetable slots...</div>
+        </div>
+    </section>
+</div>
+
+<script>
+const form = document.getElementById('slot-form');
+const slotsList = document.getElementById('slots-list');
+const filterDay = document.getElementById('filter-day');
+
+// Fetch and render master timetable slots
+async function loadSlots() {
+    try {
+        const day = filterDay.value;
+        const url = day ? `/api/master?day=${day}` : '/api/master';
+        const res = await fetch(url);
+        const slots = await res.json();
+
+        if (!slots || !slots.length) {
+            slotsList.innerHTML = '<div class="empty">No timetable slots found.</div>';
+            return;
+        }
+
+        slotsList.innerHTML = slots.map(s => `
+            <div class="slot">
+                <strong>${s.subject} (${s.code})</strong>
+                <span>${s.day} • ${s.slot} (${s.time})</span>
+                <small>📍 ${s.room} | 👨‍🏫 ${s.faculty}</small>
+                <button class="del-btn" onclick="deleteSlot('${s._id}')">Delete ✕</button>
+            </div>
+        `).join('');
+    } catch {
+        slotsList.innerHTML = '<div class="empty">Unable to load timetable slots.</div>';
+    }
+}
+
+// Add slot
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = {
+        semester: document.getElementById('semester').value,
+        day: document.getElementById('day').value,
+        slot: document.getElementById('slot').value,
+        time: document.getElementById('time').value,
+        code: document.getElementById('code').value,
+        subject: document.getElementById('subject').value,
+        faculty: document.getElementById('faculty').value,
+        room: document.getElementById('room').value
+    };
+
+    const res = await fetch('/api/master', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+        alert('Slot saved successfully!');
+        form.reset();
+        loadSlots();
+    } else {
+        alert('Failed to save slot.');
+    }
+});
+
+// Delete slot
+async function deleteSlot(id) {
+    if (!confirm('Delete this slot?')) return;
+    await fetch(`/api/master/${id}`, { method: 'DELETE' });
+    loadSlots();
+}
+
+filterDay.addEventListener('change', loadSlots);
+loadSlots();
+</script>
+
+</body>
+</html>
