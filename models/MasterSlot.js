@@ -12,7 +12,8 @@ const masterSlotSchema = new mongoose.Schema({
     subject: { type: String, required: true },
     code: { type: String, required: true },
     room: { type: String, required: true },
-    faculty: { type: String, required: true }
+    faculty: { type: String, required: true },
+    isLab: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('MasterSlot', masterSlotSchema);
