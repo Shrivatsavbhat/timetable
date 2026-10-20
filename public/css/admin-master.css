@@ -118,6 +118,7 @@ input:focus, select:focus {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-height: 150px;
 }
 
 .slot strong {
@@ -139,7 +140,8 @@ input:focus, select:focus {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 6px;
+    margin-top: auto;
+    padding-top: 10px;
 }
 
 .edit-btn, .del-btn, .swap-btn {
