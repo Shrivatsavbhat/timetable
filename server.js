@@ -6,6 +6,7 @@ const MasterSlot = require('./models/MasterSlot');
 const Override = require('./models/Override');
 const Notice = require('./models/Notice');
 const masterRouter = require('./routes/master');
+const timetableRoutes = require('./routes/timetable');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,7 +23,7 @@ mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB_NAME || '
 app.get('/health', (req, res) => {
     return res.send('ok');
 });
-
+app.use('/api/timetable', timetableRoutes);
 //gets all the posts
 app.get('/api/notices', async (req, res) => {
     try {
