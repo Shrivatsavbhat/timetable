@@ -45,6 +45,25 @@
   flex-wrap: wrap;
 }
 
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: #9c6239;
+  border-color: #9c6239;
+  transform: translateY(-1px);
+}
+
 .view-switcher {
   display: flex;
   background: #f1f5f9;
