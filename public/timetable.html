@@ -7,8 +7,7 @@
   <title>Student Timetable — ReScheduled</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Shared Global Stylesheet (Variables, Navbar, Base Layout) -->
   <link rel="stylesheet" href="./css/style.css">
   <!-- Timetable Module Stylesheet (Flexbox & Semantic Table) -->
@@ -84,12 +83,14 @@
       <div class="legend-row">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
-          <button id="btnTableToggle" class="btn-pill" style="font-size: 11px; padding: 2px 8px; cursor: pointer;" onclick="toggleTableLayout()">Table View</button>
+          <button id="btnTableToggle" class="btn-pill" style="font-size: 11px; padding: 2px 8px; cursor: pointer;"
+            onclick="toggleTableLayout()">Table View</button>
         </div>
         <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
           <span><span class="legend-dot" style="background: var(--accent-green);"></span>Theory Class</span>
           <span><span class="legend-dot" style="background: var(--primary);"></span>Practical Lab</span>
-          <span id="legendOverride" style="display: inline-flex; align-items: center; gap: 6px;"><span class="legend-dot" style="background: #ef4444;"></span>Override / Change</span>
+          <span id="legendOverride" style="display: inline-flex; align-items: center; gap: 6px;"><span
+              class="legend-dot" style="background: #ef4444;"></span>Override / Change</span>
         </div>
       </div>
 
@@ -277,6 +278,7 @@
     }
 
     function makeCardHtml(s) {
+      console.log("S:", s)
       const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
       let badge = isLab
         ? '<span class="status-pill status-lab">Lab</span>'
@@ -369,25 +371,23 @@
           let typeBadge = isLab
             ? '<span class="status-pill status-lab">Lab</span>'
             : '<span class="status-pill status-confirmed">Theory</span>';
-
+          let statusBadge = '<span class="status-pill status-confirmed">Confirmed</span>';
           let rowStyle = '';
           if (s.isOverridden) {
             if (s.status === 'CANCELLED') {
-              typeBadge = `<span class="status-pill status-cancelled">Cancelled${(s.reason && s.reason !== '--') ? ': ' + s.reason : ''}</span>`;
-              rowStyle = 'style="opacity: 0.7; text-decoration: line-through;"';
+              statusBadge = `<span class="status-pill status-cancelled">Cancelled${(s.reason && s.reason !== '--') ? ': ' + s.reason : ''}</span>`;
+              rowStyle = 'style="opacity: 0.6; text-decoration: line-through;"';
             } else if (s.status === 'SWAPPED') {
-              typeBadge = `<span class="status-pill status-swapped">Swapped ${s.newSlot ? `(Slot ${s.newSlot})` : ''}</span>`;
+              statusBadge = `<span class="status-pill status-swapped">Swapped ${s.newSlot ? `(Slot ${s.newSlot})` : ''}</span>`;
             } else if (s.status === 'RESCHEDULED') {
-              typeBadge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
+              statusBadge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
             } else if (s.status === 'SUBSTITUTE') {
-              typeBadge = '<span class="status-pill status-substitute">Substitute</span>';
+              statusBadge = '<span class="status-pill status-substitute">Substitute</span>';
             }
           }
-
           const facultyText = (s.isOverridden && s.substituteFaculty)
-            ? `${s.faculty} (${s.substituteFaculty})`
+            ? `${s.faculty} &rarr; <strong>${s.substituteFaculty}</strong>`
             : s.faculty;
-
           tableHtml += `
             <tr ${rowStyle}>
               <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
@@ -398,9 +398,11 @@
               <td><span class="venue-pill">${s.newRoom || s.room}</span></td>
               <td>${facultyText}</td>
               <td>${typeBadge}</td>
+              <td>${statusBadge}</td>
             </tr>
           `;
         });
+
       });
 
       if (totalVisible === 0) {

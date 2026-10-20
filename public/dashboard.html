@@ -221,7 +221,7 @@
         async function getTodaySchedule() {
 
             const user = JSON.parse(localStorage.getItem("user") || "null");
-            const today = new Date();
+            const today = new Date().toISOString().split('T')[0];
             const sem = (user && user.semester) ? user.semester : 'I MCA-A';
             console.log(today, sem)
 
@@ -248,7 +248,7 @@
                 <span class="period-meta">${slot.faculty}</span>
                  <span style="background:#dcfce7; color:#15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.room}</span>
             </div>
-            <span style="background: ${slot.status === 'Confirmed' ? '#dcfce7' : '#fee2e2'}; color: ${slot.status === 'Confirmed' ? '#15803d' : '#991b1b'}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.status}</span>
+            <span style="background: ${slot.status === 'CONFIRMED' ? '#dcfce7' : '#fee2e2'}; color: ${slot.status === 'CONFIRMED' ? '#15803d' : '#991b1b'}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.status}</span>
         `;
                 todayScheduleList.appendChild(periodDiv);
             });

@@ -114,9 +114,11 @@ app.get('/api/happening-now', async (req, res) => {
 
             }
         }
+        if (currentHour >= 20 || currentHour < 6) {
+            res.json({ success: true, happeningNow: "College is sleeping" });
+        }
 
 
-        res.json({ success: true, happeningNow: "Free Slot / Lunch Break" });
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Failed to fetch happening now', error: err.message });
     }
