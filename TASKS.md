@@ -13,7 +13,7 @@
 
 | Team Member | Assigned Modules / Pages | Status | Completed / Total |
 | :--- | :--- | :---: | :---: |
-| **Srijan** | Central Dashboard & Notice Management | `IN PROGRESS` | 0 / 12 |
+| **Srijan** | Central Dashboard & Notice Management | `IN PROGRESS` | 10 / 12 |
 | **Prajwal** | Student Timetable & Notices Feed | `IN PROGRESS` | 0 / 10 |
 | **Royston** | Master Timetable Blueprint & Profile | `IN PROGRESS` | 0 / 10 |
 | **Shrivatsa** | Daily Overrides & Notification Center | `IN PROGRESS` | 0 / 10 |
@@ -31,21 +31,21 @@
 
 ## 👤 Srijan — Central Portal & Notice Management
 
-### 1. Overview Dashboard & Landing Page (`public/index.html`)
-- [0] **1.1** Base layout structure with navigation bar, quick links, and footer
-- [0] **1.2** Real-time "Happening Now" lecture status banner with live countdown timer
-- [0] **1.3** "Today's Agenda" view dynamically merging master schedule with active overrides
-- [0] **1.4** Urgent notice marquee / broadcast ticker at top of page
-- [0] **1.5** Quick-stat cards (Total classes today, Active room changes, Cancelled lectures)
-- [0] **1.6** Responsive mobile-first layout styling in `public/css/style.css`
+### 1. Landing Page & Live Dashboard (`public/index.html` & `public/dashboard.html`)
+- [1] **1.1** Base layout structure with navigation bar, logo branding, and footer
+- [1] **1.2** Landing Page Hero layout with bold typography, tagline, and call-to-action button
+- [1] **1.3** Core Features showcase section (Real-Time Updates, Smart Room Finder, Official Notices)
+- [0] **1.4** Real-time "Happening Now" lecture status banner with live countdown timer
+- [0] **1.5** "Today's Agenda" view dynamically merging master schedule with active overrides
+- [0] **1.6** Responsive flexbox styling and design tokens in `public/css/style.css`
 
 ### 2. Notice Management Portal (`public/admin-add-notice.html`)
-- [0] **2.1** Notice creation form (Title, Priority/Category dropdown, Date picker, Content textarea)
-- [0] **2.2** Priority badge selector (`Urgent`, `High`, `Schedule Shift`, `General`)
-- [0] **2.3** Form submit handler connecting to `POST /api/notices`
-- [0] **2.4** Admin notice management data table displaying all published notices
-- [0] **2.5** Status indicator badges on published notices
-- [0] **2.6** Edit and Delete controls with confirmation modal (`DELETE /api/notices/:id`)
+- [1] **2.1** Notice creation form (Title, Priority/Category dropdown, Date picker, Content textarea)
+- [1] **2.2** Priority badge selector (`Urgent`, `High`, `Schedule Shift`, `General`)
+- [1] **2.3** Form submit handler connecting to `POST /api/notices`
+- [1] **2.4** Admin notice management data table displaying all published notices (`GET /api/notices`)
+- [1] **2.5** Status indicator badges on published notices
+- [1] **2.6** Edit and Delete controls (`DELETE /api/notices/:id` & `PUT /api/notices/:id`)
 
 ---
 

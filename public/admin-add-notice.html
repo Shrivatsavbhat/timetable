@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CR Portal — Post Notice | ReScheduled</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin-notice.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-box">R</span>
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/timetable.html">Timetable</a>
+                <a href="/notices.html">Notices</a>
+                <a href="/notifications.html">Alerts</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="admin-card" id="admin-card-create">
+            <h2>Post a Campus Notice</h2>
+            <form id="notice-form">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" required placeholder="e.g. CS502 OS Class Cancelled">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority">
+                            <option value="General">General</option>
+                            <option value="Schedule Shift">Schedule Shift</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Description</label>
+                    <textarea id="content" rows="4" required placeholder="Enter memo details..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-pill">Publish Notice</button>
+            </form>
+        </section>
+
+
+
+        <section class="admin-card" id="admin-card-edit" style="margin-top: 30px; display: none;">
+            <h2>Edit a Campus Notice</h2>
+            <form id="notice-form-edit">
+                <div class="form-group">
+                    <label for="title_edit">Title</label>
+                    <input type="text" id="title_edit" required placeholder="e.g. CS502 OS Class Cancelled">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority_edit">
+                            <option value="General">General</option>
+                            <option value="Schedule Shift">Schedule Shift</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date_edit" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content_edit">Description</label>
+                    <textarea id="content_edit" rows="4" required placeholder="Enter memo details..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-pill">Edit Notice</button>
+            </form>
+        </section>
+
+
+        <section class="admin-card" style="margin-top: 30px;">
+            <h3>Published Notices</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                <thead>
+                    <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+                        <th style="padding: 10px;">Priority</th>
+                        <th style="padding: 10px;">Title</th>
+                        <th style="padding: 10px;">Date</th>
+                        <th style="padding: 10px; text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="notices-list">
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <hr>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-box">R</span>
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/admin-add-notice.html">+ Post Notice</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="/notifications.html">View Alerts</a>
+                </div>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
+    </footer>
+
+    <script>
+        window.onload = () => {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('date');
+            dateInput.value = today;
+            dateInput.min = today;
+        };
+
+
+
+        // 2. Fetch and render notices 
+        async function loadNotices() {
+            const res = await fetch('/api/notices');
+            const data = await res.json();
+            const tbody = document.getElementById('notices-list');
+            tbody.innerHTML = '';
+
+            if (data.success && data.notices.length > 0) {
+                data.notices.forEach(n => {
+                    const row = document.createElement('tr');
+                    row.style.borderBottom = '1px solid var(--border)';
+                    row.innerHTML = `
+                        <td style="padding: 10px; font-weight: bold;">${n.priority}</td>
+                        <td style="padding: 10px;">${n.title}</td>
+                        <td style="padding: 10px; color: var(--text-muted);">${n.date}</td>
+                        <td style="padding: 10px; text-align: right;">
+                            <button onclick="deleteNotice('${n._id}')" style="color: red; border: none; background: none; cursor: pointer; font-weight: bold;" title="Delete">❌</button>
+                            <button onclick="editNotice('${n._id}')" style="color: green; border: none; background: none; cursor: pointer; font-weight: bold;" title="Edit">📝</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">No notices yet.</td></tr>';
+            }
+        }
+
+        // 3. Submit new notice 
+        document.getElementById('notice-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+                title: document.getElementById('title').value,
+                priority: document.getElementById('priority').value,
+                date: document.getElementById('date').value,
+                content: document.getElementById('content').value
+            };
+
+            const res = await fetch('/api/notices', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert('Notice published!');
+                document.getElementById('notice-form').reset();
+                document.getElementById('date').value = new Date().toISOString().split('T')[0];
+                loadNotices();
+            } else {
+                alert('Error publishing notice.');
+            }
+        });
+
+        // 4. Delete notice
+        async function deleteNotice(id) {
+            if (confirm('Delete this notice?')) {
+                await fetch(`/api/notices/${id}`, { method: 'DELETE' });
+                loadNotices();
+            }
+        }
+
+        async function editNotice(id) {
+            const res = await fetch(`/api/notices/${id}`);
+            const data = await res.json();
+            document.getElementById('title_edit').value = data.notice.title;
+            document.getElementById('priority_edit').value = data.notice.priority;
+            document.getElementById('date_edit').value = data.notice.date;
+            document.getElementById('content_edit').value = data.notice.content;
+            document.getElementById('admin-card-create').style.display = 'none';
+            document.getElementById('admin-card-edit').style.display = 'block';
+            document.getElementById('admin-card-edit').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('admin-card-edit').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payload = {
+                    title: document.getElementById('title_edit').value,
+                    priority: document.getElementById('priority_edit').value,
+                    date: document.getElementById('date_edit').value,
+                    content: document.getElementById('content_edit').value
+                };
+                const res = await fetch(`/api/notices/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    alert('Notice updated!');
+                    document.getElementById('notice-form-edit').reset();
+                    document.getElementById('admin-card-create').style.display = 'block';
+                    document.getElementById('admin-card-edit').style.display = 'none';
+                    document.getElementById('date_edit').value = new Date().toISOString().split('T')[0];
+                    loadNotices();
+                } else {
+                    alert('Error updating notice.');
+                }
+            });
+        }
+
+        loadNotices();
+    </script>
+
+
+
+
+</body>
+
+</html>

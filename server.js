@@ -31,11 +31,33 @@ app.get('/api/notices', async (req, res) => {
     }
 });
 
+//get the notice by id
+app.get('/api/notices/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const notice = await Notice.findById(id);
+        res.json({ success: true, notice });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Failed to fetch notice', error: err.message });
+    }
+});
+
 //create the notice
 app.post('/api/notices', async (req, res) => {
     try {
         const notice = await Notice.create(req.body);
         res.status(201).json(notice);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+
+//edit the notice by id
+app.put('/api/notices/:id', async (req, res) => {
+    try {
+        const notice = await Notice.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(notice);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
