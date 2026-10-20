@@ -102,35 +102,190 @@
     </section>
 </div>
 
+<div id="edit-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="edit-title">Edit Timetable Slot</h2>
+            <button type="button" class="close-btn" onclick="closeEditModal()" aria-label="Close">✕</button>
+        </div>
+        <form id="edit-form">
+            <div class="form-grid">
+                <div>
+                    <label for="edit-day">Day</label>
+                    <select id="edit-day" required>
+                        <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                        <option>Thursday</option><option>Friday</option><option>Saturday</option>
+                    </select>
+                </div>
+                <div><label for="edit-slot">Slot</label><input id="edit-slot" required></div>
+                <div><label for="edit-time">Time</label><input id="edit-time" required></div>
+                <div><label for="edit-code">Course Code</label><input id="edit-code" required></div>
+                <div><label for="edit-subject">Subject Title</label><input id="edit-subject" required></div>
+                <div><label for="edit-faculty">Faculty</label><input id="edit-faculty" required></div>
+                <div><label for="edit-room">Room / Lab</label><input id="edit-room" required></div>
+            </div>
+            <div class="swap-row">
+                <label for="swap-target">Swap this lecture's day/time with</label>
+                <select id="swap-target">
+                    <option value="">No swap — save the edits above</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="submit-btn">Save Permanent Changes</button>
+                <button type="button" class="swap-btn" onclick="swapSelectedSlot()">Swap Schedule Positions</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 const form = document.getElementById('slot-form');
 const slotsList = document.getElementById('slots-list');
 const filterDay = document.getElementById('filter-day');
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-form');
+const swapTarget = document.getElementById('swap-target');
+let loadedSlots = [];
+let editingSlotId = null;
+const dayOrder = {
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6
+};
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    }[character]));
+}
+
+function getStartTimeMinutes(time) {
+    const match = String(time || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+    if (!match) return Number.MAX_SAFE_INTEGER;
+
+    let hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    const meridiem = match[3]?.toUpperCase();
+    if (meridiem === 'AM' && hours === 12) hours = 0;
+    if (meridiem === 'PM' && hours !== 12) hours += 12;
+    return hours * 60 + minutes;
+}
+
+function sortSlots(slots) {
+    return [...slots].sort((first, second) =>
+        (dayOrder[first.day] || Number.MAX_SAFE_INTEGER) - (dayOrder[second.day] || Number.MAX_SAFE_INTEGER) ||
+        getStartTimeMinutes(first.time) - getStartTimeMinutes(second.time) ||
+        String(first.slot).localeCompare(String(second.slot), undefined, { numeric: true })
+    );
+}
 
 // Fetch and render master timetable slots
 async function loadSlots() {
     try {
-        const day = filterDay.value;
-        const url = day ? `/api/master?day=${day}` : '/api/master';
-        const res = await fetch(url);
-        const slots = await res.json();
+        const res = await fetch('/api/master');
+        const slots = sortSlots(await res.json());
+        loadedSlots = slots;
+        const visibleSlots = filterDay.value
+            ? slots.filter((slot) => slot.day === filterDay.value)
+            : slots;
 
-        if (!slots || !slots.length) {
+        if (!visibleSlots || !visibleSlots.length) {
             slotsList.innerHTML = '<div class="empty">No timetable slots found.</div>';
             return;
         }
 
-        slotsList.innerHTML = slots.map(s => `
+        slotsList.innerHTML = visibleSlots.map(s => `
             <div class="slot">
-                <strong>${s.subject} (${s.code})</strong>
-                <span>${s.day} • ${s.slot} (${s.time})</span>
-                <small>📍 ${s.room} | 👨‍🏫 ${s.faculty}</small>
-                <button class="del-btn" onclick="deleteSlot('${s._id}')">Delete ✕</button>
+                <strong>${escapeHtml(s.subject)} (${escapeHtml(s.code)})</strong>
+                <span>${escapeHtml(s.day)} • ${escapeHtml(s.slot)} (${escapeHtml(s.time)})</span>
+                <small>📍 ${escapeHtml(s.room)} | 👨‍🏫 ${escapeHtml(s.faculty)}</small>
+                <div class="slot-actions">
+                    <button class="edit-btn" onclick="openEditModal('${s._id}')">Edit</button>
+                    <button class="del-btn" onclick="deleteSlot('${s._id}')">Delete ✕</button>
+                </div>
             </div>
         `).join('');
     } catch {
         slotsList.innerHTML = '<div class="empty">Unable to load timetable slots.</div>';
     }
+}
+
+function openEditModal(id) {
+    const slot = loadedSlots.find((item) => item._id === id);
+    if (!slot) return;
+
+    editingSlotId = id;
+    ['day', 'slot', 'time', 'code', 'subject', 'faculty', 'room'].forEach((field) => {
+        document.getElementById(`edit-${field}`).value = slot[field] || '';
+    });
+    swapTarget.innerHTML = '<option value="">Select another lecture to swap with...</option>' +
+        sortSlots(loadedSlots)
+            .filter((item) => item._id !== id &&
+                (!slot.semester || !item.semester || item.semester === slot.semester))
+            .map((item) => `<option value="${item._id}">${escapeHtml(item.subject)} — ${escapeHtml(item.day)} ${escapeHtml(item.time)}${item.semester ? ` (${escapeHtml(item.semester)})` : ''}</option>`)
+            .join('');
+    if (swapTarget.options.length === 1) {
+        swapTarget.options[0].textContent = 'No other lectures available to swap';
+    }
+    editModal.classList.remove('hidden');
+}
+
+function closeEditModal() {
+    editModal.classList.add('hidden');
+    editingSlotId = null;
+}
+
+editForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!editingSlotId) return;
+
+    const data = Object.fromEntries(
+        ['day', 'slot', 'time', 'code', 'subject', 'faculty', 'room']
+            .map((field) => [field, document.getElementById(`edit-${field}`).value.trim()])
+    );
+    const res = await fetch(`/api/master/${editingSlotId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        alert(result.error || 'Failed to update slot.');
+        return;
+    }
+
+    alert('Slot updated permanently.');
+    closeEditModal();
+    loadSlots();
+});
+
+async function swapSelectedSlot() {
+    const secondId = swapTarget.value;
+    if (!editingSlotId || !secondId) {
+        alert('Select another lecture to swap with.');
+        return;
+    }
+    if (!confirm('Swap the day, slot, and time of these two lectures permanently?')) return;
+
+    const res = await fetch('/api/master/swap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstId: editingSlotId, secondId })
+    });
+    if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        alert(result.error || 'Failed to swap lectures.');
+        return;
+    }
+
+    alert('Lecture schedule positions swapped permanently.');
+    closeEditModal();
+    loadSlots();
 }
 
 // Add slot

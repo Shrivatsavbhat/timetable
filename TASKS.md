@@ -73,8 +73,8 @@
 > *Constant semester-long baseline template. Updated by CR only for permanent structural or faculty changes.*
 - [0] **5.1** Administrative recurring weekly grid setup (Monday through Saturday constant template)
 - [0] **5.2** Slot configuration inputs: Course Code, Subject Title, Default Faculty, Room/Lab
-- [0] **5.3** Slot-level Add / Edit / Remove UI controls
-- [0] **5.4** Connect blueprint saving to `POST /api/master`
+- [1] **5.3** Slot-level Add / Edit / Remove UI controls
+- [1] **5.4** Connect blueprint saving to `POST /api/master`
 - [0] **5.5** Master schedule table viewer with semester/department switchers
 
 ### 6. User Profile & Preferences (`public/profile.html`)

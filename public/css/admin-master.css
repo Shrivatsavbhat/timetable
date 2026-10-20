@@ -135,15 +135,93 @@ input:focus, select:focus {
     font-size: 12px;
 }
 
-.del-btn {
-    align-self: flex-end;
-    background: none;
-    border: none;
-    color: var(--accent-red);
+.slot-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.edit-btn, .del-btn, .swap-btn {
+    border: 0;
+    border-radius: 7px;
+    padding: 8px 12px;
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
-    margin-top: 6px;
+}
+
+.edit-btn, .swap-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.del-btn {
+    background: var(--accent-red);
+    color: white;
+}
+
+.edit-btn:hover, .del-btn:hover, .swap-btn:hover {
+    opacity: 0.9;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 10;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-card {
+    width: min(760px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.modal-header, .modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header {
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.modal-header h2 {
+    margin-bottom: 0;
+}
+
+.close-btn, .cancel-btn {
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.swap-row {
+    margin-top: 4px;
+}
+
+.modal-actions {
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.cancel-btn {
+    padding: 10px 12px;
 }
 
 .empty {
