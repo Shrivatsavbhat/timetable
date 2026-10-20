@@ -13,7 +13,7 @@
   <!-- Shared Global Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- Timetable-Specific Stylesheet (Pure Flexbox) -->
+  <!-- Timetable Stylesheet (Pure Flexbox & Simple Table) -->
   <link rel="stylesheet" href="./css/timetable.css">
 </head>
 <body>
@@ -48,7 +48,7 @@
         <div class="top-actions">
           <div class="view-switcher">
             <button id="btnDaily" class="view-btn active" onclick="setView('daily')">📱 Daily View</button>
-            <button id="btnWeekly" class="view-btn" onclick="setView('weekly')">🗓️ Weekly Table</button>
+            <button id="btnWeekly" class="view-btn" onclick="setView('weekly')">📋 Weekly Schedule</button>
           </div>
           <a href="/notices.html" class="btn-pill">Notices &rarr;</a>
           <button class="btn-primary" onclick="jumpToToday()">Jump to Today</button>
@@ -67,7 +67,7 @@
         </div>
         <div class="filter-item">
           <label>Filter by Subject, Faculty, or Room</label>
-          <input type="search" id="searchBox" placeholder="🔍 e.g. DBMS, PC 202, Linda, Archana" oninput="onSearch(this.value)">
+          <input type="search" id="searchBox" placeholder="🔍 Search e.g. DBMS, PC 202, Linda, Archana" oninput="onSearch(this.value)">
         </div>
       </div>
 
@@ -95,21 +95,17 @@
         <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading schedule...</p>
       </div>
 
-      <!-- 2. Weekly Table Matrix (Mon–Sat) -->
+      <!-- 2. Simple Clean Weekly Schedule Table (Clear Columns: Day, Time, Subject, Room, Faculty, Type) -->
       <div class="table-container" id="weeklyContainer" style="display: none;">
-        <table class="matrix-table">
+        <table class="clean-table">
           <thead>
             <tr>
-              <th>DAY</th>
-              <th>PERIOD 1<span>08:00 - 09:00</span></th>
-              <th>PERIOD 2<span>09:00 - 10:00</span></th>
-              <th>PERIOD 3<span>10:30 - 11:30</span></th>
-              <th>PERIOD 4<span>11:30 - 12:30</span></th>
-              <th class="lunch-header">☕<span>12:30-13:30</span></th>
-              <th>PERIOD 5<span>13:00 - 14:00</span></th>
-              <th>PERIOD 6<span>14:00 - 15:30</span></th>
-              <th>PERIOD 7<span>15:30 - 16:30</span></th>
-              <th>PERIOD 8<span>16:30 - 17:30</span></th>
+              <th>Day</th>
+              <th>Time</th>
+              <th>Subject</th>
+              <th>Room</th>
+              <th>Faculty</th>
+              <th>Type</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -134,7 +130,7 @@
     let searchQuery = '';
     const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // Midday Break timing map for each day
+    // Midday Break timings for each day
     const BREAK_TIMES = {
       Monday: '12:30 PM — 02:00 PM',
       Tuesday: '10:30 AM — 02:00 PM',
@@ -149,11 +145,8 @@
       try {
         const res = await fetch('/api/timetable');
         allSlots = await res.json();
-        if (currentMode === 'daily') {
-          renderDailyView();
-        } else {
-          renderWeeklyTable();
-        }
+        if (currentMode === 'daily') renderDailyView();
+        else renderWeeklyTable();
       } catch (err) {
         document.getElementById('dailyContainer').innerHTML =
           '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
@@ -169,7 +162,7 @@
       document.getElementById('dayButtons').style.display = isDaily ? 'flex' : 'none';
       document.getElementById('dailyContainer').style.display = isDaily ? 'flex' : 'none';
       document.getElementById('weeklyContainer').style.display = isDaily ? 'none' : 'block';
-      document.getElementById('statusLabel').textContent = isDaily ? (currentDay + ' Slots') : 'Full Weekly Timetable';
+      document.getElementById('statusLabel').textContent = isDaily ? (currentDay + ' Slots') : 'Full Weekly Schedule (Monday — Saturday)';
 
       if (isDaily) renderDailyView();
       else renderWeeklyTable();
@@ -202,7 +195,7 @@
         return;
       }
 
-      // Slot split count before the midday break for each day
+      // Slot split count before the midday break
       const splitCounts = { Monday: 4, Tuesday: 1, Wednesday: 3, Thursday: 1, Friday: 2, Saturday: 2 };
       const split = splitCounts[currentDay] || 2;
       const morningSlots = daySlots.slice(0, split);
@@ -245,75 +238,56 @@
       `;
     }
 
-    // 4. Render Weekly Matrix Table (Monday to Saturday)
+    // 4. Render Simple Clean Weekly Schedule Table (Day, Time, Subject, Room, Faculty, Type)
     function renderWeeklyTable() {
       const tbody = document.getElementById('tableBody');
       const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
 
-      tbody.innerHTML = DAYS.map(day => {
-        const isToday = (day === today);
-        const daySlots = allSlots.filter(s => s.day === day);
+      // Filter slots if user typed in search box
+      const q = searchQuery.toLowerCase();
+      const slotsToRender = allSlots.filter(s => {
+        if (!q) return true;
+        return (s.subject || '').toLowerCase().includes(q) ||
+               (s.code || '').toLowerCase().includes(q) ||
+               (s.faculty || '').toLowerCase().includes(q) ||
+               (s.room || '').toLowerCase().includes(q) ||
+               (s.day || '').toLowerCase().includes(q);
+      });
+
+      if (!slotsToRender.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No classes matching search.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = slotsToRender.map(s => {
+        const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
+        const isToday = (s.day === today);
 
         return `
           <tr class="${isToday ? 'row-today' : ''}">
-            <td class="day-name">${day.slice(0, 3)}${isToday ? '<br><span style="font-size:9px;color:#fff;background:var(--primary);padding:1px 4px;border-radius:3px;">TODAY</span>' : ''}</td>
-            ${makeTableCell(daySlots, ['08:00-09:00', '08:00-10:30'], '1')}
-            ${makeTableCell(daySlots, ['09:00-10:00', '08:00-10:30'], '2')}
-            ${makeTableCell(daySlots, ['10:30-11:30', '11:00-13:30'], '3')}
-            ${makeTableCell(daySlots, ['11:30-12:30', '11:00-13:30'], '4')}
-            <td class="lunch-cell">BREAK</td>
-            ${makeTableCell(daySlots, ['13:00-14:00'], '5')}
-            ${makeTableCell(daySlots, ['14:00-15:00', '14:00-16:30', '14:30-15:30'], '6')}
-            ${makeTableCell(daySlots, ['15:30-16:30', '14:00-16:30'], '7')}
-            ${makeTableCell(daySlots, ['16:30-17:30'], '8')}
+            <td><strong>${s.day}</strong>${isToday ? ' <span style="font-size:10px; background:var(--primary); color:#fff; padding:1px 5px; border-radius:3px;">TODAY</span>' : ''}</td>
+            <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
+            <td>
+              <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
+              <span class="code-tag">${s.code}</span>
+            </td>
+            <td><span class="venue-pill">🏛️ ${s.room}</span></td>
+            <td>${s.faculty}</td>
+            <td>
+              ${isLab 
+                ? '<span class="status-pill status-lab">Lab</span>' 
+                : '<span class="status-pill status-confirmed">Theory</span>'}
+            </td>
           </tr>
         `;
       }).join('');
-
-      applySearchHighlight();
     }
 
-    // Helper: generate single table cell HTML
-    function makeTableCell(daySlots, validTimes, slotNum) {
-      const slot = daySlots.find(s => s.slot === slotNum || validTimes.includes((s.time || '').trim()));
-      if (!slot) return '<td><div class="cell-empty">— Free —</div></td>';
-
-      const isLab = slot.isLab || (slot.subject || '').toLowerCase().includes('lab');
-      const searchKey = (slot.subject + ' ' + slot.code + ' ' + slot.room + ' ' + slot.faculty).toLowerCase();
-
-      return `
-        <td>
-          <div class="table-cell-content ${isLab ? 'is-lab' : ''}" data-text="${searchKey}">
-            <div class="cell-top"><span>${slot.code}</span>${isLab ? '<span>🔬</span>' : ''}</div>
-            <div class="cell-sub">${slot.subject}</div>
-            <div class="cell-bottom">
-              <span class="cell-room-badge">${slot.room}</span>
-              <span title="${slot.faculty}">${(slot.faculty || '').split(',')[0]}</span>
-            </div>
-          </div>
-        </td>
-      `;
-    }
-
-    // 5. Search Filtering & Highlight
+    // 5. Search Filtering
     function onSearch(value) {
       searchQuery = value.trim();
       if (currentMode === 'daily') renderDailyView();
-      else applySearchHighlight();
-    }
-
-    function applySearchHighlight() {
-      const q = searchQuery.toLowerCase();
-      document.querySelectorAll('.table-cell-content').forEach(cell => {
-        if (!q) {
-          cell.classList.remove('search-match', 'search-dim');
-          return;
-        }
-        const text = cell.getAttribute('data-text') || '';
-        const isMatch = text.includes(q);
-        cell.classList.toggle('search-match', isMatch);
-        cell.classList.toggle('search-dim', !isMatch);
-      });
+      else renderWeeklyTable();
     }
 
     // 6. Day Selection & Quick Jump
