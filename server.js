@@ -122,19 +122,6 @@ app.get('/api/happening-now', async (req, res) => {
     }
 });
 
-//get all the slots for today
-app.get('/api/slots-today', async (req, res) => {
-    try {
-        const currentTime = new Date();
-        const currentDay = currentTime.toLocaleString('en-US', { weekday: 'long' });
-
-        let slots = await MasterSlot.find({ day: currentDay });
-
-        res.json({ success: true, slots });
-    } catch (err) {
-        return res.status(500).json({ success: false, message: 'Failed to fetch happening now', error: err.message });
-    }
-});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

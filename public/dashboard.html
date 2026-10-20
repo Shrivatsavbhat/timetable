@@ -60,11 +60,10 @@
                     <!-- Periods Timeline -->
                     <div id="today-schedule-list">
                         <div class="period-card">
-                            <span class="period-time" id="period-time">09:00 - 10:00</span>
+                            <span class="period-time" id="period-time"></span>
                             <div class="period-details">
-                                <span class="period-title" id="period-title">CS501 • Design & Analysis of
-                                    Algorithms</span>
-                                <span class="period-meta" id="period-meta">Dr. Anand Kumar • Classroom LH-204</span>
+                                <span class="period-title" id="period-title"></span>
+                                <span class="period-meta" id="period-meta"></span>
                             </div>
                             <span
                                 style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Confirmed</span>
@@ -73,21 +72,42 @@
                     </div>
                 </div>
             </section>
-            <!--Notices-->
-            <aside class="dashboard-sidebar">
-                <div class="admin-card">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <h3 style="margin: 0;">Recent Notices</h3>
-                        <a href="/notices.html"
-                            style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;">View
-                            All</a>
+            <section class="notice-task-container">
+                <!--Notices-->
+                <aside class="dashboard-sidebar">
+                    <div class="admin-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 style="margin: 0;">Recent Notices</h3>
+                            <a href="/notices.html"
+                                style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;">View
+                                All</a>
+                        </div>
+                        <div id="recent-notices-container">
+                            <p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Loading notices...
+                            </p>
+                        </div>
                     </div>
-                    <div id="recent-notices-container">
-                        <p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Loading notices...</p>
+                </aside>
+
+                <!--tasks-->
+                <aside class="dashboard-sidebar">
+                    <div class="admin-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 style="margin: 0;">Recent Tasks</h3>
+                            <a href="/tasks.html"
+                                style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;">View
+                                All</a>
+                        </div>
+                        <div id="recent-tasks-container">
+                            <p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Loading tasks...</p>
+                        </div>
                     </div>
-                </div>
-            </aside>
+                </aside>
+            </section>
+
+
         </div>
     </main>
 
@@ -145,8 +165,12 @@
             try {
                 // Fetch Notices
                 const noticeRes = await fetch('/api/notices');
+                const taskRes = await fetch('/api/tasks');
                 const data = await noticeRes.json();
                 const notices = data.notices;
+
+                const taskData = await taskRes.json();
+                const tasks = taskData.tasks;
 
                 const noticeContainer = document.getElementById('recent-notices-container');
                 noticeContainer.innerHTML = '';
@@ -166,19 +190,44 @@
                     `;
                     noticeContainer.appendChild(noticeDiv);
                 });
+
+                const taskContainer = document.getElementById('recent-tasks-container');
+                taskContainer.innerHTML = '';
+
+                if (tasks.length === 0) {
+                    taskContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No tasks found.</p>';
+                    return;
+                }
+
+                tasks.slice(0, 5).forEach(task => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.className = 'sidebar-task-item';
+                    taskDiv.innerHTML = `
+                        <div class="task-title">${task.name}</div>
+                        <div class="task-desc">Due Date: <span style="color: var(--primary); font-weight: 500; padding: 2px 4px; background-color: rgba(0, 200, 255, 0.05); border-radius: 4px;">${task.date}</span></div>
+                    `;
+                    taskContainer.appendChild(taskDiv);
+                });
             } catch (err) {
                 console.error('Failed to load dashboard data:', err);
                 const noticeContainer = document.getElementById('recent-notices-container');
                 noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load notices.</p>';
+                const taskContainer = document.getElementById('recent-tasks-container');
+                taskContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load tasks.</p>';
             }
         }
 
 
         async function getTodaySchedule() {
-            const res = await fetch('/api/slots-today');
+
+            const user = JSON.parse(localStorage.getItem("user") || "null");
+            const today = new Date();
+            const sem = (user && user.semester) ? user.semester : 'I MCA-A';
+            console.log(today, sem)
+
+            const res = await fetch(`/api/timetable?date=${today}&semester=${sem}`);
             const data = await res.json();
-            const slots = data.slots;
-            console.log("toddau", slots)
+            const slots = data.schedule;
 
             const todayScheduleList = document.getElementById('today-schedule-list');
             todayScheduleList.innerHTML = '';
@@ -204,6 +253,7 @@
                 todayScheduleList.appendChild(periodDiv);
             });
         }
+
 
 
     </script>
