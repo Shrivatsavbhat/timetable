@@ -352,7 +352,7 @@
   gap: 8px;
 }
 
-/* Simple Clean Weekly Table */
+/* Simple Clean Weekly Table (Organized & Grouped by Day) */
 .table-container {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -380,8 +380,8 @@
 }
 
 .clean-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
   color: var(--text-main);
   vertical-align: middle;
 }
@@ -390,8 +390,56 @@
   background: #fdfaf7;
 }
 
-.clean-table tr.row-today td {
-  background: #fffbeb;
+/* Day Group Separator Rows */
+.day-group-header td {
+  background: #f8fafc !important;
+  padding: 10px 14px;
+  border-top: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.day-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.day-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-count-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+}
+
+.day-group-header.today td {
+  background: #fef7ee !important;
+  border-left: 4px solid var(--primary);
+}
+
+.day-group-header.today .day-title {
+  color: var(--primary);
+}
+
+.today-chip {
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #ffffff;
+  padding: 1px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
 }
 
 /* Card Footer */

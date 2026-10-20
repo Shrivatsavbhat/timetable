@@ -95,12 +95,11 @@
         <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading schedule...</p>
       </div>
 
-      <!-- 2. Simple Clean Weekly Schedule Table (Clear Columns: Day, Time, Subject, Room, Faculty, Type) -->
+      <!-- 2. Simple Clean Weekly Schedule Table (Grouped Chronologically Mon-Sat) -->
       <div class="table-container" id="weeklyContainer" style="display: none;">
         <table class="clean-table">
           <thead>
             <tr>
-              <th>Day</th>
               <th>Time</th>
               <th>Subject</th>
               <th>Room</th>
@@ -140,6 +139,15 @@
       Saturday: '01:30 PM — 02:30 PM'
     };
 
+    // Helper: sort slots chronologically by start time
+    function sortSlotsChronologically(slots) {
+      return [...slots].sort((a, b) => {
+        const timeA = (a.time || '').split('-')[0].trim();
+        const timeB = (b.time || '').split('-')[0].trim();
+        return timeA.localeCompare(timeB) || (Number(a.slot) - Number(b.slot));
+      });
+    }
+
     // 1. Fetch timetable data from server
     async function loadData() {
       try {
@@ -171,7 +179,8 @@
     // 3. Render Daily Cards View with single clean midday break
     function renderDailyView() {
       const container = document.getElementById('dailyContainer');
-      const daySlots = allSlots.filter(s => s.day === currentDay);
+      const rawSlots = allSlots.filter(s => s.day === currentDay);
+      const daySlots = sortSlotsChronologically(rawSlots);
 
       // Search filtering
       if (searchQuery) {
@@ -238,49 +247,79 @@
       `;
     }
 
-    // 4. Render Simple Clean Weekly Schedule Table (Day, Time, Subject, Room, Faculty, Type)
+    // 4. Render Simple Clean Weekly Table Grouped Chronologically by Day (Mon -> Sat)
     function renderWeeklyTable() {
       const tbody = document.getElementById('tableBody');
       const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-
-      // Filter slots if user typed in search box
       const q = searchQuery.toLowerCase();
-      const slotsToRender = allSlots.filter(s => {
-        if (!q) return true;
-        return (s.subject || '').toLowerCase().includes(q) ||
-               (s.code || '').toLowerCase().includes(q) ||
-               (s.faculty || '').toLowerCase().includes(q) ||
-               (s.room || '').toLowerCase().includes(q) ||
-               (s.day || '').toLowerCase().includes(q);
-      });
 
-      if (!slotsToRender.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No classes matching search.</td></tr>';
-        return;
-      }
+      let tableHtml = '';
+      let totalVisible = 0;
 
-      tbody.innerHTML = slotsToRender.map(s => {
-        const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
-        const isToday = (s.day === today);
+      DAYS.forEach(day => {
+        const isToday = (day === today);
+        const daySlots = sortSlotsChronologically(allSlots.filter(s => s.day === day));
 
-        return `
-          <tr class="${isToday ? 'row-today' : ''}">
-            <td><strong>${s.day}</strong>${isToday ? ' <span style="font-size:10px; background:var(--primary); color:#fff; padding:1px 5px; border-radius:3px;">TODAY</span>' : ''}</td>
-            <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
-            <td>
-              <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
-              <span class="code-tag">${s.code}</span>
-            </td>
-            <td><span class="venue-pill">🏛️ ${s.room}</span></td>
-            <td>${s.faculty}</td>
-            <td>
-              ${isLab 
-                ? '<span class="status-pill status-lab">Lab</span>' 
-                : '<span class="status-pill status-confirmed">Theory</span>'}
+        // Filter slots if user typed search query
+        const matchingSlots = daySlots.filter(s => {
+          if (!q) return true;
+          return (s.subject || '').toLowerCase().includes(q) ||
+                 (s.code || '').toLowerCase().includes(q) ||
+                 (s.faculty || '').toLowerCase().includes(q) ||
+                 (s.room || '').toLowerCase().includes(q) ||
+                 (s.day || '').toLowerCase().includes(q);
+        });
+
+        // Skip day if searching and no matches
+        if (q && !matchingSlots.length) return;
+
+        totalVisible += matchingSlots.length;
+
+        // Render Day Group Header Row
+        tableHtml += `
+          <tr class="day-group-header ${isToday ? 'today' : ''}">
+            <td colspan="5">
+              <div class="day-header-flex">
+                <span class="day-title">
+                  📅 ${day}
+                  ${isToday ? '<span class="today-chip">Today</span>' : ''}
+                </span>
+                <span class="day-count-badge">${matchingSlots.length} Classes</span>
+              </div>
             </td>
           </tr>
         `;
-      }).join('');
+
+        // Render each class row for that day in strict chronological order
+        matchingSlots.forEach(s => {
+          const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
+
+          tableHtml += `
+            <tr>
+              <td style="white-space:nowrap; font-weight:600; color:var(--primary);">
+                ${s.time}
+              </td>
+              <td>
+                <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
+                <span class="code-tag">${s.code}</span>
+              </td>
+              <td><span class="venue-pill">🏛️ ${s.room}</span></td>
+              <td>👤 ${s.faculty}</td>
+              <td>
+                ${isLab 
+                  ? '<span class="status-pill status-lab">Lab</span>' 
+                  : '<span class="status-pill status-confirmed">Theory</span>'}
+              </td>
+            </tr>
+          `;
+        });
+      });
+
+      if (totalVisible === 0) {
+        tableHtml = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No classes matching your search.</td></tr>';
+      }
+
+      tbody.innerHTML = tableHtml;
     }
 
     // 5. Search Filtering
