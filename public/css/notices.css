@@ -1,270 +1,227 @@
 /* ================================================= */
-/* NOTICES MODULE STYLES (notices.css)               */
-/* Matches timetable.css Layout & Color Palette      */
+/* CAMPUS NOTICES MODULE STYLES (notices.css)        */
+/* Clean, Minimalist, Matching Notification Center   */
 /* ================================================= */
 
-.page-wrap {
+.page {
   max-width: 1000px;
-  margin: 24px auto;
-  padding: 0 16px 40px;
+  margin: auto;
+  padding: 32px 20px 60px;
 }
 
-.card-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-}
-
-/* Header & Actions */
-.top-bar {
+/* Header */
+.top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 12px;
+  align-items: flex-end;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-.title-group h1 {
-  font-size: 22px;
+.title {
+  font-size: 26px;
   font-weight: 700;
   color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  margin-bottom: 4px;
 }
 
-.title-group p {
-  font-size: 13px;
+.subtitle {
   color: var(--text-muted);
-  margin-top: 4px;
+  font-size: 14px;
 }
 
-.top-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-/* Filters & Search Row (Identical to timetable.html) */
-.filter-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.filter-item {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
+.nav-btn {
+  text-decoration: none;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted);
-}
-
-.filter-item input,
-.filter-item select {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: inherit;
+  color: var(--primary);
   background: var(--surface);
-  color: var(--text-main);
-  outline: none;
-}
-
-.filter-item input:focus,
-.filter-item select:focus {
-  border-color: var(--primary);
-}
-
-/* Category Filter Buttons (Matches timetable.html .day-row & .day-btn) */
-.category-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.category-btn {
-  flex: 1;
-  min-width: 90px;
-  padding: 10px 8px;
   border: 1px solid var(--border);
-  background: #f8fafc;
+  padding: 6px 14px;
   border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-family: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--text-muted);
-  text-align: center;
   transition: all 0.2s;
 }
 
-.category-btn:hover {
+.nav-btn:hover {
   border-color: var(--primary);
+  background: #fdfaf7;
+}
+
+/* Toolbar & Filter Pill Tabs (Matches Screenshot) */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 16px;
+  flex-wrap: wrap;
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 7px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.filter-btn:hover {
   color: var(--primary);
 }
 
-.category-btn.active {
+.filter-btn.active {
   background: var(--primary);
   color: #ffffff;
+}
+
+.filter-count {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.search-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  font-size: 13px;
+  font-family: inherit;
+  padding: 8px 14px;
+  border-radius: 8px;
+  width: 240px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(178, 118, 75, 0.25);
 }
 
-/* Legend Row */
-.legend-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 5px;
-}
-
-/* Notice Cards Feed (Matches timetable.html .slot-card) */
-.notice-list {
+/* Notice Cards Feed (Matches Screenshot 100%) */
+.feed {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.notice-card {
+.notification {
   display: flex;
+  gap: 12px;
+  padding: 18px 20px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.notice-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.notification:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.notice-card.is-urgent {
-  border-left: 4px solid #dc2626;
+.dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.notice-card.is-shift {
-  border-left: 4px solid var(--primary);
-}
-
-.notice-card.is-general {
-  border-left: 4px solid #64748b;
-}
-
-.notice-date-box {
-  width: 120px;
-  padding: 14px 10px;
-  background: #f8fafc;
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.notice-date-day {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-main);
-  line-height: 1.1;
-}
-
-.notice-date-month {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--primary);
-  margin-top: 2px;
-  letter-spacing: 0.5px;
-}
-
-.notice-date-year {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.notice-body {
+.notification-content {
   flex: 1;
-  padding: 14px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
+  min-width: 0;
 }
 
-.notice-top {
+.notification-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-.notice-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.status-pill {
+.badge {
+  padding: 3px 8px;
+  border: 1px solid;
+  border-radius: 5px;
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 9999px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.status-urgent {
-  background: #fee2e2;
-  color: #dc2626;
+.badge.urgent {
+  background: #fff1f2;
+  color: #be123c;
+  border-color: #fecdd3;
 }
 
-.status-shift {
-  background: #fef3c7;
-  color: var(--primary);
+.badge.high {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
 }
 
-.status-general {
+.badge.shift {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.badge.general {
   background: #f1f5f9;
   color: #475569;
+  border-color: var(--border);
 }
 
-.notice-snippet {
+.time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.notification-desc {
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.5;
   margin: 0;
 }
 
-.notice-meta {
-  display: flex;
-  gap: 14px;
-  font-size: 11px;
+.empty {
+  text-align: center;
+  padding: 40px;
   color: var(--text-muted);
-  align-items: center;
-  margin-top: 2px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
 }
 
 /* Modal Dialog */
@@ -275,7 +232,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.45);
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -310,30 +267,12 @@
   color: var(--text-main);
 }
 
-/* Footer (Matches timetable.html) */
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  padding-top: 12px;
-  border-top: 1px solid #f1f5f9;
-  font-size: 11px;
-  color: var(--text-muted);
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
 @media (max-width: 600px) {
-  .filter-row {
+  .toolbar {
     flex-direction: column;
+    align-items: stretch;
   }
-  .notice-card {
-    flex-direction: column;
-  }
-  .notice-date-box {
+  .search-input {
     width: 100%;
-    flex-direction: row;
-    gap: 8px;
-    padding: 8px;
   }
 }

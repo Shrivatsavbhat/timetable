@@ -18,7 +18,7 @@
 </head>
 <body>
 
-  <!-- Shared Navigation Bar (Matches Dashboard & Timetable) -->
+  <!-- Shared Navbar -->
   <header class="navbar">
     <div class="nav-container">
       <a href="/" class="logo">
@@ -34,75 +34,55 @@
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="page-wrap">
-    <div class="card-wrap">
+  <!-- Main Simple Page Content (Matches Screenshot Layout) -->
+  <div class="page">
+    
+    <!-- Top Header -->
+    <header class="top">
+      <div>
+        <h1 class="title">Campus Notices</h1>
+        <p class="subtitle">Live log of timetable adjustments, room changes and official notices.</p>
+      </div>
+      <div>
+        <a href="/timetable.html" class="nav-btn">&larr; Timetable</a>
+      </div>
+    </header>
 
-      <!-- Top Header & Actions -->
-      <div class="top-bar">
-        <div class="title-group">
-          <h1>📢 Campus Notices Feed</h1>
-          <p>Official announcements, schedule changes, and departmental memos</p>
-        </div>
-        <div class="top-actions">
-          <a href="/timetable.html" class="btn-pill">&larr; Timetable</a>
-        </div>
+    <!-- Toolbar: Filter Pills + Search Input -->
+    <div class="toolbar">
+      <div class="filters" role="group" aria-label="Filter notices by category">
+        <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">
+          All <span class="filter-count" id="count-all">0</span>
+        </button>
+        <button class="filter-btn" data-cat="urgent" onclick="setCategory('urgent', this)">
+          Urgent <span class="filter-count" id="count-urgent">0</span>
+        </button>
+        <button class="filter-btn" data-cat="shift" onclick="setCategory('shift', this)">
+          Schedule Shift <span class="filter-count" id="count-shift">0</span>
+        </button>
+        <button class="filter-btn" data-cat="general" onclick="setCategory('general', this)">
+          General Notices <span class="filter-count" id="count-general">0</span>
+        </button>
       </div>
 
-      <!-- Filters & Search (Pure Flexbox, Same as Timetable) -->
-      <div class="filter-row">
-        <div class="filter-item">
-          <label>Academic Term</label>
-          <select id="semSelect" onchange="fetchNotices()">
-            <option value="1" selected>1st Sem — I MCA (Sec A)</option>
-            <option value="3">3rd Sem — I MCA (Sec A)</option>
-            <option value="5">5th Sem — I MCA (Sec A)</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label>Search Notices by Title, Content, or Keyword</label>
-          <input
-            type="search"
-            id="searchInput"
-            placeholder="🔍 Search e.g. Machine Learning, Room 301, Lab 3"
-            oninput="handleSearch(this.value)"
-          />
-        </div>
-      </div>
-
-      <!-- Category Filter Buttons (Matches timetable.html day buttons) -->
-      <div class="category-row" id="catButtons">
-        <button class="category-btn active" data-cat="all" onclick="selectCategory('all', this)">All Notices</button>
-        <button class="category-btn" data-cat="urgent" onclick="selectCategory('urgent', this)">🚨 Urgent</button>
-        <button class="category-btn" data-cat="shift" onclick="selectCategory('shift', this)">🔄 Schedule Shift</button>
-        <button class="category-btn" data-cat="general" onclick="selectCategory('general', this)">📌 General</button>
-      </div>
-
-      <!-- Legend & Status Row (Matches timetable.html) -->
-      <div class="legend-row">
-        <div id="statusLabel" style="font-weight: 600;">All Campus Notices</div>
-        <div style="display: flex; gap: 14px; align-items: center;">
-          <span><span class="legend-dot" style="background: #dc2626;"></span>Urgent</span>
-          <span><span class="legend-dot" style="background: var(--primary);"></span>Schedule Shift</span>
-          <span><span class="legend-dot" style="background: #64748b;"></span>General</span>
-        </div>
-      </div>
-
-      <!-- Notice Cards Feed (Pure Flexbox) -->
-      <div class="notice-list" id="noticeContainer">
-        <p style="text-align: center; color: var(--text-muted); padding: 30px;">Loading notices...</p>
-      </div>
-
-      <!-- Footer Info -->
-      <div class="card-footer">
-        <span>🟢 Live sync active with Department Notice Board</span>
-        <span>Class: <strong>I MCA Section A</strong></span>
-      </div>
-
+      <input
+        type="search"
+        id="searchInput"
+        class="search-input"
+        placeholder="🔍 Search notices..."
+        oninput="handleSearch(this.value)"
+        aria-label="Search notices"
+      />
     </div>
-  </main>
 
-  <!-- Modal Dialog for Full Memo Review -->
+    <!-- Feed Container -->
+    <section class="feed" id="noticeContainer">
+      <div class="empty">Loading campus notices...</div>
+    </section>
+
+  </div>
+
+  <!-- Pop-up Modal Dialog for Full Memo Review -->
   <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
@@ -120,20 +100,57 @@
     let activeCategory = 'all';
     let searchQuery = '';
 
-    // 1. Fetch notices from server
+    // 1. Fetch notices from API
     async function fetchNotices() {
       try {
         const res = await fetch('/api/notices');
         const data = await res.json();
         allNotices = data.notices || (Array.isArray(data) ? data : []);
+        updateCounts();
         renderNotices();
       } catch (err) {
         document.getElementById('noticeContainer').innerHTML =
-          '<p style="text-align: center; color: #dc2626; padding: 20px;">Unable to load notices from server.</p>';
+          '<div class="empty" style="color: #be123c;">Unable to load notices from server.</div>';
       }
     }
 
-    // 2. Render notice cards
+    // 2. Update pill counts
+    function updateCounts() {
+      const all = allNotices.length;
+      const urgent = allNotices.filter(n => {
+        const p = (n.priority || n.category || '').toLowerCase();
+        return p === 'urgent' || p === 'high';
+      }).length;
+      const shift = allNotices.filter(n => {
+        const p = (n.priority || n.category || '').toLowerCase();
+        return p.includes('shift');
+      }).length;
+      const general = allNotices.filter(n => {
+        const p = (n.priority || n.category || '').toLowerCase();
+        return p === 'general' || (!p.includes('shift') && p !== 'urgent' && p !== 'high');
+      }).length;
+
+      document.getElementById('count-all').textContent = all;
+      document.getElementById('count-urgent').textContent = urgent;
+      document.getElementById('count-shift').textContent = shift;
+      document.getElementById('count-general').textContent = general;
+    }
+
+    // 3. Format timestamp like the screenshot ("8 hours ago", "Oct 16, 2026")
+    function formatTime(dateVal) {
+      if (!dateVal) return "Recent";
+      const d = new Date(dateVal);
+      if (isNaN(d.getTime())) return "Recent";
+
+      const diffSecs = Math.floor((new Date() - d) / 1000);
+      if (diffSecs < 60) return "Just now";
+      if (diffSecs < 3600) return Math.floor(diffSecs / 60) + " mins ago";
+      if (diffSecs < 86400) return Math.floor(diffSecs / 3600) + " hours ago";
+
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // 4. Render feed cards (Matching the screenshot)
     function renderNotices() {
       const container = document.getElementById('noticeContainer');
       const q = searchQuery.toLowerCase();
@@ -144,7 +161,7 @@
         let matchesCategory = (activeCategory === 'all');
         if (activeCategory === 'urgent') matchesCategory = (p === 'urgent' || p === 'high');
         else if (activeCategory === 'shift') matchesCategory = (p.includes('shift'));
-        else if (activeCategory === 'general') matchesCategory = (p === 'general');
+        else if (activeCategory === 'general') matchesCategory = (p === 'general' || (!p.includes('shift') && p !== 'urgent' && p !== 'high'));
 
         const titleMatch = (item.title || '').toLowerCase().includes(q);
         const textMatch = (item.content || item.description || '').toLowerCase().includes(q);
@@ -152,92 +169,73 @@
       });
 
       if (!filtered.length) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px; border: 1px dashed var(--border); border-radius: 8px;">No matching notices found.</p>';
+        container.innerHTML = '<div class="empty">No matching notices found.</div>';
         return;
       }
 
       container.innerHTML = filtered.map(item => {
         const p = (item.priority || item.category || 'general').toLowerCase();
-        let badgeClass = 'status-general';
-        let cardBorderClass = 'is-general';
-        let badgeLabel = 'General';
+        let badgeClass = 'general';
+        let badgeLabel = 'Notice';
 
-        if (p === 'urgent' || p === 'high') {
-          badgeClass = 'status-urgent';
-          cardBorderClass = 'is-urgent';
+        if (p === 'urgent') {
+          badgeClass = 'urgent';
           badgeLabel = 'Urgent';
+        } else if (p === 'high') {
+          badgeClass = 'high';
+          badgeLabel = 'High';
         } else if (p.includes('shift')) {
-          badgeClass = 'status-shift';
-          cardBorderClass = 'is-shift';
+          badgeClass = 'shift';
           badgeLabel = 'Schedule Shift';
         }
 
-        // Date breakdown for the left box
-        const rawDate = item.date || item.createdAt;
-        const dObj = rawDate ? new Date(rawDate) : new Date();
-        const dayNum = dObj.getDate();
-        const monthShort = dObj.toLocaleString('en-US', { month: 'short' });
-        const yearNum = dObj.getFullYear();
+        const timeStr = formatTime(item.createdAt || item.date);
 
         return `
-          <div class="notice-card ${cardBorderClass}" onclick="openModal('${item._id}')">
-            <div class="notice-date-box">
-              <span class="notice-date-day">${dayNum}</span>
-              <span class="notice-date-month">${monthShort}</span>
-              <span class="notice-date-year">${yearNum}</span>
-            </div>
-            <div class="notice-body">
-              <div class="notice-top">
-                <span class="notice-title">${item.title || 'Untitled Notice'}</span>
-                <span class="status-pill ${badgeClass}">${badgeLabel}</span>
+          <article class="notification" onclick="openModal('${item._id}')">
+            <div class="dot"></div>
+            <div class="notification-content">
+              <div class="notification-top">
+                <span class="badge ${badgeClass}">${badgeLabel}</span>
+                <span class="time">${timeStr}</span>
               </div>
-              <p class="notice-snippet">${(item.content || item.description || '').slice(0, 140)}...</p>
-              <div class="notice-meta">
-                <span>🏛️ Department Memo</span>
-                <span style="color: var(--primary); font-weight: 600;">Read Full Notice &rarr;</span>
-              </div>
+              <h3 class="notification-title">${item.title || 'Untitled Notice'}</h3>
+              <p class="notification-desc">${item.content || item.description || ''}</p>
             </div>
-          </div>
+          </article>
         `;
       }).join('');
     }
 
-    // 3. Category Selector Handler (Matches Day Selection in Timetable)
-    function selectCategory(cat, btn) {
+    // 5. Category Selection
+    function setCategory(cat, btn) {
       activeCategory = cat;
-      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
-      const labels = {
-        all: 'All Campus Notices',
-        urgent: '🚨 Urgent & High Priority Notices',
-        shift: '🔄 Schedule Shift Notices',
-        general: '📌 General Department Notices'
-      };
-      document.getElementById('statusLabel').textContent = labels[cat] || 'Campus Notices';
       renderNotices();
     }
 
-    // 4. Instant Search Handler
+    // 6. Search Filter
     function handleSearch(val) {
       searchQuery = val.trim();
       renderNotices();
     }
 
-    // 5. Modal Dialog Handlers
+    // 7. Pop-up Modal Handlers
     function openModal(id) {
       const item = allNotices.find(n => n._id === id);
       if (!item) return;
 
       const p = (item.priority || item.category || 'general').toLowerCase();
-      let badgeClass = 'status-general';
-      let badgeLabel = 'General';
-      if (p === 'urgent' || p === 'high') { badgeClass = 'status-urgent'; badgeLabel = 'Urgent'; }
-      else if (p.includes('shift')) { badgeClass = 'status-shift'; badgeLabel = 'Schedule Shift'; }
+      let badgeClass = 'general';
+      let badgeLabel = 'Notice';
+      if (p === 'urgent') { badgeClass = 'urgent'; badgeLabel = 'Urgent'; }
+      else if (p === 'high') { badgeClass = 'high'; badgeLabel = 'High'; }
+      else if (p.includes('shift')) { badgeClass = 'shift'; badgeLabel = 'Schedule Shift'; }
 
-      document.getElementById('modalCategory').innerHTML = `<span class="status-pill ${badgeClass}">${badgeLabel}</span>`;
+      document.getElementById('modalCategory').innerHTML = `<span class="badge ${badgeClass}">${badgeLabel}</span>`;
       document.getElementById('modalTitle').textContent = item.title || 'Announcement';
-      document.getElementById('modalDate').textContent = '📅 Published: ' + (item.date || (item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent'));
+      document.getElementById('modalDate').textContent = 'Posted: ' + formatTime(item.createdAt || item.date);
       document.getElementById('modalContent').textContent = item.content || item.description || '';
       document.getElementById('noticeModal').classList.add('show');
     }
