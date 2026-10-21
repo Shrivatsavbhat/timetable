@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — ReScheduled</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        .login-wrap {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .demo-bar {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border);
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-badge">R</span>
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="login-wrap">
+            <h2 style="margin: 0 0 6px 0;">Sign In</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required placeholder="cr@rescheduled.edu">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Sign In</button>
+            </form>
+
+        </div>
+    </main>
+
+    <script>
+        // Check with server session if user is authorized CR
+        async function verifySession() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (res.ok) {
+                    window.location.href = '/admin-add-notice.html';
+                    return;
+                }
+            } catch (err) {
+                window.location.href = '/login.html';
+            }
+        }
+        verifySession();
+
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = '/admin-add-notice.html';
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+
+            } catch (err) {
+                alert('Server error connecting to login.');
+            }
+        });
+    </script>
+</body>
+
+</html>

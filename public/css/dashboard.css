@@ -67,3 +67,193 @@
 .sidebar-notice-item:last-child {
     border-bottom: none;
 }
+
+
+.task-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 4px 0;
+}
+
+.task-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.sidebar-task-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-task-item:last-child {
+    border-bottom: none;
+}
+
+
+
+
+#today-schedule-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.period-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    align-items: center;
+    position: relative;
+}
+
+
+.period-status-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+}
+
+.status-confirmed {
+    background: #e6f7ff;
+    color: #0050b3;
+}
+
+.status-cancelled {
+    background: #fff1f0;
+    color: #cf1322;
+}
+
+.status-swapped {
+    background: #fffbe6;
+    color: #d4af37;
+}
+
+.status-substitute {
+    background: #f0f9ff;
+    color: #096dd9;
+}
+
+.status-rescheduled {
+    background: #f6ffed;
+    color: #389e0d;
+}
+
+
+.period-card.is-cancelled {
+    opacity: 0.7;
+    border-left: 3px solid #cf1322;
+}
+
+.period-card.is-swapped {
+    border-left: 3px solid #d4af37;
+}
+
+.period-card.is-substitute {
+    border-left: 3px solid #096dd9;
+}
+
+.period-card.is-rescheduled {
+    border-left: 3px solid #389e0d;
+}
+
+
+.period-time-box {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    min-width: 58px;
+}
+
+.period-time-start,
+.period-time-end {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+/* Details */
+.period-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.period-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.period-title {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.room-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    background: var(--muted-bg);
+    color: var(--text-muted);
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.period-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.period-faculty {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.period-faculty strong {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.period-note {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+
+@media (max-width:768px) {
+
+
+    .period-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .period-time-box {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .period-details {
+        width: 100%;
+    }
+}

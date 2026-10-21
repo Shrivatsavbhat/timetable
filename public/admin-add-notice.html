@@ -28,7 +28,9 @@
 
     <main class="main-container">
         <section class="admin-card" id="admin-card-create">
-            <h2>Post a Campus Notice</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Post a Campus Notice</h2>
+            </div>
             <form id="notice-form">
                 <div class="form-group">
                     <label for="title">Title</label>
@@ -64,7 +66,10 @@
 
 
         <section class="admin-card" id="admin-card-edit" style="margin-top: 30px; display: none;">
-            <h2>Edit a Campus Notice</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Edit a Campus Notice</h2>
+                <button class="btn-pill" onclick="showCreateNotice()">Create notice</button>
+            </div>
             <form id="notice-form-edit">
                 <div class="form-group">
                     <label for="title_edit">Title</label>
@@ -127,6 +132,7 @@
                     <a href="/notices.html">View Notices</a>
                     <a href="/timetable.html">View Timetable</a>
                     <a href="/notifications.html">View Alerts</a>
+                    <a href="#" onclick="logout()">Logout</a>
                 </div>
             </div>
             <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
@@ -140,7 +146,10 @@
             dateInput.value = today;
             dateInput.min = today;
         };
-
+        function showCreateNotice() {
+            document.getElementById('admin-card-create').style.display = 'block';
+            document.getElementById('admin-card-edit').style.display = 'none';
+        }
 
 
         // 2. Fetch and render notices 
@@ -204,6 +213,11 @@
                 loadNotices();
             }
         }
+        async function logout() {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        }
+
 
         async function editNotice(id) {
             const res = await fetch(`/api/notices/${id}`);
@@ -242,6 +256,24 @@
         }
 
         loadNotices();
+        // Check with server session if user is authorized CR
+        async function verifySession() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (!res.ok) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const data = await res.json();
+                if (data.user.role !== 'CR') {
+                    alert('Access restricted to Class Representatives.');
+                    window.location.href = '/dashboard.html';
+                }
+            } catch (err) {
+                window.location.href = '/login.html';
+            }
+        }
+        verifySession();
     </script>
 
 

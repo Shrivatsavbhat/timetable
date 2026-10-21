@@ -211,7 +211,7 @@
       document.getElementById('dayButtons').style.display = isTableView ? 'none' : 'flex';
       document.getElementById('dailyContainer').style.display = isTableView ? 'none' : 'flex';
       document.getElementById('weeklyContainer').style.display = isTableView ? 'block' : 'none';
-      document.getElementById('btnTableToggle').textContent = isTableView ? 'Cards View' : 'Table View';
+      document.getElementById('btnTableToggle').textContent = isTableView ? 'Daily View' : 'Weekly View';
       updateStatusLabel();
       renderCurrentView();
     }
@@ -295,8 +295,11 @@
             overrideNote = `<span class="override-reason">${s.reason}</span>`;
           }
         } else if (s.status === 'SWAPPED') {
-          badge = `<span class="status-pill status-swapped">Swapped ${s.newSlot ? `(Slot ${s.newSlot})` : ''}</span>`;
+          badge = `<span class="status-pill status-swapped">Swapped (was Slot ${s.newSlot})</span>`;
           cardClass += ' is-swapped';
+          if (s.swappedWithSubject) {
+            overrideNote = `<span class="override-reason" style="color: #b45309;">(Swapped with ${s.swappedWithSubject})</span>`;
+          }
         } else if (s.status === 'RESCHEDULED') {
           badge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
           cardClass += ' is-swapped';
@@ -378,7 +381,7 @@
               statusBadge = `<span class="status-pill status-cancelled">Cancelled${(s.reason && s.reason !== '--') ? ': ' + s.reason : ''}</span>`;
               rowStyle = 'style="opacity: 0.6; text-decoration: line-through;"';
             } else if (s.status === 'SWAPPED') {
-              statusBadge = `<span class="status-pill status-swapped">Swapped ${s.newSlot ? `(Slot ${s.newSlot})` : ''}</span>`;
+              statusBadge = `<span class="status-pill status-swapped">Swapped (was Slot ${s.newSlot})</span>`;
             } else if (s.status === 'RESCHEDULED') {
               statusBadge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
             } else if (s.status === 'SUBSTITUTE') {
@@ -391,9 +394,10 @@
           tableHtml += `
             <tr ${rowStyle}>
               <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
-              <td>
+                           <td>
                 <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
                 <span class="code-tag">${s.code}</span>
+                ${s.swappedWithSubject ? `<span style="font-size: 11px; color: var(--text-muted); font-style: italic; margin-left: 6px;">(Swapped with ${s.swappedWithSubject})</span>` : ''}
               </td>
               <td><span class="venue-pill">${s.newRoom || s.room}</span></td>
               <td>${facultyText}</td>

@@ -334,6 +334,25 @@
 
         filterDay.addEventListener('change', loadSlots);
         loadSlots();
+
+        // Check with server session if user is authorized CR
+        async function verifySession() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (!res.ok) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const data = await res.json();
+                if (data.user.role !== 'CR') {
+                    alert('Access restricted to Class Representatives.');
+                    window.location.href = '/dashboard.html';
+                }
+            } catch (err) {
+                window.location.href = '/login.html';
+            }
+        }
+        verifySession();
     </script>
 
 </body>

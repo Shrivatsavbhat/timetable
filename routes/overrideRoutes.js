@@ -1,6 +1,7 @@
 const express = require('express');
 const Override = require('../models/Override');
 const MasterSlot = require('../models/MasterSlot');
+const Notice = require('../models/Notice');
 
 const router = express.Router();
 
@@ -237,6 +238,13 @@ router.post('/', async (req, res) => {
                 await Override.findByIdAndDelete(first._id);
                 throw err;
             }
+            // Auto-create campus notice for swap
+            await Notice.create({
+                title: `Class Swap: ${original.subject} (${semester})`,
+                priority: 'Schedule Shift',
+                date,
+                content: `Slot ${slot} (${original.subject}) has been swapped with Slot ${newSlot}. Reason: ${reason}`
+            });
 
             return res.status(201).json({
                 success: true,
@@ -264,6 +272,14 @@ router.post('/', async (req, res) => {
                     : null,
             reason
         });
+        // Auto-create campus notice for other overrides
+        await Notice.create({
+            title: `Class ${status}: ${original.subject} (${semester})`,
+            priority: status === 'CANCELLED' ? 'Urgent' : 'Schedule Shift',
+            date,
+            content: `Slot ${slot} is ${status}. Reason: ${reason}` + (substituteFaculty ? ` (Substitute: ${substituteFaculty})` : '')
+        });
+
 
 
         res.status(201).json({
@@ -324,6 +340,8 @@ router.delete('/:id', async (req, res) => {
         });
     }
 });
+
+
 
 
 module.exports = router;

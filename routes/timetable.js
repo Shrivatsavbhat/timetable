@@ -69,7 +69,9 @@ router.get('/', async (req, res) => {
     if (semester) overrideFilter.semester = semester;
     if (dateString) overrideFilter.date = dateString;
 
-    const overrides = await Override.find(overrideFilter);
+    const overrides = await Override.find(overrideFilter).sort({ createdAt: -1 });
+
+
 
     const mergedSchedule = masterSlots.map(slot => {
       // Find override matching slot number AND day/date
@@ -78,19 +80,38 @@ router.get('/', async (req, res) => {
         if (dateString) return o.date === dateString;
         return getDayNameFromDate(o.date) === slot.day;
       });
-
       if (override) {
+        // For SWAPPED slots: Exchange the subject, faculty, code, and room with the partner slot!
+        if (override.status === 'SWAPPED' && override.newSlot) {
+          const partnerSlot = masterSlots.find(s => s.day === slot.day && String(s.slot) === String(override.newSlot));
+          if (partnerSlot) {
+            return {
+              ...slot.toObject(),
+              isOverridden: true,
+              status: 'SWAPPED',
+              // Time and slot stay at this position, but the lecture content comes from the swapped slot!
+              subject: partnerSlot.subject,
+              code: partnerSlot.code,
+              faculty: partnerSlot.faculty,
+              isLab: partnerSlot.isLab,
+              room: override.newRoom || partnerSlot.room,
+              newRoom: override.newRoom || partnerSlot.room,
+              newSlot: override.newSlot,
+              swappedWithSubject: slot.subject, // Reference to original class
+              reason: override.reason
+            };
+          }
+        }
         return {
           ...slot.toObject(),
           isOverridden: true,
-          status: override.status, // 'CANCELLED', 'RESCHEDULED', 'SUBSTITUTE', 'SWAPPED'
+          status: override.status, // 'CANCELLED', 'RESCHEDULED', 'SUBSTITUTE'
           newRoom: override.newRoom || slot.room,
           newSlot: override.newSlot || slot.slot,
           substituteFaculty: override.substituteFaculty || null,
           reason: override.reason
         };
       }
-
       return {
         ...slot.toObject(),
         isOverridden: false,

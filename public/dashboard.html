@@ -40,6 +40,7 @@
                     <h2 style="padding: 0 0 1rem 0;">Happening Now</h2>
                     <div id="happening-now-container">
                         <p>Getting data</p>
+                        <span id="room"></span>
                     </div>
                 </div>
             </secttion>
@@ -141,22 +142,19 @@
         async function getHappeningNow() {
             const res = await fetch('/api/happening-now')
             const data = await res.json()
-            const happeningNow = data.happeningNow
-            console.log(data.happeningNow)
+            const { subject, room } = data.happeningNow
+            console.log(subject, room)
 
 
             const happeningNowContainer = document.getElementById('happening-now-container');
             happeningNowContainer.innerHTML = '';
 
-            if (happeningNow.length === 0) {
-                happeningNowContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No happening now found.</p>';
-                return;
-            }
 
             const happeningNowDiv = document.createElement('div');
             happeningNowDiv.className = 'happening-now-item';
             happeningNowDiv.innerHTML = `
-                <p class="happening-now-content" style="color: var(--primary); font-weight: 600;">Current Slot: ${happeningNow}</p>
+                <p class="happening-now-content" style="color: var(--primary); font-weight: 600;">Current Slot: ${subject}</p>
+                <span id="room" style="display: ${room === '----' ? 'none' : 'block'};">Room: ${room}</span>
             `;
             happeningNowContainer.appendChild(happeningNowDiv);
         }

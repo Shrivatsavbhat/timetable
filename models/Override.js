@@ -52,14 +52,21 @@ const overrideSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    expiresAt: {
+        type: Date,
+        default: function () {
+            const d = new Date(this.date + 'T23:59:59');
+            d.setDate(d.getDate() + 7);
+            return d;
+        }
     }
 }, {
     timestamps: true
 });
 
-overrideSchema.index(
-    { semester: 1, date: 1, slot: 1 },
-    { unique: true }, { expireAfterSeconds: 604800 }
-);
+overrideSchema.index({ semester: 1, date: 1, slot: 1 }, { unique: true });
+overrideSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 
 module.exports = mongoose.model('Override', overrideSchema);
