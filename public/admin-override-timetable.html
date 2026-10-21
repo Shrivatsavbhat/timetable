@@ -1,597 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Override Timetable</title>
-    <link rel="stylesheet" href="./css/admin-override-timetable.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Override Timetable</title>
+<link rel="stylesheet" href="./css/admin-override-timetable.css">
 </head>
 
 <body>
 
+<a class="skip" href="#main">Skip to main content</a>
+
 <div class="page">
 
-    <header>
-        <div class="brand">
-            <div class="logo">R</div>
-            <b>ReScheduled</b>
-        </div>
+<header>
+    <div class="brand">
+        <span class="logo" aria-hidden="true">R</span>
+        <b>ReScheduled</b>
+    </div>
 
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="timetable.html">Timetable</a>
-            <a href="tasks.html">Tasks</a>
-        </nav>
-    </header>
+    <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="timetable.html">Timetable</a>
+        <a href="tasks.html">Tasks</a>
+    </nav>
 
-
-    <main>
-
-        <section class="intro">
-            <h1>Override Timetable</h1>
-            <p>Make temporary changes without modifying the master timetable.</p>
-        </section>
-
-
-        <section class="card filters">
-
-            <select id="semester">
-                <option value="">Semester</option>
-            </select>
-
-            <input type="date" id="date">
-
-            <button onclick="loadTimetable()">LOAD</button>
-
-        </section>
+    <div class="size" aria-label="Text size">
+        <button type="button" data-size="-1"
+                aria-label="Decrease text size">A−</button>
+        <button type="button" data-size="0"
+                aria-label="Normal text size"
+                aria-pressed="true">A</button>
+        <button type="button" data-size="1"
+                aria-label="Increase text size">A+</button>
+    </div>
+</header>
 
 
-        <section class="card">
+<main id="main">
 
-            <h2 id="heading">Select a semester and date</h2>
+<section class="intro">
+    <h1>Override Timetable</h1>
+    <p>Make temporary changes without modifying the master timetable.</p>
+</section>
 
-            <div class="table-wrap">
 
-                <table>
+<section class="card filters" aria-label="Timetable filters">
 
-                    <thead>
-                        <tr>
-                            <th>Slot</th>
-                            <th>Time</th>
-                            <th>Subject</th>
-                            <th>Faculty</th>
-                            <th>Room</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+    <div>
+        <label for="semester">Semester</label>
+        <select id="semester">
+            <option value="">Select semester</option>
+        </select>
+    </div>
 
-                    <tbody id="tableBody">
-                        <tr>
-                            <td colspan="6" class="empty">
-                                No timetable loaded.
-                            </td>
-                        </tr>
-                    </tbody>
+    <div>
+        <label for="date">Date</label>
+        <input type="date" id="date">
+    </div>
 
-                </table>
+    <button type="button" id="load">LOAD</button>
 
-            </div>
+</section>
 
-        </section>
 
-    </main>
+<div id="message" role="status" aria-live="polite"></div>
 
+
+<section class="card" aria-labelledby="tableTitle">
+
+    <h2 id="tableTitle">Timetable</h2>
+
+    <div class="table-wrap">
+
+        <table>
+            <caption class="sr">Selected timetable</caption>
+
+            <thead>
+                <tr>
+                    <th scope="col">Slot</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Faculty</th>
+                    <th scope="col">Room</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="6" class="empty">
+                        No timetable loaded.
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+</main>
 </div>
 
 
-<!-- Override Modal -->
+<!-- Override dialog -->
 
-<div class="modal" id="modal">
+<div class="modal" id="modal" hidden
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modalTitle"
+     aria-describedby="slotInfo">
 
-    <form class="modal-box" onsubmit="saveOverride(event)">
+<form class="modal-box" id="form">
 
-        <h2>Override Slot</h2>
+    <h2 id="modalTitle">Override Slot</h2>
+    <p id="slotInfo"></p>
 
-        <p id="slotInfo"></p>
+    <label for="status">Status</label>
+    <select id="status" required>
+        <option value="">Select status</option>
+        <option value="CANCELLED">Cancelled</option>
+        <option value="RESCHEDULED">Rescheduled</option>
+        <option value="SUBSTITUTE">Substitute</option>
+        <option value="SWAPPED">Swap</option>
+    </select>
 
+    <div id="slotBox" hidden>
+        <label for="newSlot" id="slotLabel">New Slot</label>
+        <select id="newSlot"></select>
+    </div>
 
-        <label>Status</label>
+    <div id="roomBox" hidden>
+        <label for="newRoom">New Room</label>
+        <input id="newRoom">
+    </div>
 
-        <select id="status"
-                onchange="toggleFields()"
-                required>
+    <div id="facultyBox" hidden>
+        <label for="faculty">Substitute Faculty</label>
+        <select id="faculty"></select>
+    </div>
 
-            <option value="">Select status</option>
-            <option value="CANCELLED">Cancelled</option>
-            <option value="RESCHEDULED">Rescheduled</option>
-            <option value="SUBSTITUTE">Substitute</option>
-            <option value="SWAPPED">Swap</option>
+    <label for="reason">Reason</label>
+    <input id="reason" required>
 
-        </select>
+    <div class="actions">
+        <button type="button" class="cancel" id="close">
+            Cancel
+        </button>
+        <button type="submit">SAVE CHANGE</button>
+    </div>
 
-
-        <div id="slotField">
-
-            <label id="slotLabel">New Slot</label>
-
-            <select id="newSlot">
-                <option value="">Select slot</option>
-            </select>
-
-        </div>
-
-
-        <div id="roomField">
-
-            <label>New Room</label>
-
-            <input
-                id="newRoom"
-                placeholder="Room">
-
-        </div>
-
-
-        <div id="facultyField">
-
-            <label>Substitute Faculty</label>
-
-            <select id="faculty">
-                <option value="">Select faculty</option>
-            </select>
-
-        </div>
-
-
-        <label>Reason *</label>
-
-        <input
-            id="reason"
-            placeholder="Reason for override"
-            required>
-
-
-        <div class="actions">
-
-            <button
-                type="button"
-                class="cancel"
-                onclick="closeModal()">
-                Cancel
-            </button>
-
-            <button type="submit">
-                SAVE CHANGE
-            </button>
-
-        </div>
-
-    </form>
-
+</form>
 </div>
 
 
 <script>
 
-let masterSlots = [];
-let daySlots = [];
-let selectedSlot = null;
-let overrides = [];
+const $=id=>document.getElementById(id);
 
-const semesterEl = document.getElementById("semester");
-const dateEl = document.getElementById("date");
-const tableBody = document.getElementById("tableBody");
+let slots=[],daySlots=[],overrides=[],selected,lastFocus;
+let textSize=0;
 
-const modal = document.getElementById("modal");
-const statusEl = document.getElementById("status");
-const newSlotEl = document.getElementById("newSlot");
-const newRoomEl = document.getElementById("newRoom");
-const facultyEl = document.getElementById("faculty");
-const reasonEl = document.getElementById("reason");
-
-const slotField = document.getElementById("slotField");
-const roomField = document.getElementById("roomField");
-const facultyField = document.getElementById("facultyField");
+const semester=$("semester"),
+      date=$("date"),
+      body=$("tableBody"),
+      modal=$("modal"),
+      status=$("status"),
+      newSlot=$("newSlot"),
+      newRoom=$("newRoom"),
+      faculty=$("faculty"),
+      reason=$("reason"),
+      message=$("message");
 
 
-// Load master timetable
-async function loadMasterSlots() {
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
+);
 
-    try {
 
-        const res = await fetch("/api/master-slots");
-        const data = await res.json();
+function msg(x,type=""){
+    message.textContent=x;
+    message.className=type;
+}
 
-        if (!data.success)
-            throw new Error(data.message);
 
-        masterSlots = data.slots || [];
+async function loadMaster(){
 
-        const semesters = [
-            ...new Set(
-                masterSlots.map(x => x.semester)
-            )
-        ];
+    try{
 
-        semesterEl.innerHTML =
-            `<option value="">Semester</option>` +
-            semesters.map(x =>
-                `<option value="${x}">${x}</option>`
-            ).join("");
+        const r=await fetch("/api/master-slots");
+        const d=await r.json();
 
-    } catch (err) {
+        if(!r.ok||!d.success)
+            throw Error(d.message||"Failed to load timetable.");
 
-        console.error(err);
-        alert("Failed to load master timetable.");
+        slots=d.slots||[];
+
+        semester.innerHTML=
+            `<option value="">Select semester</option>`+
+            [...new Set(slots.map(x=>x.semester))]
+            .map(x=>`<option value="${esc(x)}">${esc(x)}</option>`)
+            .join("");
+
+    }catch(e){
+        console.error(e);
+        msg(e.message,"error");
     }
 }
 
 
-// Load selected date
-async function loadTimetable() {
+async function loadTable(){
 
-    const semester = semesterEl.value;
-    const date = dateEl.value;
+    if(!semester.value||!date.value)
+        return msg("Select a semester and date.","error");
 
-    if (!semester || !date) {
-        alert("Select semester and date.");
-        return;
-    }
+    const day=new Date(date.value+"T00:00:00")
+        .toLocaleDateString("en-US",{weekday:"long"});
 
-    const day = new Date(date + "T00:00:00")
-        .toLocaleDateString(
-            "en-US",
-            { weekday: "long" }
-        );
-
-
-    daySlots = masterSlots.filter(slot =>
-        slot.semester === semester &&
-        slot.day === day
+    daySlots=slots.filter(x=>
+        x.semester===semester.value&&x.day===day
     );
 
+    try{
 
-    try {
-
-        const res = await fetch(
-            `/api/overrides/date/${date}`
+        const r=await fetch(
+            `/api/overrides/date/${date.value}?semester=${encodeURIComponent(semester.value)}`
         );
 
-        const data = await res.json();
+        const d=await r.json();
 
-        overrides = (data.overrides || [])
-            .filter(x => x.semester === semester);
+        if(!r.ok)
+            throw Error(d.message);
 
-    } catch (err) {
+        overrides=d.overrides||[];
 
-        console.error(err);
-        overrides = [];
+    }catch(e){
+
+        overrides=[];
+        msg("Could not load existing overrides.","error");
     }
 
-
-    document.getElementById("heading").textContent =
-        `${day} — ${date}`;
-
-    display();
+    $("tableTitle").textContent=`${day} — ${date.value}`;
+    render();
 }
 
 
-// Display timetable
-function display() {
+function render(){
 
-    if (!daySlots.length) {
+    if(!daySlots.length){
 
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty">
-                    No timetable available.
-                </td>
-            </tr>
-        `;
+        body.innerHTML=
+            `<tr><td colspan="6" class="empty">
+                No timetable available.
+            </td></tr>`;
 
         return;
     }
 
+    body.innerHTML=daySlots.map(x=>{
 
-    tableBody.innerHTML = daySlots.map(slot => {
-
-        const override =
-            overrides.find(x =>
-                x.slot === slot.slot
-            );
-
-
-        let action = "Override";
-
-        if (override) {
-            action = override.status;
-        }
-
+        const o=overrides.find(y=>y.slot===x.slot);
 
         return `
-            <tr>
-                <td>${slot.slot}</td>
-                <td>${slot.time}</td>
-                <td>${slot.subject}</td>
-                <td>${slot.faculty}</td>
-                <td>${slot.room}</td>
-
-                <td>
-                    ${
-                        override
-                        ? `<span class="status">${action}</span>`
-                        : `<button onclick="openModal('${slot.slot}')">
-                            Override
-                           </button>`
-                    }
-                </td>
-            </tr>
-        `;
+        <tr>
+            <td>${esc(x.slot)}</td>
+            <td>${esc(x.time)}</td>
+            <td>${esc(x.subject)}</td>
+            <td>${esc(x.faculty)}</td>
+            <td>${esc(x.room)}</td>
+            <td>
+                ${
+                    o
+                    ? `<span class="status">${esc(o.status)}</span>`
+                    : `<button class="override"
+                        data-slot="${esc(x.slot)}">
+                        Override
+                       </button>`
+                }
+            </td>
+        </tr>`;
 
     }).join("");
+
+    document.querySelectorAll(".override").forEach(b=>
+        b.onclick=()=>openModal(b.dataset.slot)
+    );
 }
 
 
-// Open modal
-function openModal(slotNumber) {
+function openModal(slot){
 
-    selectedSlot =
-        daySlots.find(x =>
-            x.slot === slotNumber
-        );
+    selected=daySlots.find(x=>x.slot===slot);
+    if(!selected)return;
 
-    if (!selectedSlot) return;
+    lastFocus=document.activeElement;
 
+    $("slotInfo").textContent=
+        `${selected.subject} • Slot ${selected.slot} • ${selected.time}`;
 
-    document.getElementById("slotInfo").textContent =
-        `${selectedSlot.subject} • Slot ${selectedSlot.slot} • ${selectedSlot.time}`;
+    $("form").reset();
 
-
-    statusEl.value = "";
-    reasonEl.value = "";
-    newRoomEl.value = "";
-    facultyEl.value = "";
-
-
-    populateSlots();
-    populateFaculty();
-
-    toggleFields();
-
-    modal.classList.add("show");
-}
-
-
-// Populate available slots
-function populateSlots() {
-
-    newSlotEl.innerHTML =
-        `<option value="">Select slot</option>` +
-
+    newSlot.innerHTML=
+        `<option value="">Select slot</option>`+
         daySlots
-            .filter(x =>
-                x.slot !== selectedSlot.slot
-            )
-            .map(x =>
-                `<option value="${x.slot}">
-                    Slot ${x.slot} — ${x.time} — ${x.subject}
-                </option>`
-            )
-            .join("");
+        .filter(x=>x.slot!==selected.slot)
+        .map(x=>`
+            <option value="${esc(x.slot)}">
+                Slot ${esc(x.slot)} — ${esc(x.time)}
+            </option>`)
+        .join("");
+
+    faculty.innerHTML=
+        `<option value="">Select faculty</option>`+
+        [...new Set(
+            slots
+            .filter(x=>x.semester===semester.value)
+            .map(x=>x.faculty)
+            .filter(Boolean)
+        )]
+        .map(x=>`<option value="${esc(x)}">${esc(x)}</option>`)
+        .join("");
+
+    toggle();
+
+    modal.hidden=false;
+    status.focus();
 }
 
 
-// Populate faculty from timetable
-function populateFaculty() {
+function toggle(){
 
-    const faculty = [
-        ...new Set(
-            masterSlots
-                .filter(x =>
-                    x.semester === semesterEl.value
-                )
-                .map(x => x.faculty)
-                .filter(Boolean)
-        )
-    ];
+    const s=status.value;
+    const move=s==="RESCHEDULED"||s==="SWAPPED";
 
-    facultyEl.innerHTML =
-        `<option value="">Select faculty</option>` +
+    $("slotBox").hidden=!move;
+    $("roomBox").hidden=s!=="RESCHEDULED";
+    $("facultyBox").hidden=s!=="SUBSTITUTE";
 
-        faculty.map(x =>
-            `<option value="${x}">${x}</option>`
-        ).join("");
+    $("slotLabel").textContent=
+        s==="SWAPPED"?"Swap With":"New Slot";
+
+    newSlot.required=move;
+    newRoom.required=s==="RESCHEDULED";
+    faculty.required=s==="SUBSTITUTE";
 }
 
 
-// Show relevant fields
-function toggleFields() {
+function closeModal(){
 
-    const type = statusEl.value;
+    modal.hidden=true;
+    selected=null;
 
-    slotField.style.display =
-        type === "RESCHEDULED" ||
-        type === "SWAPPED"
-            ? "block"
-            : "none";
-
-
-    roomField.style.display =
-        type === "RESCHEDULED"
-            ? "block"
-            : "none";
-
-
-    facultyField.style.display =
-        type === "SUBSTITUTE"
-            ? "block"
-            : "none";
-
-
-    document.getElementById("slotLabel").textContent =
-        type === "SWAPPED"
-            ? "Swap With"
-            : "New Slot";
+    if(lastFocus)lastFocus.focus();
 }
 
 
-// Close modal
-function closeModal() {
+async function save(e){
 
-    modal.classList.remove("show");
-}
+    e.preventDefault();
 
+    const s=status.value;
+    const target=daySlots.find(x=>x.slot===newSlot.value);
 
-// Save override
-async function saveOverride(event) {
+    if(!s)return msg("Select a status.","error");
 
-    event.preventDefault();
+    if((s==="RESCHEDULED"||s==="SWAPPED")&&!target)
+        return msg("Select a valid slot.","error");
 
-    const type = statusEl.value;
+    if(s==="RESCHEDULED"&&!newRoom.value.trim())
+        return msg("Enter the new room.","error");
 
-    if (!type) {
-        alert("Select a status.");
-        return;
-    }
+    if(s==="SUBSTITUTE"&&!faculty.value)
+        return msg("Select substitute faculty.","error");
 
-
-    if (
-        (type === "RESCHEDULED" ||
-         type === "SWAPPED") &&
-        !newSlotEl.value
-    ) {
-        alert("Select a slot.");
-        return;
-    }
+    if(!reason.value.trim())
+        return msg("Reason is required.","error");
 
 
-    if (
-        type === "RESCHEDULED" &&
-        !newRoomEl.value
-    ) {
-        alert("Enter the new room.");
-        return;
-    }
-
-
-    if (
-        type === "SUBSTITUTE" &&
-        !facultyEl.value
-    ) {
-        alert("Select substitute faculty.");
-        return;
-    }
-
-
-    if (!reasonEl.value.trim()) {
-        alert("Reason is required.");
-        return;
-    }
-
-
-    const targetSlot =
-        daySlots.find(x =>
-            x.slot === newSlotEl.value
-        );
-
-
-    const data = {
-
-        overrideId:
-            `${dateEl.value}-${selectedSlot.slot}-${Date.now()}`,
-
-        semester:
-            semesterEl.value,
-
-        date:
-            dateEl.value,
-
-        slot:
-            selectedSlot.slot,
-
-        status:
-            type,
+    const data={
+        overrideId:`${date.value}-${selected.slot}-${Date.now()}`,
+        semester:semester.value,
+        date:date.value,
+        slot:selected.slot,
+        status:s,
 
         newSlot:
-            type === "RESCHEDULED" ||
-            type === "SWAPPED"
-                ? newSlotEl.value
-                : null,
+            s==="RESCHEDULED"||s==="SWAPPED"
+            ?newSlot.value:null,
+
+        newTime:
+            s==="RESCHEDULED"
+            ?target.time:null,
 
         newRoom:
-            type === "RESCHEDULED"
-                ? newRoomEl.value
-                : type === "SWAPPED"
-                    ? targetSlot.room
-                    : null,
+            s==="RESCHEDULED"
+            ?newRoom.value.trim()
+            :s==="SWAPPED"
+            ?target.room:null,
 
         substituteFaculty:
-            type === "SUBSTITUTE"
-                ? facultyEl.value
-                : null,
+            s==="SUBSTITUTE"
+            ?faculty.value:null,
 
-        reason:
-            reasonEl.value.trim()
+        reason:reason.value.trim()
     };
 
 
-    try {
+    try{
 
-        const res = await fetch(
-            "/api/overrides",
-            {
-                method: "POST",
+        const r=await fetch("/api/overrides",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(data)
+        });
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+        const d=await r.json();
 
-                body:
-                    JSON.stringify(data)
-            }
-        );
-
-
-        const result = await res.json();
-
-
-        if (!res.ok) {
-            throw new Error(
-                result.message ||
-                "Override creation failed."
-            );
-        }
-
-
-        alert(
-            result.message ||
-            "Override saved successfully."
-        );
-
+        if(!r.ok)
+            throw Error(d.message||"Override creation failed.");
 
         closeModal();
+        msg("Override saved successfully.","success");
+        loadTable();
 
-        loadTimetable();
+    }catch(e){
 
-
-    } catch (err) {
-
-        console.error(err);
-
-        alert(
-            err.message ||
-            "Override creation failed."
-        );
+        console.error(e);
+        msg(e.message,"error");
     }
 }
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadMasterSlots
-);
+/* A− / A / A+ */
+
+document.querySelectorAll(".size button").forEach(b=>{
+
+    b.onclick=()=>{
+
+        const change=Number(b.dataset.size);
+
+        if(change===0)
+            textSize=0;
+        else
+            textSize=Math.max(-3,Math.min(3,textSize+change));
+
+        document.documentElement.style.fontSize=
+            `${16+textSize*2}px`;
+
+        document.querySelectorAll(".size button")
+            .forEach(x=>
+                x.setAttribute(
+                    "aria-pressed",
+                    x===b
+                )
+            );
+    };
+
+});
+
+
+$("load").onclick=loadTable;
+$("close").onclick=closeModal;
+status.onchange=toggle;
+$("form").onsubmit=save;
+
+document.onkeydown=e=>{
+    if(e.key==="Escape"&&!modal.hidden)
+        closeModal();
+};
+
+modal.onclick=e=>{
+    if(e.target===modal)
+        closeModal();
+};
+
+loadMaster();
 
 </script>
 

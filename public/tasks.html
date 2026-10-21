@@ -1,545 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReScheduled - Tasks</title>
-    <link rel="stylesheet" href="./css/tasks.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReScheduled - Tasks</title>
+<link rel="stylesheet" href="./css/tasks.css">
 </head>
 
 <body>
 
 <div class="page">
 
-    <header class="top">
-        <div class="brand">
-            <div class="logo">R</div>
-            <span>ReScheduled</span>
-        </div>
+<header>
+    <div class="brand">
+        <span class="logo" aria-hidden="true">R</span>
+        <strong>ReScheduled</strong>
+    </div>
 
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="timetable.html">Timetable</a>
-            <a href="notices.html">Notices</a>
-            <a href="notifications.html">Alerts</a>
-        </nav>
-    </header>
+    <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="timetable.html">Timetable</a>
+        <a href="notification.html">Notifications</a>
+    </nav>
 
-    <!-- TASK FORM -->
-    <section class="card">
-        <h1 id="formTitle">Post a Task</h1>
+    <div class="size" aria-label="Text size">
+        <button type="button" data-size="small" aria-label="Decrease text size">A−</button>
+        <button type="button" data-size="normal" aria-label="Normal text size" aria-pressed="true">A</button>
+        <button type="button" data-size="large" aria-label="Increase text size">A+</button>
+    </div>
+</header>
 
-        <form id="taskForm">
+<main>
 
-            <label for="name">Task Name</label>
-            <input
-                type="text"
-                id="name"
-                placeholder="e.g. DAA Quiz 1"
-                required
-            >
+<section class="intro">
+    <h1>Tasks</h1>
+    <p>Manage assignments, quizzes, labs and projects.</p>
+</section>
 
-            <div class="row">
+<section class="card controls" aria-label="Task controls">
+    <button type="button" id="add">+ ADD TASK</button>
 
-                <div class="field">
-                    <label for="type">Type</label>
+    <label for="filter">Filter</label>
+    <select id="filter">
+        <option>All</option>
+        <option>Pending</option>
+        <option>Completed</option>
+    </select>
+</section>
 
-                    <select id="type" required>
-                        <option value="Assignment">Assignment</option>
-                        <option value="Quiz">Quiz</option>
-                        <option value="Lab Submission">Lab Submission</option>
-                        <option value="Project">Project</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+<div id="message" role="status" aria-live="polite"></div>
 
-                <div class="field">
-                    <label for="room">Classroom</label>
+<section class="card" aria-labelledby="listTitle">
+    <h2 id="listTitle">Task List</h2>
 
-                    <input
-                        type="text"
-                        id="room"
-                        placeholder="e.g. LH-204"
-                    >
-                </div>
+    <div class="table-wrap">
+        <table>
+            <caption class="sr-only">Task list</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Task</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Room</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody id="tasks">
+                <tr><td colspan="6" class="empty">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 
-            </div>
-
-            <label for="date">Due Date</label>
-
-            <input
-                type="date"
-                id="date"
-                required
-            >
-
-            <p class="date-note">
-                Due date must be today or a future date.
-            </p>
-
-            <label for="description">Description</label>
-
-            <textarea
-                id="description"
-                placeholder="Enter task details..."
-            ></textarea>
-
-            <div class="form-actions">
-
-                <button type="submit" id="submitBtn">
-                    ADD TASK
-                </button>
-
-                <button
-                    type="button"
-                    id="cancelBtn"
-                    class="cancel-btn"
-                    onclick="cancelEdit()"
-                    hidden
-                >
-                    CANCEL
-                </button>
-
-            </div>
-
-        </form>
-    </section>
+</main>
+</div>
 
 
-    <!-- PUBLISHED TASKS -->
-    <section class="card">
+<div class="modal" id="modal" hidden
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modalTitle">
 
-        <h2>Published Tasks</h2>
+<form class="modal-box" id="form">
 
-        <div class="table-wrapper">
+    <h2 id="modalTitle">Add Task</h2>
 
-            <table>
+    <label for="name">Task Name</label>
+    <input id="name" required>
 
-                <thead>
-                    <tr>
-                        <th>Task</th>
-                        <th>Type</th>
-                        <th>Classroom</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+    <label for="type">Task Type</label>
+    <select id="type">
+        <option>Assignment</option>
+        <option>Quiz</option>
+        <option>Lab Submission</option>
+        <option>Project</option>
+        <option>Other</option>
+    </select>
 
-                <tbody id="taskList">
+    <label for="date">Due Date</label>
+    <input id="date" type="date" required>
 
-                    <tr>
-                        <td colspan="6" class="loading">
-                            Loading tasks...
-                        </td>
-                    </tr>
+    <label for="room">Room</label>
+    <input id="room">
 
-                </tbody>
+    <label for="description">Description</label>
+    <textarea id="description" rows="3"></textarea>
 
-            </table>
+    <div class="actions">
+        <button type="button" class="cancel" id="close">Cancel</button>
+        <button type="submit" id="save">ADD TASK</button>
+    </div>
 
-        </div>
-
-    </section>
-
-
-    <footer>
-
-        <div class="brand">
-            <div class="logo">R</div>
-            <span>ReScheduled</span>
-        </div>
-
-        <div class="footer-links">
-            <a href="tasks.html">+ Post Task</a>
-            <a href="tasks.html">View Tasks</a>
-            <a href="timetable.html">View Timetable</a>
-        </div>
-
-    </footer>
-
+</form>
 </div>
 
 
 <script>
+const $=id=>document.getElementById(id);
+let data=[],edit=null,focus=null;
 
-const form = document.getElementById("taskForm");
-const taskList = document.getElementById("taskList");
-const dateInput = document.getElementById("date");
+const esc=x=>String(x??"").replace(/[&<>"']/g,
+c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-const formTitle = document.getElementById("formTitle");
-const submitBtn = document.getElementById("submitBtn");
-const cancelBtn = document.getElementById("cancelBtn");
-
-let editingTaskId = null;
-
-
-// Set minimum date
-function setMinimumDate() {
-
-    const today = new Date();
-
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    dateInput.min = `${year}-${month}-${day}`;
+function msg(text,type=""){
+    $("message").textContent=text;
+    $("message").className=type;
 }
 
-setMinimumDate();
-
-
-// Load tasks
-async function loadTasks() {
-
-    try {
-
-        const response = await fetch("/api/tasks");
-
-        if (!response.ok) {
-            throw new Error("Failed to fetch tasks");
-        }
-
-        const data = await response.json();
-
-        const tasks = data.tasks || data;
-
-        displayTasks(tasks);
-
-    } catch (error) {
-
-        console.error(error);
-
-        taskList.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty">
-                    Unable to load tasks.
-                </td>
-            </tr>
-        `;
+async function load(){
+    try{
+        const r=await fetch("/api/tasks"),d=await r.json();
+        if(!r.ok||!d.success)throw Error(d.message);
+        data=d.tasks||[];
+        render();
+    }catch(e){
+        msg(e.message||"Failed to load tasks.","error");
     }
 }
 
+function render(){
+    let list=data,f=$("filter").value;
 
-// Display tasks
-function displayTasks(tasks) {
+    if(f==="Pending")list=data.filter(x=>!x.isCompleted);
+    if(f==="Completed")list=data.filter(x=>x.isCompleted);
 
-    if (!tasks.length) {
-
-        taskList.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty">
-                    No tasks found.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    taskList.innerHTML = tasks.map(task => `
-
+    $("tasks").innerHTML=list.length?list.map(x=>`
         <tr>
-
+            <td><strong>${esc(x.name)}</strong></td>
+            <td>${esc(x.type)}</td>
+            <td>${esc(x.date)}</td>
+            <td>${esc(x.room||"—")}</td>
             <td>
-                <strong>${task.name}</strong>
-
-                ${
-                    task.description
-                    ? `<small>${task.description}</small>`
-                    : ""
-                }
+                <label class="check">
+                    <input type="checkbox"
+                        data-check="${x._id}"
+                        ${x.isCompleted?"checked":""}
+                        aria-label="Mark ${esc(x.name)} completed">
+                    ${x.isCompleted?"Completed":"Pending"}
+                </label>
             </td>
-
-            <td>${task.type}</td>
-
-            <td>${task.room || "-"}</td>
-
-            <td>${formatDate(task.date)}</td>
-
-            <td>
-                <span class="${task.isCompleted ? "completed" : "pending"}">
-                    ${task.isCompleted ? "Completed" : "Pending"}
-                </span>
+            <td class="actions-cell">
+                <button data-edit="${x._id}">Edit</button>
+                <button class="delete" data-delete="${x._id}">Delete</button>
             </td>
-
-            <td>
-
-                <button
-                    class="edit-btn"
-                    onclick="editTask('${task._id}')">
-                    Edit
-                </button>
-
-                <button
-                    class="delete-btn"
-                    onclick="deleteTask('${task._id}')"
-                    title="Delete task">
-                    Delete
-                </button>
-
-            </td>
-
         </tr>
+    `).join(""):`<tr><td colspan="6" class="empty">No tasks found.</td></tr>`;
 
-    `).join("");
+    document.querySelectorAll("[data-edit]").forEach(b=>
+        b.onclick=()=>open(b.dataset.edit));
+
+    document.querySelectorAll("[data-delete]").forEach(b=>
+        b.onclick=()=>del(b.dataset.delete));
+
+    document.querySelectorAll("[data-check]").forEach(b=>
+        b.onchange=()=>complete(b.dataset.check,b.checked));
 }
 
+function open(id=null){
+    edit=id;
+    focus=document.activeElement;
+    $("form").reset();
 
-// EDIT TASK
-async function editTask(id) {
-
-    try {
-
-        const response = await fetch(`/api/tasks/${id}`);
-
-        if (!response.ok) {
-            throw new Error("Failed to fetch task");
-        }
-
-        const data = await response.json();
-
-        const task = data.task || data;
-
-        // Put existing values into same form fields
-        document.getElementById("name").value = task.name || "";
-
-        document.getElementById("type").value =
-            task.type || "Assignment";
-
-        document.getElementById("room").value =
-            task.room || "";
-
-        document.getElementById("date").value =
-            task.date || "";
-
-        document.getElementById("description").value =
-            task.description || "";
-
-        // Store ID being edited
-        editingTaskId = id;
-
-        // Change form appearance
-        formTitle.textContent = "Edit Task";
-        submitBtn.textContent = "UPDATE TASK";
-        cancelBtn.hidden = false;
-
-        // Scroll to form
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Unable to load task.");
+    if(id){
+        const x=data.find(t=>t._id===id);
+        $("name").value=x.name;
+        $("type").value=x.type;
+        $("date").value=x.date;
+        $("room").value=x.room||"";
+        $("description").value=x.description||"";
+        $("modalTitle").textContent="Edit Task";
+        $("save").textContent="UPDATE TASK";
+    }else{
+        $("modalTitle").textContent="Add Task";
+        $("save").textContent="ADD TASK";
     }
+
+    $("modal").hidden=false;
+    $("name").focus();
 }
 
+function close(){
+    $("modal").hidden=true;
+    edit=null;
+    focus?.focus();
+}
 
-// ADD / UPDATE TASK
-form.addEventListener("submit", async function(event) {
+async function save(e){
+    e.preventDefault();
 
-    event.preventDefault();
-
-    const selectedDate = dateInput.value;
-
-    const today = new Date();
-
-    today.setHours(0, 0, 0, 0);
-
-    const dueDate = new Date(
-        selectedDate + "T00:00:00"
-    );
-
-    if (dueDate < today) {
-
-        alert(
-            "Due date must be today or a future date."
-        );
-
-        return;
-    }
-
-
-    const task = {
-
-        name: document.getElementById("name").value.trim(),
-
-        type: document.getElementById("type").value,
-
-        date: selectedDate,
-
-        room: document.getElementById("room").value.trim(),
-
-        description:
-            document.getElementById("description").value.trim()
+    const body={
+        name:$("name").value.trim(),
+        type:$("type").value,
+        date:$("date").value,
+        room:$("room").value.trim(),
+        description:$("description").value.trim()
     };
 
+    try{
+        const r=await fetch(edit?`/api/tasks/${edit}`:"/api/tasks",{
+            method:edit?"PUT":"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(body)
+        });
 
-    try {
+        const d=await r.json();
+        if(!r.ok)throw Error(d.message);
 
-        let response;
-
-        // UPDATE
-        if (editingTaskId) {
-
-            response = await fetch(
-                `/api/tasks/${editingTaskId}`,
-                {
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify(task)
-                }
-            );
-
-        }
-
-        // CREATE
-        else {
-
-            response = await fetch(
-                "/api/tasks",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify(task)
-                }
-            );
-
-        }
-
-
-        const data = await response.json();
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message || "Operation failed"
-            );
-        }
-
-
-        // Reset form
-        resetForm();
-
-        // Reload table
-        loadTasks();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            editingTaskId
-            ? "Unable to update task."
-            : "Unable to add task."
-        );
+        close();
+        msg(edit?"Task updated successfully.":"Task added successfully.","success");
+        load();
+    }catch(e){
+        msg(e.message||"Failed to save task.","error");
     }
+}
 
+async function complete(id,value){
+    try{
+        const r=await fetch(`/api/tasks/${id}`,{
+            method:"PUT",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({isCompleted:value})
+        });
+        if(!r.ok)throw Error("Failed to update task.");
+        load();
+    }catch(e){msg(e.message,"error")}
+}
+
+async function del(id){
+    const x=data.find(t=>t._id===id);
+    if(!confirm(`Delete "${x.name}"?`))return;
+
+    try{
+        const r=await fetch(`/api/tasks/${id}`,{method:"DELETE"});
+        if(!r.ok)throw Error("Failed to delete task.");
+        msg("Task deleted successfully.","success");
+        load();
+    }catch(e){msg(e.message,"error")}
+}
+
+
+/* Text size */
+
+document.querySelectorAll("[data-size]").forEach(b=>{
+    b.onclick=()=>{
+        document.body.dataset.size=b.dataset.size;
+
+        document.querySelectorAll("[data-size]").forEach(x=>
+            x.setAttribute("aria-pressed",x===b)
+        );
+    };
 });
 
 
-// CANCEL EDIT
-function cancelEdit() {
+$("add").onclick=()=>open();
+$("close").onclick=close;
+$("form").onsubmit=save;
+$("filter").onchange=render;
 
-    resetForm();
-}
+document.onkeydown=e=>{
+    if(e.key==="Escape"&&!$("modal").hidden)close();
+};
 
-
-// RESET FORM
-function resetForm() {
-
-    form.reset();
-
-    editingTaskId = null;
-
-    formTitle.textContent = "Post a Task";
-
-    submitBtn.textContent = "ADD TASK";
-
-    cancelBtn.hidden = true;
-
-    setMinimumDate();
-}
-
-
-// DELETE TASK
-async function deleteTask(id) {
-
-    if (!confirm("Delete this task?")) {
-        return;
-    }
-
-
-    try {
-
-        const response = await fetch(
-            `/api/tasks/${id}`,
-            {
-                method: "DELETE"
-            }
-        );
-
-
-        if (!response.ok) {
-            throw new Error("Failed to delete task");
-        }
-
-
-        loadTasks();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Unable to delete task.");
-    }
-}
-
-
-// Format date
-function formatDate(date) {
-
-    if (!date) {
-        return "";
-    }
-
-    const d = new Date(
-        date + "T00:00:00"
-    );
-
-    if (isNaN(d.getTime())) {
-        return date;
-    }
-
-
-    return d.toLocaleDateString(
-        "en-GB",
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }
-    );
-}
-
-
-loadTasks();
-
+load();
 </script>
 
 </body>
