@@ -10,31 +10,33 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Navbar -->
-    <header class="navbar">
+    <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
-                <span class="logo-box">R</span>
+                <span class="logo-box" aria-hidden="true">R</span>
                 <span class="brand-name">ReScheduled</span>
             </a>
-            <div class="nav-links">
+            <nav class="nav-links" aria-label="Main navigation">
                 <a href="/">Home</a>
                 <a href="/timetable.html">Timetable</a>
                 <a href="/notices.html">Notices</a>
                 <a href="/notifications.html">Alerts</a>
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main class="main-container">
-        <section class="admin-card" id="admin-card-create">
+    <main class="main-container" id="main-content">
+        <section class="admin-card" id="admin-card-create" aria-labelledby="post-notice-heading">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Post a Campus Notice</h2>
+                <h1 id="post-notice-heading" style="font-size: 20px; font-weight: 700; margin: 0 0 16px 0;">Post a Campus Notice</h1>
             </div>
             <form id="notice-form">
                 <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" required placeholder="e.g. CS502 OS Class Cancelled">
+                    <label for="title">Title <span aria-hidden="true">*</span></label>
+                    <input type="text" id="title" required aria-required="true" placeholder="e.g. CS502 OS Class Cancelled">
                 </div>
 
                 <div class="form-row">
@@ -49,36 +51,34 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" required>
+                        <label for="date">Date <span aria-hidden="true">*</span></label>
+                        <input type="date" id="date" required aria-required="true">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="content">Description</label>
-                    <textarea id="content" rows="4" required placeholder="Enter memo details..."></textarea>
+                    <label for="content">Description <span aria-hidden="true">*</span></label>
+                    <textarea id="content" rows="4" required aria-required="true" placeholder="Enter memo details..."></textarea>
                 </div>
 
                 <button type="submit" class="btn-pill">Publish Notice</button>
             </form>
         </section>
 
-
-
-        <section class="admin-card" id="admin-card-edit" style="margin-top: 30px; display: none;">
+        <section class="admin-card" id="admin-card-edit" style="margin-top: 30px; display: none;" aria-labelledby="edit-notice-heading">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Edit a Campus Notice</h2>
-                <button class="btn-pill" onclick="showCreateNotice()">Create notice</button>
+                <h2 id="edit-notice-heading" style="margin: 0;">Edit a Campus Notice</h2>
+                <button type="button" class="btn-pill" onclick="showCreateNotice()">Cancel & Create Notice</button>
             </div>
             <form id="notice-form-edit">
                 <div class="form-group">
-                    <label for="title_edit">Title</label>
-                    <input type="text" id="title_edit" required placeholder="e.g. CS502 OS Class Cancelled">
+                    <label for="title_edit">Title <span aria-hidden="true">*</span></label>
+                    <input type="text" id="title_edit" required aria-required="true" placeholder="e.g. CS502 OS Class Cancelled">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="priority">Priority</label>
+                        <label for="priority_edit">Priority</label>
                         <select id="priority_edit">
                             <option value="General">General</option>
                             <option value="Schedule Shift">Schedule Shift</option>
@@ -88,94 +88,109 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date_edit" required>
+                        <label for="date_edit">Date <span aria-hidden="true">*</span></label>
+                        <input type="date" id="date_edit" required aria-required="true">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="content_edit">Description</label>
-                    <textarea id="content_edit" rows="4" required placeholder="Enter memo details..."></textarea>
+                    <label for="content_edit">Description <span aria-hidden="true">*</span></label>
+                    <textarea id="content_edit" rows="4" required aria-required="true" placeholder="Enter memo details..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-pill">Edit Notice</button>
+                <button type="submit" class="btn-pill">Update Notice</button>
             </form>
         </section>
 
-
-        <section class="admin-card" style="margin-top: 30px;">
-            <h3>Published Notices</h3>
+        <section class="admin-card" style="margin-top: 30px;" aria-labelledby="published-notices-heading">
+            <h2 id="published-notices-heading" style="font-size: 18px; margin: 0 0 10px 0;">Published Notices</h2>
             <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                <caption class="sr-only">Published Notices Management Table</caption>
                 <thead>
                     <tr style="text-align: left; border-bottom: 2px solid var(--border);">
-                        <th style="padding: 10px;">Priority</th>
-                        <th style="padding: 10px;">Title</th>
-                        <th style="padding: 10px;">Date</th>
-                        <th style="padding: 10px; text-align: right;">Action</th>
+                        <th scope="col" style="padding: 10px;">Priority</th>
+                        <th scope="col" style="padding: 10px;">Title</th>
+                        <th scope="col" style="padding: 10px;">Date</th>
+                        <th scope="col" style="padding: 10px; text-align: right;">Action</th>
                     </tr>
                 </thead>
-                <tbody id="notices-list">
+                <tbody id="notices-list" aria-live="polite">
                 </tbody>
             </table>
         </section>
     </main>
-    <footer>
+    <footer role="contentinfo">
         <hr>
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <span class="logo-box">R</span>
+                    <span class="logo-box" aria-hidden="true">R</span>
                     <span class="brand-name">ReScheduled</span>
                 </div>
-                <div class="footer-links">
+                <nav class="footer-links" aria-label="Footer quick links">
                     <a href="/admin-add-notice.html">+ Post Notice</a>
                     <a href="/notices.html">View Notices</a>
                     <a href="/timetable.html">View Timetable</a>
                     <a href="/notifications.html">View Alerts</a>
                     <a href="#" onclick="logout()">Logout</a>
-                </div>
+                </nav>
             </div>
             <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
         </div>
     </footer>
 
+    <script src="./scripts/a11y.js"></script>
     <script>
-        window.onload = () => {
+        let currentEditId = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
             const dateInput = document.getElementById('date');
-            dateInput.value = today;
-            dateInput.min = today;
-        };
+            if (dateInput) {
+                dateInput.value = today;
+                dateInput.min = today;
+            }
+            loadNotices();
+            verifySession();
+        });
+
         function showCreateNotice() {
             document.getElementById('admin-card-create').style.display = 'block';
             document.getElementById('admin-card-edit').style.display = 'none';
+            currentEditId = null;
         }
 
+        const esc = s => String(s ?? "").replace(/[&<>"']/g,
+            c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
         // 2. Fetch and render notices 
         async function loadNotices() {
-            const res = await fetch('/api/notices');
-            const data = await res.json();
-            const tbody = document.getElementById('notices-list');
-            tbody.innerHTML = '';
+            try {
+                const res = await fetch('/api/notices');
+                const data = await res.json();
+                const tbody = document.getElementById('notices-list');
+                tbody.innerHTML = '';
 
-            if (data.success && data.notices.length > 0) {
-                data.notices.forEach(n => {
-                    const row = document.createElement('tr');
-                    row.style.borderBottom = '1px solid var(--border)';
-                    row.innerHTML = `
-                        <td style="padding: 10px; font-weight: bold;">${n.priority}</td>
-                        <td style="padding: 10px;">${n.title}</td>
-                        <td style="padding: 10px; color: var(--text-muted);">${n.date}</td>
-                        <td style="padding: 10px; text-align: right;">
-                            <button onclick="deleteNotice('${n._id}')" style="color: red; border: none; background: none; cursor: pointer; font-weight: bold;" title="Delete">❌</button>
-                            <button onclick="editNotice('${n._id}')" style="color: green; border: none; background: none; cursor: pointer; font-weight: bold;" title="Edit">📝</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } else {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">No notices yet.</td></tr>';
+                if (data.success && data.notices.length > 0) {
+                    data.notices.forEach(n => {
+                        const row = document.createElement('tr');
+                        row.style.borderBottom = '1px solid var(--border)';
+                        row.innerHTML = `
+                            <td style="padding: 10px; font-weight: bold;">${esc(n.priority)}</td>
+                            <td style="padding: 10px;">${esc(n.title)}</td>
+                            <td style="padding: 10px; color: var(--text-muted);">${esc(n.date)}</td>
+                            <td style="padding: 10px; text-align: right;">
+                                <button onclick="deleteNotice('${n._id}', '${esc(n.title)}')" style="color: #991b1b; border: none; background: none; cursor: pointer; font-size: 16px; padding: 4px;" aria-label="Delete notice: ${esc(n.title)}" title="Delete notice">❌</button>
+                                <button onclick="editNotice('${n._id}')" style="color: #166534; border: none; background: none; cursor: pointer; font-size: 16px; padding: 4px;" aria-label="Edit notice: ${esc(n.title)}" title="Edit notice">📝</button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--text-muted);">No notices published yet.</td></tr>';
+                }
+            } catch (err) {
+                console.error('Failed to load notices:', err);
             }
         }
 
@@ -184,78 +199,111 @@
             e.preventDefault();
 
             const payload = {
-                title: document.getElementById('title').value,
+                title: document.getElementById('title').value.trim(),
                 priority: document.getElementById('priority').value,
                 date: document.getElementById('date').value,
-                content: document.getElementById('content').value
+                content: document.getElementById('content').value.trim()
             };
 
-            const res = await fetch('/api/notices', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            try {
+                const res = await fetch('/api/notices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            if (res.ok) {
-                alert('Notice published!');
-                document.getElementById('notice-form').reset();
-                document.getElementById('date').value = new Date().toISOString().split('T')[0];
-                loadNotices();
-            } else {
-                alert('Error publishing notice.');
+                if (res.ok) {
+                    window.showToast('Notice published successfully!', 'success');
+                    document.getElementById('notice-form').reset();
+                    document.getElementById('date').value = new Date().toISOString().split('T')[0];
+                    loadNotices();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    window.showToast(err.message || 'Error publishing notice.', 'error');
+                }
+            } catch (err) {
+                window.showToast('Server error publishing notice.', 'error');
             }
         });
 
-        // 4. Delete notice
-        async function deleteNotice(id) {
-            if (confirm('Delete this notice?')) {
-                await fetch(`/api/notices/${id}`, { method: 'DELETE' });
-                loadNotices();
+        // 4. Delete notice with accessible confirmation
+        async function deleteNotice(id, title) {
+            const confirmed = await window.accessibleConfirm(`Are you sure you want to delete the notice "${title}"?`);
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`/api/notices/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    window.showToast('Notice deleted successfully.', 'success');
+                    loadNotices();
+                } else {
+                    window.showToast('Failed to delete notice.', 'error');
+                }
+            } catch (err) {
+                window.showToast('Network error deleting notice.', 'error');
             }
         }
+
         async function logout() {
             await fetch('/api/auth/logout', { method: 'POST' });
             window.location.href = '/login.html';
         }
 
-
         async function editNotice(id) {
-            const res = await fetch(`/api/notices/${id}`);
-            const data = await res.json();
-            document.getElementById('title_edit').value = data.notice.title;
-            document.getElementById('priority_edit').value = data.notice.priority;
-            document.getElementById('date_edit').value = data.notice.date;
-            document.getElementById('content_edit').value = data.notice.content;
-            document.getElementById('admin-card-create').style.display = 'none';
-            document.getElementById('admin-card-edit').style.display = 'block';
-            document.getElementById('admin-card-edit').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            document.getElementById('admin-card-edit').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const payload = {
-                    title: document.getElementById('title_edit').value,
-                    priority: document.getElementById('priority_edit').value,
-                    date: document.getElementById('date_edit').value,
-                    content: document.getElementById('content_edit').value
-                };
-                const res = await fetch(`/api/notices/${id}`, {
+            try {
+                const res = await fetch(`/api/notices/${id}`);
+                const data = await res.json();
+                if (!res.ok || !data.notice) {
+                    window.showToast('Could not load notice details.', 'error');
+                    return;
+                }
+                currentEditId = id;
+                document.getElementById('title_edit').value = data.notice.title || '';
+                document.getElementById('priority_edit').value = data.notice.priority || 'General';
+                document.getElementById('date_edit').value = data.notice.date || '';
+                document.getElementById('content_edit').value = data.notice.content || '';
+                document.getElementById('admin-card-create').style.display = 'none';
+                document.getElementById('admin-card-edit').style.display = 'block';
+                document.getElementById('admin-card-edit').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.getElementById('title_edit').focus();
+            } catch (err) {
+                window.showToast('Error loading notice for editing.', 'error');
+            }
+        }
+
+        // Single dedicated edit submission handler
+        document.getElementById('notice-form-edit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentEditId) return;
+
+            const payload = {
+                title: document.getElementById('title_edit').value.trim(),
+                priority: document.getElementById('priority_edit').value,
+                date: document.getElementById('date_edit').value,
+                content: document.getElementById('content_edit').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/notices/${currentEditId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+
                 if (res.ok) {
-                    alert('Notice updated!');
+                    window.showToast('Notice updated successfully!', 'success');
                     document.getElementById('notice-form-edit').reset();
-                    document.getElementById('admin-card-create').style.display = 'block';
-                    document.getElementById('admin-card-edit').style.display = 'none';
-                    document.getElementById('date_edit').value = new Date().toISOString().split('T')[0];
+                    showCreateNotice();
+                    document.getElementById('date').value = new Date().toISOString().split('T')[0];
                     loadNotices();
                 } else {
-                    alert('Error updating notice.');
+                    window.showToast('Error updating notice.', 'error');
                 }
-            });
-        }
+            } catch (err) {
+                window.showToast('Network error updating notice.', 'error');
+            }
+        });
 
-        loadNotices();
         // Check with server session if user is authorized CR
         async function verifySession() {
             try {
@@ -266,19 +314,13 @@
                 }
                 const data = await res.json();
                 if (data.user.role !== 'CR') {
-                    alert('Access restricted to Class Representatives.');
-                    window.location.href = '/dashboard.html';
+                    window.showToast('Access restricted to Class Representatives.', 'error');
+                    setTimeout(() => { window.location.href = '/dashboard.html'; }, 1000);
                 }
             } catch (err) {
                 window.location.href = '/login.html';
             }
         }
-        verifySession();
     </script>
-
-
-
-
 </body>
-
 </html>

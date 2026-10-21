@@ -58,8 +58,8 @@
 }
 
 .btn-primary:hover {
-  background: #9c6239;
-  border-color: #9c6239;
+  background: #4E2E1C;
+  border-color: #4E2E1C;
   transform: translateY(-1px);
 }
 
@@ -253,32 +253,32 @@
 
 .status-confirmed {
   background: #dcfce7;
-  color: var(--accent-green);
+  color: #166534;
 }
 
 .status-lab {
   background: #fef3c7;
-  color: var(--primary);
+  color: #6B3F25;
 }
 
 .status-cancelled {
   background: #fee2e2;
-  color: #b91c1c;
+  color: #991b1b;
 }
 
 .status-swapped {
   background: #fef3c7;
-  color: #b45309;
+  color: #92400e;
 }
 
 .status-rescheduled {
   background: #e0e7ff;
-  color: #4338ca;
+  color: #3730a3;
 }
 
 .status-substitute {
   background: #e0f2fe;
-  color: #0369a1;
+  color: #075985;
 }
 
 .slot-card.is-cancelled {

@@ -1,289 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ReScheduled - Tasks</title>
-<link rel="stylesheet" href="./css/tasks.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ReScheduled - Tasks</title>
+    <link rel="stylesheet" href="./css/tasks.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<div class="page">
+    <div class="page">
 
-<header>
-    <div class="brand">
-        <span class="logo" aria-hidden="true">R</span>
-        <strong>ReScheduled</strong>
+        <header role="banner">
+            <div class="brand">
+                <span class="logo" aria-hidden="true">R</span>
+                <strong>ReScheduled</strong>
+            </div>
+
+            <nav aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="timetable.html">Timetable</a>
+                <a href="notices.html">Notices</a>
+                <a href="notifications.html">Notifications</a>
+            </nav>
+
+            <div class="size" role="group" aria-label="Text size adjustments">
+                <button type="button" data-size="small" aria-label="Decrease text size">A−</button>
+                <button type="button" data-size="normal" aria-label="Normal text size" aria-pressed="true">A</button>
+                <button type="button" data-size="large" aria-label="Increase text size">A+</button>
+            </div>
+        </header>
+
+        <main id="main-content">
+
+            <section class="intro">
+                <h1>Tasks</h1>
+                <p>Manage assignments, quizzes, labs and projects.</p>
+            </section>
+
+            <section class="card controls" aria-label="Task controls">
+                <button type="button" id="add" aria-haspopup="dialog">+ ADD TASK</button>
+
+                <label for="filter">Filter</label>
+                <select id="filter">
+                    <option>All</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                </select>
+            </section>
+
+            <div id="message" role="status" aria-live="polite"></div>
+
+            <section class="card" aria-labelledby="listTitle">
+                <h2 id="listTitle">Task List</h2>
+
+                <div class="table-wrap">
+                    <table>
+                        <caption class="sr-only">Task list</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Task</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Room</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasks">
+                            <tr>
+                                <td colspan="6" class="empty">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <nav aria-label="Main navigation">
-        <a href="index.html">Home</a>
-        <a href="timetable.html">Timetable</a>
-        <a href="notification.html">Notifications</a>
-    </nav>
 
-    <div class="size" aria-label="Text size">
-        <button type="button" data-size="small" aria-label="Decrease text size">A−</button>
-        <button type="button" data-size="normal" aria-label="Normal text size" aria-pressed="true">A</button>
-        <button type="button" data-size="large" aria-label="Increase text size">A+</button>
+    <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+        <form class="modal-box" id="form">
+
+            <h2 id="modalTitle">Add Task</h2>
+
+            <label for="name">Task Name <span aria-hidden="true">*</span></label>
+            <input id="name" required aria-required="true" autocomplete="off">
+
+            <label for="type">Task Type</label>
+            <select id="type">
+                <option>Assignment</option>
+                <option>Quiz</option>
+                <option>Lab Submission</option>
+                <option>Project</option>
+                <option>Other</option>
+            </select>
+
+            <label for="date">Due Date <span aria-hidden="true">*</span></label>
+            <input id="date" type="date" required aria-required="true">
+
+            <label for="room">Room</label>
+            <input id="room">
+
+            <label for="description">Description</label>
+            <textarea id="description" rows="3"></textarea>
+
+            <div class="actions">
+                <button type="button" class="cancel" id="close">Cancel</button>
+                <button type="submit" id="save">ADD TASK</button>
+            </div>
+
+        </form>
     </div>
-</header>
+    <footer role="contentinfo">
+        <hr>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-box" aria-hidden="true">R</span>
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/admin-add-notice.html">+ Post Notice</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="/notifications.html">View Alerts</a>
+                    <a href="#" onclick="logout()">Logout</a>
+                </div>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
+    </footer>
 
-<main>
+    <script src="./scripts/a11y.js"></script>
+    <script>
+        const $ = id => document.getElementById(id);
+        let data = [], edit = null, focus = null;
 
-<section class="intro">
-    <h1>Tasks</h1>
-    <p>Manage assignments, quizzes, labs and projects.</p>
-</section>
+        const esc = x => String(x ?? "").replace(/[&<>"']/g,
+            c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-<section class="card controls" aria-label="Task controls">
-    <button type="button" id="add">+ ADD TASK</button>
+        function msg(text, type = "") {
+            $("message").textContent = text;
+            $("message").className = type;
+        }
 
-    <label for="filter">Filter</label>
-    <select id="filter">
-        <option>All</option>
-        <option>Pending</option>
-        <option>Completed</option>
-    </select>
-</section>
+        async function load() {
+            try {
+                const r = await fetch("/api/tasks"), d = await r.json();
+                if (!r.ok || !d.success) throw Error(d.message);
+                data = d.tasks || [];
+                render();
+            } catch (e) {
+                msg(e.message || "Failed to load tasks.", "error");
+            }
+        }
 
-<div id="message" role="status" aria-live="polite"></div>
+        function render() {
+            let list = data, f = $("filter").value;
 
-<section class="card" aria-labelledby="listTitle">
-    <h2 id="listTitle">Task List</h2>
+            if (f === "Pending") list = data.filter(x => !x.isCompleted);
+            if (f === "Completed") list = data.filter(x => x.isCompleted);
 
-    <div class="table-wrap">
-        <table>
-            <caption class="sr-only">Task list</caption>
-            <thead>
-                <tr>
-                    <th scope="col">Task</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Room</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody id="tasks">
-                <tr><td colspan="6" class="empty">Loading...</td></tr>
-            </tbody>
-        </table>
-    </div>
-</section>
-
-</main>
-</div>
-
-
-<div class="modal" id="modal" hidden
-     role="dialog"
-     aria-modal="true"
-     aria-labelledby="modalTitle">
-
-<form class="modal-box" id="form">
-
-    <h2 id="modalTitle">Add Task</h2>
-
-    <label for="name">Task Name</label>
-    <input id="name" required>
-
-    <label for="type">Task Type</label>
-    <select id="type">
-        <option>Assignment</option>
-        <option>Quiz</option>
-        <option>Lab Submission</option>
-        <option>Project</option>
-        <option>Other</option>
-    </select>
-
-    <label for="date">Due Date</label>
-    <input id="date" type="date" required>
-
-    <label for="room">Room</label>
-    <input id="room">
-
-    <label for="description">Description</label>
-    <textarea id="description" rows="3"></textarea>
-
-    <div class="actions">
-        <button type="button" class="cancel" id="close">Cancel</button>
-        <button type="submit" id="save">ADD TASK</button>
-    </div>
-
-</form>
-</div>
-
-
-<script>
-const $=id=>document.getElementById(id);
-let data=[],edit=null,focus=null;
-
-const esc=x=>String(x??"").replace(/[&<>"']/g,
-c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-function msg(text,type=""){
-    $("message").textContent=text;
-    $("message").className=type;
-}
-
-async function load(){
-    try{
-        const r=await fetch("/api/tasks"),d=await r.json();
-        if(!r.ok||!d.success)throw Error(d.message);
-        data=d.tasks||[];
-        render();
-    }catch(e){
-        msg(e.message||"Failed to load tasks.","error");
-    }
-}
-
-function render(){
-    let list=data,f=$("filter").value;
-
-    if(f==="Pending")list=data.filter(x=>!x.isCompleted);
-    if(f==="Completed")list=data.filter(x=>x.isCompleted);
-
-    $("tasks").innerHTML=list.length?list.map(x=>`
+            $("tasks").innerHTML = list.length ? list.map(x => `
         <tr>
             <td><strong>${esc(x.name)}</strong></td>
             <td>${esc(x.type)}</td>
             <td>${esc(x.date)}</td>
-            <td>${esc(x.room||"—")}</td>
+            <td>${esc(x.room || "—")}</td>
             <td>
                 <label class="check">
                     <input type="checkbox"
                         data-check="${x._id}"
-                        ${x.isCompleted?"checked":""}
+                        ${x.isCompleted ? "checked" : ""}
                         aria-label="Mark ${esc(x.name)} completed">
-                    ${x.isCompleted?"Completed":"Pending"}
+                    ${x.isCompleted ? "Completed" : "Pending"}
                 </label>
             </td>
             <td class="actions-cell">
-                <button data-edit="${x._id}">Edit</button>
-                <button class="delete" data-delete="${x._id}">Delete</button>
+                <button data-edit="${x._id}" aria-label="Edit task ${esc(x.name)}">Edit</button>
+                <button class="delete" data-delete="${x._id}" aria-label="Delete task ${esc(x.name)}">Delete</button>
             </td>
         </tr>
-    `).join(""):`<tr><td colspan="6" class="empty">No tasks found.</td></tr>`;
+    `).join("") : `<tr><td colspan="6" class="empty">No tasks found.</td></tr>`;
 
-    document.querySelectorAll("[data-edit]").forEach(b=>
-        b.onclick=()=>open(b.dataset.edit));
+            document.querySelectorAll("[data-edit]").forEach(b =>
+                b.onclick = () => open(b.dataset.edit));
 
-    document.querySelectorAll("[data-delete]").forEach(b=>
-        b.onclick=()=>del(b.dataset.delete));
+            document.querySelectorAll("[data-delete]").forEach(b =>
+                b.onclick = () => del(b.dataset.delete));
 
-    document.querySelectorAll("[data-check]").forEach(b=>
-        b.onchange=()=>complete(b.dataset.check,b.checked));
-}
+            document.querySelectorAll("[data-check]").forEach(b =>
+                b.onchange = () => complete(b.dataset.check, b.checked));
+        }
 
-function open(id=null){
-    edit=id;
-    focus=document.activeElement;
-    $("form").reset();
+        function open(id = null) {
+            edit = id;
+            focus = document.activeElement;
+            $("form").reset();
 
-    if(id){
-        const x=data.find(t=>t._id===id);
-        $("name").value=x.name;
-        $("type").value=x.type;
-        $("date").value=x.date;
-        $("room").value=x.room||"";
-        $("description").value=x.description||"";
-        $("modalTitle").textContent="Edit Task";
-        $("save").textContent="UPDATE TASK";
-    }else{
-        $("modalTitle").textContent="Add Task";
-        $("save").textContent="ADD TASK";
-    }
+            if (id) {
+                const x = data.find(t => t._id === id);
+                $("name").value = x.name;
+                $("type").value = x.type;
+                $("date").value = x.date;
+                $("room").value = x.room || "";
+                $("description").value = x.description || "";
+                $("modalTitle").textContent = "Edit Task";
+                $("save").textContent = "UPDATE TASK";
+            } else {
+                $("modalTitle").textContent = "Add Task";
+                $("save").textContent = "ADD TASK";
+            }
 
-    $("modal").hidden=false;
-    $("name").focus();
-}
+            $("modal").hidden = false;
+            $("name").focus();
+        }
 
-function close(){
-    $("modal").hidden=true;
-    edit=null;
-    focus?.focus();
-}
+        function close() {
+            $("modal").hidden = true;
+            edit = null;
+            focus?.focus();
+        }
 
-async function save(e){
-    e.preventDefault();
+        async function save(e) {
+            e.preventDefault();
 
-    const body={
-        name:$("name").value.trim(),
-        type:$("type").value,
-        date:$("date").value,
-        room:$("room").value.trim(),
-        description:$("description").value.trim()
-    };
+            const body = {
+                name: $("name").value.trim(),
+                type: $("type").value,
+                date: $("date").value,
+                room: $("room").value.trim(),
+                description: $("description").value.trim()
+            };
 
-    try{
-        const r=await fetch(edit?`/api/tasks/${edit}`:"/api/tasks",{
-            method:edit?"PUT":"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(body)
+            try {
+                const r = await fetch(edit ? `/api/tasks/${edit}` : "/api/tasks", {
+                    method: edit ? "PUT" : "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                const d = await r.json();
+                if (!r.ok) throw Error(d.message);
+
+                close();
+                msg(edit ? "Task updated successfully." : "Task added successfully.", "success");
+                window.showToast(edit ? "Task updated successfully." : "Task added successfully.", "success");
+                load();
+            } catch (e) {
+                msg(e.message || "Failed to save task.", "error");
+                window.showToast(e.message || "Failed to save task.", "error");
+            }
+        }
+
+        async function complete(id, value) {
+            try {
+                const r = await fetch(`/api/tasks/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ isCompleted: value })
+                });
+                if (!r.ok) throw Error("Failed to update task.");
+                load();
+            } catch (e) { msg(e.message, "error") }
+        }
+
+        async function del(id) {
+            const x = data.find(t => t._id === id);
+            if (!x) return;
+            const confirmed = await window.accessibleConfirm(`Are you sure you want to delete "${x.name}"?`);
+            if (!confirmed) return;
+
+            try {
+                const r = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+                if (!r.ok) throw Error("Failed to delete task.");
+                msg("Task deleted successfully.", "success");
+                window.showToast("Task deleted successfully.", "success");
+                load();
+            } catch (e) {
+                msg(e.message, "error");
+                window.showToast(e.message, "error");
+            }
+        }
+
+
+        /* Text size */
+
+        document.querySelectorAll("[data-size]").forEach(b => {
+            b.onclick = () => {
+                document.body.dataset.size = b.dataset.size;
+
+                document.querySelectorAll("[data-size]").forEach(x =>
+                    x.setAttribute("aria-pressed", x === b)
+                );
+            };
         });
 
-        const d=await r.json();
-        if(!r.ok)throw Error(d.message);
 
-        close();
-        msg(edit?"Task updated successfully.":"Task added successfully.","success");
+        $("add").onclick = () => open();
+        $("close").onclick = close;
+        $("form").onsubmit = save;
+        $("filter").onchange = render;
+
+        document.onkeydown = e => {
+            if (e.key === "Escape" && !$("modal").hidden) close();
+        };
+
         load();
-    }catch(e){
-        msg(e.message||"Failed to save task.","error");
-    }
-}
 
-async function complete(id,value){
-    try{
-        const r=await fetch(`/api/tasks/${id}`,{
-            method:"PUT",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({isCompleted:value})
-        });
-        if(!r.ok)throw Error("Failed to update task.");
-        load();
-    }catch(e){msg(e.message,"error")}
-}
+        async function logout() {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        }
 
-async function del(id){
-    const x=data.find(t=>t._id===id);
-    if(!confirm(`Delete "${x.name}"?`))return;
+        async function checkSession() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (res.ok) {
+                    const data = await res.json();
+                }
+            } catch (err) {}
+        }
+        checkSession();
 
-    try{
-        const r=await fetch(`/api/tasks/${id}`,{method:"DELETE"});
-        if(!r.ok)throw Error("Failed to delete task.");
-        msg("Task deleted successfully.","success");
-        load();
-    }catch(e){msg(e.message,"error")}
-}
-
-
-/* Text size */
-
-document.querySelectorAll("[data-size]").forEach(b=>{
-    b.onclick=()=>{
-        document.body.dataset.size=b.dataset.size;
-
-        document.querySelectorAll("[data-size]").forEach(x=>
-            x.setAttribute("aria-pressed",x===b)
-        );
-    };
-});
-
-
-$("add").onclick=()=>open();
-$("close").onclick=close;
-$("form").onsubmit=save;
-$("filter").onchange=render;
-
-document.onkeydown=e=>{
-    if(e.key==="Escape"&&!$("modal").hidden)close();
-};
-
-load();
-</script>
+    </script>
 
 </body>
+
 </html>

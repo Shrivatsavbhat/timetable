@@ -1,13 +1,13 @@
 :root {
-    --primary: #b2764b;
+    --primary: #6B3F25;
     --bg-page: #FAF0E6;
     --surface: #ffffff;
     --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --accent-amber: #d97706;
-    --accent-green: #15803d;
-    --accent-red: #be123c;
+    --text-muted: #475569;
+    --border: #cbd5e1;
+    --accent-amber: #92400e;
+    --accent-green: #166534;
+    --accent-red: #9f1239;
 }
 
 * {
@@ -157,8 +157,8 @@ body {
 }
 
 .general {
-    background: #f5f5f4;
-    color: var(--text-muted);
+    background: #f1f5f9;
+    color: #334155;
     border-color: var(--border);
 }
 
@@ -196,7 +196,8 @@ body {
     margin-top: 45px;
     text-align: center;
     color: var(--text-muted);
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
 }

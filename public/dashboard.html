@@ -13,78 +13,76 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Navbar -->
-    <header class="navbar">
+    <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
-                <span class="logo-box">R</span>
+                <span class="logo-box" aria-hidden="true">R</span>
                 <span class="brand-name">ReScheduled</span>
             </a>
-            <div class="nav-links">
+            <nav class="nav-links" aria-label="Main navigation">
                 <a href="/">Home</a>
                 <a href="/timetable.html">Timetable</a>
                 <a href="/notices.html">Notices</a>
                 <a href="/notifications.html">Alerts</a>
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main class="main-container">
+    <main class="main-container" id="main-content">
         <div class="dashboard">
             <div style="padding: 2rem 0 0 0;">
                 <h1 style="margin: 0;">Dashboard</h1>
             </div>
 
-            <secttion class="happening-main" style="margin-top: 2rem; padding: 2rem;">
+            <section class="happening-main" style="margin-top: 2rem; padding: 2rem;" aria-labelledby="happening-now-heading">
                 <div class="Happening-card">
-                    <h2 style="padding: 0 0 1rem 0;">Happening Now</h2>
-                    <div id="happening-now-container">
-                        <p>Getting data</p>
-                        <span id="room"></span>
+                    <h2 id="happening-now-heading" style="padding: 0 0 1rem 0;">Happening Now</h2>
+                    <div id="happening-now-container" role="status" aria-live="polite">
+                        <p>Getting current lecture data...</p>
                     </div>
                 </div>
-            </secttion>
-            <section class="dashboard-main">
+            </section>
+            <section class="dashboard-main" aria-labelledby="today-schedule-heading">
                 <div class="admin-card">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <div>
-                            <h2 style="margin: 0;">Today's Schedule</h2>
+                            <h2 id="today-schedule-heading" style="margin: 0;">Today's Schedule</h2>
                             <span id="current-day-label"
                                 style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Loading
                                 date...</span>
                         </div>
-                        <a href="/timetable.html" class="btn-pill" style="font-size: 11px; padding: 6px 14px;">Full
+                        <a href="/timetable.html" class="btn-pill" style="font-size: 11px; padding: 6px 14px;" aria-label="View full weekly timetable">Full
                             Timetable
                             &rarr;</a>
                     </div>
                     <!-- Periods Timeline -->
-                    <div id="today-schedule-list">
+                    <div id="today-schedule-list" role="feed" aria-label="Today's scheduled lectures" aria-live="polite">
                         <div class="period-card">
-                            <span class="period-time" id="period-time"></span>
+                            <span class="period-time" id="period-time">--:--</span>
                             <div class="period-details">
-                                <span class="period-title" id="period-title"></span>
+                                <span class="period-title" id="period-title">Loading schedule...</span>
                                 <span class="period-meta" id="period-meta"></span>
                             </div>
-                            <span
-                                style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">Confirmed</span>
                         </div>
-
                     </div>
                 </div>
             </section>
             <section class="notice-task-container">
                 <!--Notices-->
-                <aside class="dashboard-sidebar">
+                <aside class="dashboard-sidebar" aria-labelledby="recent-notices-heading">
                     <div class="admin-card">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h3 style="margin: 0;">Recent Notices</h3>
+                            <h3 id="recent-notices-heading" style="margin: 0;">Recent Notices</h3>
                             <a href="/notices.html"
-                                style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;">View
+                                style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;" aria-label="View all notices">View
                                 All</a>
                         </div>
-                        <div id="recent-notices-container">
+                        <div id="recent-notices-container" role="feed" aria-label="Recent notices" aria-live="polite">
                             <p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Loading notices...
                             </p>
                         </div>
@@ -92,170 +90,186 @@
                 </aside>
 
                 <!--tasks-->
-                <aside class="dashboard-sidebar">
+                <aside class="dashboard-sidebar" aria-labelledby="recent-tasks-heading">
                     <div class="admin-card">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h3 style="margin: 0;">Recent Tasks</h3>
+                            <h3 id="recent-tasks-heading" style="margin: 0;">Recent Tasks</h3>
                             <a href="/tasks.html"
-                                style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;">View
+                                style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;" aria-label="View all tasks">View
                                 All</a>
                         </div>
-                        <div id="recent-tasks-container">
+                        <div id="recent-tasks-container" role="feed" aria-label="Recent tasks" aria-live="polite">
                             <p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Loading tasks...</p>
                         </div>
                     </div>
                 </aside>
             </section>
 
-
         </div>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <hr>
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <span class="logo-box">R</span>
+                    <span class="logo-box" aria-hidden="true">R</span>
                     <span class="brand-name">ReScheduled</span>
                 </div>
-                <div class="footer-links">
+                <nav class="footer-links" aria-label="Footer quick links">
                     <a href="/admin-add-notice.html">+ Post Notice</a>
                     <a href="/notices.html">View Notices</a>
                     <a href="/timetable.html">View Timetable</a>
                     <a href="/notifications.html">View Alerts</a>
-                </div>
+                </nav>
             </div>
             <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
         </div>
     </footer>
 
+    <script src="./scripts/a11y.js"></script>
     <script>
-        window.onload = loadDashboardData(), getHappeningNow(), getTodaySchedule();
+        let lastSubject = null;
+        let lastRoom = null;
 
-        window.setInterval(() => {
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
             getHappeningNow();
-        }, 1000);
+            getTodaySchedule();
 
+            // Refresh happening now every 30 seconds rather than 1 second
+            window.setInterval(getHappeningNow, 30000);
+        });
 
         async function getHappeningNow() {
-            const res = await fetch('/api/happening-now')
-            const data = await res.json()
-            const { subject, room } = data.happeningNow
-            console.log(subject, room)
+            try {
+                const res = await fetch('/api/happening-now');
+                if (!res.ok) return;
+                const data = await res.json();
+                const happening = data?.happeningNow || { subject: 'No lecture currently in session', room: '----' };
+                const subject = happening.subject || 'No lecture currently in session';
+                const room = happening.room || '----';
 
+                // Avoid DOM churn if nothing changed (prevents screen reader disorientation)
+                if (subject === lastSubject && room === lastRoom) return;
+                lastSubject = subject;
+                lastRoom = room;
 
-            const happeningNowContainer = document.getElementById('happening-now-container');
-            happeningNowContainer.innerHTML = '';
+                const happeningNowContainer = document.getElementById('happening-now-container');
+                if (!happeningNowContainer) return;
 
-
-            const happeningNowDiv = document.createElement('div');
-            happeningNowDiv.className = 'happening-now-item';
-            happeningNowDiv.innerHTML = `
-                <p class="happening-now-content" style="color: var(--primary); font-weight: 600;">Current Slot: ${subject}</p>
-                <span id="room" style="display: ${room === '----' ? 'none' : 'block'};">Room: ${room}</span>
-            `;
-            happeningNowContainer.appendChild(happeningNowDiv);
+                happeningNowContainer.innerHTML = `
+                    <div class="happening-now-item">
+                        <p class="happening-now-content" style="color: var(--primary); font-weight: 600;">Current Slot: ${subject}</p>
+                        ${room !== '----' ? `<span>Room: ${room}</span>` : ''}
+                    </div>
+                `;
+            } catch (err) {
+                console.error('Failed to get happening now status:', err);
+            }
         }
 
         async function loadDashboardData() {
             try {
-                // Fetch Notices
-                const noticeRes = await fetch('/api/notices');
-                const taskRes = await fetch('/api/tasks');
+                const [noticeRes, taskRes] = await Promise.all([
+                    fetch('/api/notices'),
+                    fetch('/api/tasks')
+                ]);
+
                 const data = await noticeRes.json();
-                const notices = data.notices;
+                const notices = data?.notices || [];
 
                 const taskData = await taskRes.json();
-                const tasks = taskData.tasks;
+                const tasks = taskData?.tasks || [];
 
                 const noticeContainer = document.getElementById('recent-notices-container');
                 noticeContainer.innerHTML = '';
 
                 if (notices.length === 0) {
                     noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No notices found.</p>';
-                    return;
+                } else {
+                    notices.slice(0, 5).forEach(notice => {
+                        const noticeDiv = document.createElement('div');
+                        noticeDiv.className = 'sidebar-notice-item';
+                        noticeDiv.setAttribute('role', 'article');
+                        noticeDiv.innerHTML = `
+                            <div class="notice-title">${notice.title}</div>
+                            <div class="notice-desc">${notice.content}</div>
+                        `;
+                        noticeContainer.appendChild(noticeDiv);
+                    });
                 }
-
-
-                notices.slice(0, 5).forEach(notice => {
-                    const noticeDiv = document.createElement('div');
-                    noticeDiv.className = 'sidebar-notice-item';
-                    noticeDiv.innerHTML = `
-                        <div class="notice-title">${notice.title}</div>
-                        <div class="notice-desc">${notice.content}</div>
-                    `;
-                    noticeContainer.appendChild(noticeDiv);
-                });
 
                 const taskContainer = document.getElementById('recent-tasks-container');
                 taskContainer.innerHTML = '';
 
                 if (tasks.length === 0) {
                     taskContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No tasks found.</p>';
-                    return;
+                } else {
+                    tasks.slice(0, 5).forEach(task => {
+                        const taskDiv = document.createElement('div');
+                        taskDiv.className = 'sidebar-task-item';
+                        taskDiv.setAttribute('role', 'article');
+                        taskDiv.innerHTML = `
+                            <div class="task-title">${task.name}</div>
+                            <div class="task-desc">Due Date: <span style="color: var(--primary); font-weight: 600; padding: 2px 6px; background-color: #f1f5f9; border-radius: 4px;">${task.date}</span></div>
+                        `;
+                        taskContainer.appendChild(taskDiv);
+                    });
                 }
-
-                tasks.slice(0, 5).forEach(task => {
-                    const taskDiv = document.createElement('div');
-                    taskDiv.className = 'sidebar-task-item';
-                    taskDiv.innerHTML = `
-                        <div class="task-title">${task.name}</div>
-                        <div class="task-desc">Due Date: <span style="color: var(--primary); font-weight: 500; padding: 2px 4px; background-color: rgba(0, 200, 255, 0.05); border-radius: 4px;">${task.date}</span></div>
-                    `;
-                    taskContainer.appendChild(taskDiv);
-                });
             } catch (err) {
                 console.error('Failed to load dashboard data:', err);
                 const noticeContainer = document.getElementById('recent-notices-container');
-                noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load notices.</p>';
+                if (noticeContainer) noticeContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load notices.</p>';
                 const taskContainer = document.getElementById('recent-tasks-container');
-                taskContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load tasks.</p>';
+                if (taskContainer) taskContainer.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load tasks.</p>';
             }
         }
-
 
         async function getTodaySchedule() {
+            try {
+                const user = JSON.parse(localStorage.getItem("user") || "null");
+                const today = new Date().toISOString().split('T')[0];
+                const sem = (user && user.semester) ? user.semester : 'I MCA-A';
 
-            const user = JSON.parse(localStorage.getItem("user") || "null");
-            const today = new Date().toISOString().split('T')[0];
-            const sem = (user && user.semester) ? user.semester : 'I MCA-A';
-            console.log(today, sem)
+                const res = await fetch(`/api/timetable?date=${today}&semester=${sem}`);
+                const data = await res.json();
+                const slots = data?.schedule || [];
 
-            const res = await fetch(`/api/timetable?date=${today}&semester=${sem}`);
-            const data = await res.json();
-            const slots = data.schedule;
+                const todayScheduleList = document.getElementById('today-schedule-list');
+                todayScheduleList.innerHTML = '';
 
-            const todayScheduleList = document.getElementById('today-schedule-list');
-            todayScheduleList.innerHTML = '';
+                if (slots.length === 0) {
+                    todayScheduleList.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No schedule found for today.</p>';
+                    return;
+                }
 
-            if (slots.length === 0) {
-                todayScheduleList.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">No schedule found.</p>';
-                return;
+                slots.forEach(slot => {
+                    const labelEl = document.getElementById("current-day-label");
+                    if (labelEl && slot.day) labelEl.innerText = slot.day;
+
+                    const periodDiv = document.createElement('div');
+                    periodDiv.className = 'period-card';
+                    periodDiv.setAttribute('role', 'article');
+                    periodDiv.setAttribute('aria-label', `${slot.time}: ${slot.subject} with ${slot.faculty}, Room ${slot.room}, Status ${slot.status}`);
+                    periodDiv.innerHTML = `
+                        <span class="period-time">${slot.time}</span>
+                        <div class="period-details">
+                            <span class="period-title">${slot.subject}</span>
+                            <span class="period-meta">${slot.faculty}</span>
+                            <span style="background:#dcfce7; color:#166534; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.room}</span>
+                        </div>
+                        <span style="background: ${slot.status === 'CONFIRMED' ? '#dcfce7' : '#fee2e2'}; color: ${slot.status === 'CONFIRMED' ? '#166534' : '#991b1b'}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.status}</span>
+                    `;
+                    todayScheduleList.appendChild(periodDiv);
+                });
+            } catch (err) {
+                console.error('Failed to load today schedule:', err);
+                const todayScheduleList = document.getElementById('today-schedule-list');
+                if (todayScheduleList) todayScheduleList.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">Failed to load schedule.</p>';
             }
-
-            slots.forEach(slot => {
-                document.getElementById("current-day-label").innerText = slot.day;
-                const periodDiv = document.createElement('div');
-                periodDiv.className = 'period-card';
-                periodDiv.innerHTML = `
-            <span class="period-time">${slot.time}</span>
-            <div class="period-details">
-                <span class="period-title">${slot.subject}</span>
-                <span class="period-meta">${slot.faculty}</span>
-                 <span style="background:#dcfce7; color:#15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.room}</span>
-            </div>
-            <span style="background: ${slot.status === 'CONFIRMED' ? '#dcfce7' : '#fee2e2'}; color: ${slot.status === 'CONFIRMED' ? '#15803d' : '#991b1b'}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">${slot.status}</span>
-        `;
-                todayScheduleList.appendChild(periodDiv);
-            });
         }
-
-
-
     </script>
-
 </body>
-
 </html>

@@ -6,12 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Timetable - ReScheduled</title>
     <link rel="stylesheet" href="./css/admin-master.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <div class="page">
-        <header class="top">
+    <!-- Shared Navbar -->
+    <header class="navbar" role="banner">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-box" aria-hidden="true">R</span>
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/timetable.html">Timetable</a>
+                <a href="/notices.html">Notices</a>
+                <a href="/notifications.html">Alerts</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="main-content">
+        <div class="top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div>
                 <h1 class="title">Master Timetable</h1>
                 <p class="subtitle">Constant weekly schedule blueprint (Monday - Saturday).</p>
@@ -20,16 +38,16 @@
                 <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px;">←
                     Back to Home</a>
             </div>
-        </header>
+        </div>
 
         <!-- Slot Configuration Form -->
-        <section class="card">
-            <h2>Add Timetable Slot</h2>
+        <section class="card" aria-labelledby="add-slot-heading">
+            <h2 id="add-slot-heading">Add Timetable Slot</h2>
             <form id="slot-form">
                 <div class="form-grid">
                     <div>
                         <label for="semester">Semester</label>
-                        <select id="semester" required>
+                        <select id="semester" required aria-required="true">
                             <option value="MCA Sem 1" selected>MCA Sem 1</option>
                             <option value="MCA Sem 2">MCA Sem 2</option>
                             <option value="MCA Sem 3">MCA Sem 3</option>
@@ -39,7 +57,7 @@
 
                     <div>
                         <label for="day">Day</label>
-                        <select id="day" required>
+                        <select id="day" required aria-required="true">
                             <option value="Monday">Monday</option>
                             <option value="Tuesday">Tuesday</option>
                             <option value="Wednesday">Wednesday</option>
@@ -50,33 +68,33 @@
                     </div>
 
                     <div>
-                        <label for="slot">Slot</label>
-                        <input type="text" id="slot" placeholder="e.g. Slot 1" required>
+                        <label for="slot">Slot <span aria-hidden="true">*</span></label>
+                        <input type="text" id="slot" placeholder="e.g. Slot 1" required aria-required="true">
                     </div>
 
                     <div>
-                        <label for="time">Time</label>
-                        <input type="text" id="time" placeholder="e.g. 09:00 AM - 10:00 AM" required>
+                        <label for="time">Time <span aria-hidden="true">*</span></label>
+                        <input type="text" id="time" placeholder="e.g. 09:00 AM - 10:00 AM" required aria-required="true">
                     </div>
 
                     <div>
-                        <label for="code">Course Code</label>
-                        <input type="text" id="code" placeholder="e.g. MCA201" required>
+                        <label for="code">Course Code <span aria-hidden="true">*</span></label>
+                        <input type="text" id="code" placeholder="e.g. MCA201" required aria-required="true">
                     </div>
 
                     <div>
-                        <label for="subject">Subject Title</label>
-                        <input type="text" id="subject" placeholder="e.g. Database Systems" required>
+                        <label for="subject">Subject Title <span aria-hidden="true">*</span></label>
+                        <input type="text" id="subject" placeholder="e.g. Database Systems" required aria-required="true">
                     </div>
 
                     <div>
-                        <label for="faculty">Faculty</label>
-                        <input type="text" id="faculty" placeholder="e.g. Dr. Sharma" required>
+                        <label for="faculty">Faculty <span aria-hidden="true">*</span></label>
+                        <input type="text" id="faculty" placeholder="e.g. Dr. Sharma" required aria-required="true">
                     </div>
 
                     <div>
-                        <label for="room">Room / Lab</label>
-                        <input type="text" id="room" placeholder="e.g. Lab 2" required>
+                        <label for="room">Room / Lab <span aria-hidden="true">*</span></label>
+                        <input type="text" id="room" placeholder="e.g. Lab 2" required aria-required="true">
                     </div>
                 </div>
 
@@ -85,25 +103,28 @@
         </section>
 
         <!-- Master Timetable Grid / List -->
-        <section class="card">
+        <section class="card" aria-labelledby="master-sched-heading">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h2>Master Schedule</h2>
-                <select id="filter-day" style="width: auto; padding: 6px 10px;">
-                    <option value="">All Days</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                </select>
+                <h2 id="master-sched-heading">Master Schedule</h2>
+                <div>
+                    <label for="filter-day" class="sr-only">Filter slots by day</label>
+                    <select id="filter-day" style="width: auto; padding: 6px 10px;" aria-label="Filter slots by day">
+                        <option value="">All Days</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                    </select>
+                </div>
             </div>
 
-            <div id="slots-list" class="slots">
+            <div id="slots-list" class="slots" role="region" aria-label="Master slots grid" aria-live="polite">
                 <div class="empty">Loading timetable slots...</div>
             </div>
         </section>
-    </div>
+    </main>
 
     <div id="edit-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="edit-title">
         <div class="modal-card">
@@ -145,7 +166,27 @@
             </form>
         </div>
     </div>
+    <footer>
+        <hr>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-box">R</span>
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/admin-add-notice.html">+ Post Notice</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="/notifications.html">View Alerts</a>
+                    <a href="#" onclick="logout()">Logout</a>
+                </div>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
+    </footer>
 
+    <script src="./scripts/a11y.js"></script>
     <script>
         const form = document.getElementById('slot-form');
         const slotsList = document.getElementById('slots-list');
@@ -155,6 +196,7 @@
         const swapTarget = document.getElementById('swap-target');
         let loadedSlots = [];
         let editingSlotId = null;
+        let lastFocusedSlotTrigger = null;
         const dayOrder = {
             Monday: 1,
             Tuesday: 2,
@@ -206,13 +248,13 @@
                 }
 
                 slotsList.innerHTML = visibleSlots.map(s => `
-            <div class="slot">
+            <div class="slot" role="article" aria-label="${escapeHtml(s.subject)} (${escapeHtml(s.code)}) on ${escapeHtml(s.day)} ${escapeHtml(s.slot)} at ${escapeHtml(s.time)}, Room ${escapeHtml(s.room)}">
                 <strong>${escapeHtml(s.subject)} (${escapeHtml(s.code)})</strong>
                 <span>${escapeHtml(s.day)} • ${escapeHtml(s.slot)} (${escapeHtml(s.time)})</span>
                 <small>📍 ${escapeHtml(s.room)} | 👨‍🏫 ${escapeHtml(s.faculty)}</small>
                 <div class="slot-actions">
-                    <button class="edit-btn" onclick="openEditModal('${s._id}')">Edit</button>
-                    <button class="del-btn" onclick="deleteSlot('${s._id}')">Delete ✕</button>
+                    <button class="edit-btn" onclick="openEditModal('${s._id}')" aria-label="Edit slot ${escapeHtml(s.subject)} on ${escapeHtml(s.day)}">Edit</button>
+                    <button class="del-btn" onclick="deleteSlot('${s._id}', '${escapeHtml(s.subject)}')" aria-label="Delete slot ${escapeHtml(s.subject)} on ${escapeHtml(s.day)}">Delete ✕</button>
                 </div>
             </div>
         `).join('');
@@ -225,9 +267,11 @@
             const slot = loadedSlots.find((item) => item._id === id);
             if (!slot) return;
 
+            lastFocusedSlotTrigger = document.activeElement;
             editingSlotId = id;
             ['day', 'slot', 'time', 'code', 'subject', 'faculty', 'room'].forEach((field) => {
-                document.getElementById(`edit-${field}`).value = slot[field] || '';
+                const el = document.getElementById(`edit-${field}`);
+                if (el) el.value = slot[field] || '';
             });
             swapTarget.innerHTML = '<option value="">Select another lecture to swap with...</option>' +
                 sortSlots(loadedSlots)
@@ -239,12 +283,23 @@
                 swapTarget.options[0].textContent = 'No other lectures available to swap';
             }
             editModal.classList.remove('hidden');
+            const firstInput = document.getElementById('edit-day');
+            if (firstInput) firstInput.focus();
         }
 
         function closeEditModal() {
             editModal.classList.add('hidden');
             editingSlotId = null;
+            if (lastFocusedSlotTrigger && typeof lastFocusedSlotTrigger.focus === 'function') {
+                lastFocusedSlotTrigger.focus();
+            }
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !editModal.classList.contains('hidden')) {
+                closeEditModal();
+            }
+        });
 
         editForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -254,45 +309,55 @@
                 ['day', 'slot', 'time', 'code', 'subject', 'faculty', 'room']
                     .map((field) => [field, document.getElementById(`edit-${field}`).value.trim()])
             );
-            const res = await fetch(`/api/master/${editingSlotId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
 
-            if (!res.ok) {
-                const result = await res.json().catch(() => ({}));
-                alert(result.error || 'Failed to update slot.');
-                return;
+            try {
+                const res = await fetch(`/api/master/${editingSlotId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) {
+                    const result = await res.json().catch(() => ({}));
+                    window.showToast(result.error || 'Failed to update slot.', 'error');
+                    return;
+                }
+
+                window.showToast('Slot updated permanently.', 'success');
+                closeEditModal();
+                loadSlots();
+            } catch (err) {
+                window.showToast('Network error updating slot.', 'error');
             }
-
-            alert('Slot updated permanently.');
-            closeEditModal();
-            loadSlots();
         });
 
         async function swapSelectedSlot() {
             const secondId = swapTarget.value;
             if (!editingSlotId || !secondId) {
-                alert('Select another lecture to swap with.');
+                window.showToast('Select another lecture to swap with.', 'error');
                 return;
             }
-            if (!confirm('Swap the day, slot, and time of these two lectures permanently?')) return;
+            const confirmed = await window.accessibleConfirm('Swap the day, slot, and time of these two lectures permanently?');
+            if (!confirmed) return;
 
-            const res = await fetch('/api/master/swap', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ firstId: editingSlotId, secondId })
-            });
-            if (!res.ok) {
-                const result = await res.json().catch(() => ({}));
-                alert(result.error || 'Failed to swap lectures.');
-                return;
+            try {
+                const res = await fetch('/api/master/swap', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstId: editingSlotId, secondId })
+                });
+                if (!res.ok) {
+                    const result = await res.json().catch(() => ({}));
+                    window.showToast(result.error || 'Failed to swap lectures.', 'error');
+                    return;
+                }
+
+                window.showToast('Lecture schedule positions swapped permanently.', 'success');
+                closeEditModal();
+                loadSlots();
+            } catch (err) {
+                window.showToast('Network error swapping lectures.', 'error');
             }
-
-            alert('Lecture schedule positions swapped permanently.');
-            closeEditModal();
-            loadSlots();
         }
 
         // Add slot
@@ -302,34 +367,50 @@
             const data = {
                 semester: document.getElementById('semester').value,
                 day: document.getElementById('day').value,
-                slot: document.getElementById('slot').value,
-                time: document.getElementById('time').value,
-                code: document.getElementById('code').value,
-                subject: document.getElementById('subject').value,
-                faculty: document.getElementById('faculty').value,
-                room: document.getElementById('room').value
+                slot: document.getElementById('slot').value.trim(),
+                time: document.getElementById('time').value.trim(),
+                code: document.getElementById('code').value.trim(),
+                subject: document.getElementById('subject').value.trim(),
+                faculty: document.getElementById('faculty').value.trim(),
+                room: document.getElementById('room').value.trim()
             };
 
-            const res = await fetch('/api/master', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+            try {
+                const res = await fetch('/api/master', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-            if (res.ok) {
-                alert('Slot saved successfully!');
-                form.reset();
-                loadSlots();
-            } else {
-                alert('Failed to save slot.');
+                if (res.ok) {
+                    window.showToast('Slot saved successfully!', 'success');
+                    form.reset();
+                    loadSlots();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    window.showToast(err.message || 'Failed to save slot.', 'error');
+                }
+            } catch (err) {
+                window.showToast('Network error saving slot.', 'error');
             }
         });
 
         // Delete slot
-        async function deleteSlot(id) {
-            if (!confirm('Delete this slot?')) return;
-            await fetch(`/api/master/${id}`, { method: 'DELETE' });
-            loadSlots();
+        async function deleteSlot(id, name) {
+            const confirmed = await window.accessibleConfirm(`Are you sure you want to delete the slot "${name || 'this slot'}"?`);
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`/api/master/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    window.showToast('Slot deleted successfully.', 'success');
+                    loadSlots();
+                } else {
+                    window.showToast('Failed to delete slot.', 'error');
+                }
+            } catch (err) {
+                window.showToast('Network error deleting slot.', 'error');
+            }
         }
 
         filterDay.addEventListener('change', loadSlots);
@@ -345,16 +426,19 @@
                 }
                 const data = await res.json();
                 if (data.user.role !== 'CR') {
-                    alert('Access restricted to Class Representatives.');
-                    window.location.href = '/dashboard.html';
+                    window.showToast('Access restricted to Class Representatives.', 'error');
+                    setTimeout(() => { window.location.href = '/dashboard.html'; }, 1000);
                 }
             } catch (err) {
                 window.location.href = '/login.html';
             }
         }
         verifySession();
+
+        async function logout() {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        }
     </script>
-
 </body>
-
 </html>

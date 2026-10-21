@@ -49,37 +49,63 @@
 </head>
 
 <body>
-    <header class="navbar">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
-                <span class="logo-badge">R</span>
+                <span class="logo-box" aria-hidden="true">R</span>
                 <span class="brand-name">ReScheduled</span>
             </a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/dashboard.html">Dashboard</a>
-            </div>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/timetable.html">Timetable</a>
+                <a href="/notices.html">Notices</a>
+                <a href="/notifications.html">Alerts</a>
+            </nav>
         </div>
     </header>
 
-    <main class="main-container">
+    <main class="main-container" id="main-content">
         <div class="login-wrap">
-            <h2 style="margin: 0 0 6px 0;">Sign In</h2>
+            <h1 style="margin: 0 0 6px 0; font-size: 24px;">Sign In</h1>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Class Representative / Admin Portal</p>
+            
+            <div id="login-alert" role="alert" aria-live="assertive" style="display: none; padding: 10px 14px; background: #fee2e2; color: #991b1b; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 16px;"></div>
+
             <form id="login-form">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required placeholder="cr@rescheduled.edu">
+                    <label for="email">Email <span aria-hidden="true">*</span></label>
+                    <input type="email" id="email" required aria-required="true" autocomplete="username" placeholder="cr@rescheduled.edu">
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required placeholder="••••••••">
+                    <label for="password">Password <span aria-hidden="true">*</span></label>
+                    <input type="password" id="password" required aria-required="true" autocomplete="current-password" placeholder="••••••••">
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Sign In</button>
+                <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; padding: 12px; cursor: pointer;">Sign In</button>
             </form>
-
         </div>
     </main>
 
+    <footer role="contentinfo">
+        <hr>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-box" aria-hidden="true">R</span>
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <nav class="footer-links" aria-label="Footer quick links">
+                    <a href="/admin-add-notice.html">+ Post Notice</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="/notifications.html">View Alerts</a>
+                </nav>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
+    </footer>
+
+    <script src="./scripts/a11y.js"></script>
     <script>
         // Check with server session if user is authorized CR
         async function verifySession() {
@@ -87,19 +113,25 @@
                 const res = await fetch('/api/auth/me');
                 if (res.ok) {
                     window.location.href = '/admin-add-notice.html';
-                    return;
                 }
             } catch (err) {
-                window.location.href = '/login.html';
+                // Stay on login page if not logged in
             }
         }
         verifySession();
 
+        const form = document.getElementById('login-form');
+        const alertBox = document.getElementById('login-alert');
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const submitBtn = document.getElementById('submit-btn');
+
+            alertBox.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in...';
 
             try {
                 const res = await fetch('/api/auth/login', {
@@ -110,16 +142,26 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    window.location.href = '/admin-add-notice.html';
+                    window.showToast('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/admin-add-notice.html';
+                    }, 500);
                 } else {
-                    alert(data.message || 'Login failed');
+                    const msg = data.message || 'Login failed. Please check your credentials.';
+                    alertBox.textContent = msg;
+                    alertBox.style.display = 'block';
+                    window.showToast(msg, 'error');
                 }
-
             } catch (err) {
-                alert('Server error connecting to login.');
+                const errMsg = 'Server error connecting to login. Please try again later.';
+                alertBox.textContent = errMsg;
+                alertBox.style.display = 'block';
+                window.showToast(errMsg, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
             }
         });
     </script>
 </body>
-
 </html>

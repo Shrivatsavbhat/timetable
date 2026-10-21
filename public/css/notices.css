@@ -174,26 +174,26 @@
 
 .badge.urgent {
   background: #fff1f2;
-  color: #be123c;
+  color: #9f1239;
   border-color: #fecdd3;
 }
 
 .badge.high {
   background: #fffbeb;
-  color: #b45309;
+  color: #92400e;
   border-color: #fde68a;
 }
 
 .badge.shift {
   background: #fffbeb;
-  color: #b45309;
+  color: #92400e;
   border-color: #fde68a;
 }
 
 .badge.general {
   background: #f1f5f9;
-  color: #475569;
-  border-color: var(--border);
+  color: #334155;
+  border-color: #cbd5e1;
 }
 
 .time {

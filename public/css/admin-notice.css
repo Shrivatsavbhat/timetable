@@ -72,7 +72,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    box-shadow: 0 0 0 3px rgba(107, 63, 37, 0.2);
 }
 
 /* Submit Button */

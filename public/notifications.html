@@ -5,41 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReScheduled - Notification Center</title>
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/notify.css">
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<div class="page">
+    <!-- Shared Navbar -->
+    <header class="navbar" role="banner">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-box" aria-hidden="true">R</span>
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/timetable.html">Timetable</a>
+                <a href="/notices.html">Notices</a>
+                <a href="/notifications.html" class="active" aria-current="page">Alerts</a>
+            </nav>
+        </div>
+    </header>
 
-    <header class="top">
+<main class="page" id="main-content">
+
+    <div class="top">
         <div>
             <h1 class="title">Notification Center</h1>
             <p class="subtitle">
                 Live log of timetable adjustments, room changes and notices.
             </p>
         </div>
-    </header>
+    </div>
 
     <div class="toolbar">
 
-        <div class="filters">
+        <div class="filters" role="group" aria-label="Filter notifications by type">
 
-            <button class="filter-btn active" data-filter="all">
+            <button class="filter-btn active" data-filter="all" aria-pressed="true">
                 All <span class="filter-count" id="all-count">0</span>
             </button>
 
-            <button class="filter-btn" data-filter="cancellations">
+            <button class="filter-btn" data-filter="cancellations" aria-pressed="false">
                 Cancellations
                 <span class="filter-count" id="cancel-count">0</span>
             </button>
 
-            <button class="filter-btn" data-filter="room-swaps">
+            <button class="filter-btn" data-filter="room-swaps" aria-pressed="false">
                 Room Swaps
                 <span class="filter-count" id="room-count">0</span>
             </button>
 
-            <button class="filter-btn" data-filter="notices">
+            <button class="filter-btn" data-filter="notices" aria-pressed="false">
                 General Notices
                 <span class="filter-count" id="notice-count">0</span>
             </button>
@@ -48,15 +66,15 @@
 
     </div>
 
-    <section class="feed" id="notification-list">
+    <section class="feed" id="notification-list" role="feed" aria-label="Notification feed" aria-live="polite">
         <div class="empty">Loading notifications...</div>
     </section>
 
-    <div class="archive">
+    <div class="archive" role="note">
         Historical records beyond 7 days archived
     </div>
 
-</div>
+</main>
 
 <script>
 
@@ -227,11 +245,14 @@ function displayNotifications() {
         const [text, className] =
             getBadge(n.priority);
 
+        const timeStr = formatTime(n.createdAt);
+        const ariaLabel = `${text} priority alert: ${n.title}, posted ${timeStr}. ${n.content}`;
+
         return `
 
-            <article class="notification">
+            <article class="notification" tabindex="0" role="article" aria-label="${ariaLabel}">
 
-                <div class="dot"></div>
+                <div class="dot" aria-hidden="true"></div>
 
                 <div class="notification-content">
 
@@ -242,7 +263,7 @@ function displayNotifications() {
                         </span>
 
                         <span class="time">
-                            ${formatTime(n.createdAt)}
+                            ${timeStr}
                         </span>
 
                     </div>
@@ -300,11 +321,13 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 
     btn.addEventListener("click", () => {
 
-        document
-            .querySelector(".filter-btn.active")
-            .classList.remove("active");
+        document.querySelectorAll(".filter-btn").forEach(b => {
+            b.classList.remove("active");
+            b.setAttribute("aria-pressed", "false");
+        });
 
         btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
 
         currentFilter =
             btn.dataset.filter;
@@ -317,9 +340,10 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 
 getNotifications();
 
-setInterval(getNotifications,30000);
+setInterval(getNotifications, 30000);
 
 </script>
+<script src="./scripts/a11y.js"></script>
 
 </body>
 </html>

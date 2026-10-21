@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Override Timetable</title>
     <link rel="stylesheet" href="./css/admin-override-timetable.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
 
-    <a class="skip" href="#main">Skip to main content</a>
+    <a class="skip-link" href="#main">Skip to main content</a>
 
     <div class="page">
 
-        <header>
+        <header role="banner">
             <div class="brand">
                 <span class="logo" aria-hidden="true">R</span>
                 <b>ReScheduled</b>
@@ -23,10 +24,11 @@
             <nav aria-label="Main navigation">
                 <a href="index.html">Home</a>
                 <a href="timetable.html">Timetable</a>
-                <a href="tasks.html">Tasks</a>
+                <a href="notices.html">Notices</a>
+                <a href="notifications.html">Alerts</a>
             </nav>
 
-            <div class="size" aria-label="Text size">
+            <div class="size" role="group" aria-label="Text size adjustment">
                 <button type="button" data-size="-1" aria-label="Decrease text size">A−</button>
                 <button type="button" data-size="0" aria-label="Normal text size" aria-pressed="true">A</button>
                 <button type="button" data-size="1" aria-label="Increase text size">A+</button>
@@ -46,14 +48,14 @@
 
                 <div>
                     <label for="semester">Semester</label>
-                    <select id="semester">
+                    <select id="semester" aria-required="true">
                         <option value="">Select semester</option>
                     </select>
                 </div>
 
                 <div>
                     <label for="date">Date</label>
-                    <input type="date" id="date">
+                    <input type="date" id="date" aria-required="true">
                 </div>
 
                 <button type="button" id="load">LOAD</button>
@@ -71,7 +73,7 @@
                 <div class="table-wrap">
 
                     <table>
-                        <caption class="sr">Selected timetable</caption>
+                        <caption class="sr-only">Selected timetable overrides</caption>
 
                         <thead>
                             <tr>
@@ -84,7 +86,7 @@
                             </tr>
                         </thead>
 
-                        <tbody id="tableBody">
+                        <tbody id="tableBody" aria-live="polite">
                             <tr>
                                 <td colspan="6" class="empty">
                                     No timetable loaded.
@@ -112,8 +114,8 @@
             <h2 id="modalTitle">Override Slot</h2>
             <p id="slotInfo"></p>
 
-            <label for="status">Status</label>
-            <select id="status" required>
+            <label for="status">Status <span aria-hidden="true">*</span></label>
+            <select id="status" required aria-required="true">
                 <option value="">Select status</option>
                 <option value="CANCELLED">Cancelled</option>
                 <option value="RESCHEDULED">Rescheduled</option>
@@ -136,8 +138,8 @@
                 <select id="faculty"></select>
             </div>
 
-            <label for="reason">Reason</label>
-            <input id="reason" required>
+            <label for="reason">Reason <span aria-hidden="true">*</span></label>
+            <input id="reason" required aria-required="true">
 
             <div class="actions">
                 <button type="button" class="cancel" id="close">
@@ -148,7 +150,25 @@
 
         </form>
     </div>
-
+    <footer>
+        <hr>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-box">R</span>
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/admin-add-notice.html">+ Post Notice</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="/notifications.html">View Alerts</a>
+                    <a href="#" onclick="logout()">Logout</a>
+                </div>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
+    </footer>
 
     <script>
 
@@ -268,7 +288,8 @@
                 ${o
                         ? `<span class="status">${esc(o.status)}</span>`
                         : `<button class="override"
-                        data-slot="${esc(x.slot)}">
+                        data-slot="${esc(x.slot)}"
+                        aria-label="Override slot ${esc(x.slot)}: ${esc(x.subject)}">
                         Override
                        </button>`
                     }
@@ -416,12 +437,14 @@
 
                 closeModal();
                 msg("Override saved successfully.", "success");
+                window.showToast("Override saved successfully.", "success");
                 loadTable();
 
             } catch (e) {
 
                 console.error(e);
                 msg(e.message, "error");
+                window.showToast(e.message || "Failed to save override.", "error");
             }
         }
 
@@ -470,10 +493,13 @@
         };
 
         loadMaster();
-        window.onload = () => {
+        window.addEventListener('DOMContentLoaded', () => {
             // only this week allowed 
-            document.getElementById('date').min = new Date().toISOString().split("T")[0];
-        };
+            const dInput = document.getElementById('date');
+            if (dInput) dInput.min = new Date().toISOString().split("T")[0];
+            verifySession();
+        });
+
         // Check with server session if user is authorized CR
         async function verifySession() {
             try {
@@ -484,16 +510,21 @@
                 }
                 const data = await res.json();
                 if (data.user.role !== 'CR') {
-                    alert('Access restricted to Class Representatives.');
-                    window.location.href = '/dashboard.html';
+                    window.showToast('Access restricted to Class Representatives.', 'error');
+                    setTimeout(() => { window.location.href = '/dashboard.html'; }, 1000);
                 }
             } catch (err) {
                 window.location.href = '/login.html';
             }
         }
-        verifySession();
+
+        async function logout() {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        }
 
     </script>
+    <script src="./scripts/a11y.js"></script>
 
 </body>
 

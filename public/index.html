@@ -9,25 +9,25 @@
 </head>
 
 <body>
-    <header class="navbar">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
-                <span class="logo-box">R</span>
+                <span class="logo-box" aria-hidden="true">R</span>
                 <span class="brand-name">ReScheduled</span>
             </a>
-            <div class="nav-links">
+            <nav class="nav-links" aria-label="Main navigation">
                 <a href="/timetable.html">Timetable</a>
                 <a href="/notices.html">Notices</a>
                 <a href="/notifications.html">Alerts</a>
-
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main class="main-container">
-        <section class="hero">
+    <main class="main-container" id="main-content">
+        <section class="hero" aria-labelledby="hero-title">
             <div class="hero-content">
-                <h1 class="hero-title">ReScheduled</h1>
+                <h1 class="hero-title" id="hero-title">ReScheduled</h1>
                 <div class="hero-tagline">YOUR CAMPUS SCHEDULE</div>
                 <p class="hero-description">
                     Never show up to the wrong lecture hall again. Stay informed with real-time class cancellations,
@@ -38,39 +38,39 @@
                 </div>
             </div>
         </section>
-        <section class="features-section">
+        <section class="features-section" aria-label="Platform features">
             <div class="feature-card">
-                <div class="feature-icon">⏱️</div>
+                <div class="feature-icon" aria-hidden="true">⏱️</div>
                 <h3>Real-Time Updates</h3>
                 <p>Get instant notifications about class changes, cancellations, and room relocations.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🏫</div>
+                <div class="feature-icon" aria-hidden="true">🏫</div>
                 <h3>Smart Room Finder</h3>
                 <p>Never get lost again. Find the exact location of your next class with ease.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📢</div>
+                <div class="feature-icon" aria-hidden="true">📢</div>
                 <h3>Official Notices</h3>
                 <p>Stay updated with official announcements and circulars from your Class Representative.</p>
             </div>
         </section>
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <hr>
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <span class="logo-box">R</span>
+                    <span class="logo-box" aria-hidden="true">R</span>
                     <span class="brand-name">ReScheduled</span>
                 </div>
-                <div class="footer-links">
+                <nav class="footer-links" aria-label="Footer quick links">
                     <a href="/admin-add-notice.html">+ Post Notice</a>
                     <a href="/notices.html">View Notices</a>
                     <a href="/timetable.html">View Timetable</a>
                     <a href="/notifications.html">View Alerts</a>
-                </div>
+                </nav>
             </div>
             <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
         </div>

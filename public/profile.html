@@ -4,12 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - ReScheduled</title>
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/profile.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<div class="page">
-    <header class="top" style="display: flex; justify-content: space-between; align-items: center;">
+    <!-- Shared Navbar -->
+    <header class="navbar" role="banner">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-box" aria-hidden="true">R</span>
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/timetable.html">Timetable</a>
+                <a href="/notices.html">Notices</a>
+                <a href="/profile.html" class="active" aria-current="page">Profile</a>
+            </nav>
+        </div>
+    </header>
+
+<main class="page" id="main-content">
+    <div class="top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
             <h1 class="title">User Profile</h1>
             <p class="subtitle">Manage credentials, academic state, and preferences.</p>
@@ -17,11 +35,11 @@
         <div>
             <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px;">← Back to Home</a>
         </div>
-    </header>
+    </div>
 
     <!-- Overview Card -->
-    <section class="card">
-        <h2>Credentials Overview</h2>
+    <section class="card" aria-labelledby="overview-heading">
+        <h2 id="overview-heading">Credentials Overview</h2>
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
                 <strong id="display-name" style="font-size: 18px;">Royston Menezes</strong>
@@ -32,23 +50,23 @@
     </section>
 
     <!-- Academic Details Form -->
-    <section class="card">
-        <h2>Academic Details</h2>
+    <section class="card" aria-labelledby="academic-heading">
+        <h2 id="academic-heading">Academic Details</h2>
         <form id="profile-form">
             <div class="form-grid">
                 <div>
-                    <label for="name">Name</label>
-                    <input type="text" id="name" required>
+                    <label for="name">Name <span aria-hidden="true">*</span></label>
+                    <input type="text" id="name" required aria-required="true" autocomplete="name">
                 </div>
 
                 <div>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
+                    <label for="email">Email <span aria-hidden="true">*</span></label>
+                    <input type="email" id="email" required aria-required="true" autocomplete="email">
                 </div>
 
                 <div>
-                    <label for="studentId">Student ID</label>
-                    <input type="text" id="studentId" required>
+                    <label for="studentId">Student ID <span aria-hidden="true">*</span></label>
+                    <input type="text" id="studentId" required aria-required="true">
                 </div>
 
                 <div>
@@ -89,25 +107,26 @@
     </section>
 
     <!-- Preferences Card -->
-    <section class="card">
-        <h2>Preferences</h2>
+    <section class="card" aria-labelledby="preferences-heading">
+        <h2 id="preferences-heading">Preferences</h2>
         <div class="pref-row">
-            <span>Dark Theme</span>
-            <input type="checkbox" id="theme-toggle">
+            <label for="theme-toggle" style="cursor: pointer;">Dark Theme</label>
+            <input type="checkbox" id="theme-toggle" aria-label="Enable dark theme">
         </div>
         <div class="pref-row">
-            <span>Email Alerts (Cancellations & Changes)</span>
-            <input type="checkbox" id="email-alerts" checked>
+            <label for="email-alerts" style="cursor: pointer;">Email Alerts (Cancellations & Changes)</label>
+            <input type="checkbox" id="email-alerts" checked aria-label="Enable email alerts for timetable cancellations and changes">
         </div>
         <div class="pref-row">
-            <span>In-App Notifications</span>
-            <input type="checkbox" id="inapp-alerts" checked>
+            <label for="inapp-alerts" style="cursor: pointer;">In-App Notifications</label>
+            <input type="checkbox" id="inapp-alerts" checked aria-label="Enable in-app notifications">
         </div>
 
         <button type="button" class="submit-btn" onclick="savePreferences()">Save Preferences</button>
     </section>
-</div>
+</main>
 
+<script src="./scripts/a11y.js"></script>
 <script>
 const form = document.getElementById('profile-form');
 const themeToggle = document.getElementById('theme-toggle');
@@ -158,17 +177,21 @@ form.addEventListener('submit', async (e) => {
         batch: document.getElementById('batch').value
     };
 
-    const res = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
+    try {
+        const res = await fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
 
-    if (res.ok) {
-        alert('Profile saved successfully!');
-        loadProfile();
-    } else {
-        alert('Failed to save profile.');
+        if (res.ok) {
+            window.showToast('Profile saved successfully!', 'success');
+            loadProfile();
+        } else {
+            window.showToast('Failed to save profile.', 'error');
+        }
+    } catch (err) {
+        window.showToast('Error saving profile.', 'error');
     }
 });
 
@@ -186,14 +209,20 @@ async function savePreferences() {
         inAppAlerts: document.getElementById('inapp-alerts').checked
     };
 
-    const res = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prefs)
-    });
+    try {
+        const res = await fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(prefs)
+        });
 
-    if (res.ok) {
-        alert('Preferences saved!');
+        if (res.ok) {
+            window.showToast('Preferences saved!', 'success');
+        } else {
+            window.showToast('Failed to save preferences.', 'error');
+        }
+    } catch (err) {
+        window.showToast('Error saving preferences.', 'error');
     }
 }
 
@@ -208,7 +237,7 @@ if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
 }
 
-loadProfile();
+window.addEventListener('DOMContentLoaded', loadProfile);
 </script>
 
 </body>

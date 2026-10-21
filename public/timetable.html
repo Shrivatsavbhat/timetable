@@ -15,23 +15,25 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- Shared Team Navbar -->
-  <header class="navbar">
+  <header class="navbar" role="banner">
     <div class="nav-container">
       <a href="/" class="logo">
-        <span class="logo-box">R</span>
+        <span class="logo-box" aria-hidden="true">R</span>
         <span class="brand-name">ReScheduled</span>
       </a>
-      <div class="nav-links">
+      <nav class="nav-links" aria-label="Main navigation">
         <a href="/dashboard.html">Dashboard</a>
-        <a href="/timetable.html" class="active">Timetable</a>
+        <a href="/timetable.html" class="active" aria-current="page">Timetable</a>
         <a href="/notices.html">Notices</a>
         <a href="/profile.html">Profile</a>
-      </div>
+      </nav>
     </div>
   </header>
 
-  <main class="page-wrap">
+  <main class="page-wrap" id="main-content">
     <div class="card-wrap">
 
       <!-- Header Row with Exactly 2 Toggles: Daily View vs Permanent Timetable -->
@@ -42,20 +44,20 @@
         </div>
 
         <div class="top-actions">
-          <div class="view-switcher" title="Timetable View">
-            <button id="btnDaily" class="view-btn active" onclick="setView('daily')">Daily View</button>
-            <button id="btnPermanent" class="view-btn" onclick="setView('permanent')">Permanent Timetable</button>
+          <div class="view-switcher" role="group" aria-label="Timetable View Mode">
+            <button id="btnDaily" class="view-btn active" onclick="setView('daily')" aria-pressed="true">Daily View</button>
+            <button id="btnPermanent" class="view-btn" onclick="setView('permanent')" aria-pressed="false">Permanent Timetable</button>
           </div>
 
           <a href="/notices.html" class="btn-pill">Notices &rarr;</a>
-          <button class="btn-primary" onclick="jumpToToday()">Jump to Today</button>
+          <button class="btn-primary" onclick="jumpToToday()" aria-label="Jump timetable to current day">Jump to Today</button>
         </div>
       </div>
 
       <!-- Filters & Search (Pure Flexbox) -->
       <div class="filter-row">
         <div class="filter-item">
-          <label>Academic Term</label>
+          <label for="semSelect">Academic Term</label>
           <select id="semSelect" onchange="onSemesterChange()">
             <option value="I MCA-A" selected>1st Sem — I MCA (Sec A)</option>
             <option value="III MCA-A">3rd Sem — I MCA (Sec A)</option>
@@ -63,52 +65,54 @@
           </select>
         </div>
         <div class="filter-item">
-          <label>Filter by Subject, Faculty, or Room</label>
+          <label for="searchBox">Filter by Subject, Faculty, or Room</label>
           <input type="search" id="searchBox" placeholder="Search subject, faculty, or room..."
-            oninput="onSearch(this.value)">
+            oninput="onSearch(this.value)" autocomplete="off">
         </div>
       </div>
 
       <!-- Day Selector (Monday–Saturday) -->
-      <div class="day-row" id="dayButtons">
-        <button class="day-btn" data-day="Monday" onclick="selectDay(this, 'Monday')">Mon (5)</button>
-        <button class="day-btn" data-day="Tuesday" onclick="selectDay(this, 'Tuesday')">Tue (3)</button>
-        <button class="day-btn" data-day="Wednesday" onclick="selectDay(this, 'Wednesday')">Wed (4)</button>
-        <button class="day-btn" data-day="Thursday" onclick="selectDay(this, 'Thursday')">Thu (5)</button>
-        <button class="day-btn" data-day="Friday" onclick="selectDay(this, 'Friday')">Fri (4)</button>
-        <button class="day-btn" data-day="Saturday" onclick="selectDay(this, 'Saturday')">Sat (4)</button>
+      <div class="day-row" id="dayButtons" role="group" aria-label="Days of the week">
+        <button class="day-btn" data-day="Monday" onclick="selectDay(this, 'Monday')" aria-pressed="false">Mon (5)</button>
+        <button class="day-btn" data-day="Tuesday" onclick="selectDay(this, 'Tuesday')" aria-pressed="false">Tue (3)</button>
+        <button class="day-btn" data-day="Wednesday" onclick="selectDay(this, 'Wednesday')" aria-pressed="false">Wed (4)</button>
+        <button class="day-btn" data-day="Thursday" onclick="selectDay(this, 'Thursday')" aria-pressed="false">Thu (5)</button>
+        <button class="day-btn" data-day="Friday" onclick="selectDay(this, 'Friday')" aria-pressed="false">Fri (4)</button>
+        <button class="day-btn" data-day="Saturday" onclick="selectDay(this, 'Saturday')" aria-pressed="false">Sat (4)</button>
       </div>
 
       <!-- Status Header & Legend -->
       <div class="legend-row">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
+          <div id="statusLabel" style="font-weight: 600;" role="status" aria-live="polite">Today's Slots</div>
           <button id="btnTableToggle" class="btn-pill" style="font-size: 11px; padding: 2px 8px; cursor: pointer;"
-            onclick="toggleTableLayout()">Table View</button>
+            onclick="toggleTableLayout()" aria-label="Switch between daily cards and weekly table layout">Table View</button>
         </div>
-        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-          <span><span class="legend-dot" style="background: var(--accent-green);"></span>Theory Class</span>
-          <span><span class="legend-dot" style="background: var(--primary);"></span>Practical Lab</span>
+        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;" aria-label="Timetable slot status legend">
+          <span><span class="legend-dot" style="background: var(--accent-green);" aria-hidden="true"></span>Theory Class</span>
+          <span><span class="legend-dot" style="background: var(--primary);" aria-hidden="true"></span>Practical Lab</span>
           <span id="legendOverride" style="display: inline-flex; align-items: center; gap: 6px;"><span
-              class="legend-dot" style="background: #ef4444;"></span>Override / Change</span>
+              class="legend-dot" style="background: #ef4444;" aria-hidden="true"></span>Override / Change</span>
         </div>
       </div>
 
       <!-- 1. Daily Cards View (Pure Flexbox) -->
-      <div class="slot-list" id="dailyContainer">
+      <div class="slot-list" id="dailyContainer" role="region" aria-label="Daily lecture slots" aria-live="polite">
         <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading schedule...</p>
       </div>
 
       <!-- 2. Simple Clean Weekly Schedule Table -->
-      <div class="table-container" id="weeklyContainer" style="display: none;">
+      <div class="table-container" id="weeklyContainer" style="display: none;" role="region" aria-label="Weekly timetable matrix" aria-live="polite">
         <table class="clean-table">
+          <caption class="sr-only">Weekly Course Timetable</caption>
           <thead>
             <tr>
-              <th>Time</th>
-              <th>Subject</th>
-              <th>Room</th>
-              <th>Faculty</th>
-              <th>Type</th>
+              <th scope="col">Time</th>
+              <th scope="col">Subject</th>
+              <th scope="col">Room</th>
+              <th scope="col">Faculty</th>
+              <th scope="col">Type</th>
+              <th scope="col">Status</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -117,7 +121,7 @@
 
       <!-- Footer Info -->
       <div class="card-footer">
-        <span id="footerSyncStatus">Live sync active with Department Master & Overrides</span>
+        <span id="footerSyncStatus" role="status">Live sync active with Department Master & Overrides</span>
         <span>Class: <strong>I MCA Section A</strong></span>
       </div>
 
@@ -125,6 +129,7 @@
   </main>
 
   <!-- Client-Side Logic -->
+  <script src="./scripts/a11y.js"></script>
   <script>
     let currentMode = 'daily'; // 'daily' or 'permanent'
     let isTableView = false;
@@ -156,13 +161,12 @@
         sem = sem ? sem : "I MCA-A";
         const res = await fetch(`/api/timetable?semester=${sem}`);
         const data = await res.json();
-        console.log(data);
-        allSlots = data.schedule || [];
+        allSlots = data?.schedule || [];
         updateStatusLabel();
         renderCurrentView();
       } catch (err) {
         document.getElementById('dailyContainer').innerHTML =
-          '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
+          '<p style="text-align: center; color: #991b1b; font-weight: 600; padding: 20px;">Failed to connect to server.</p>';
       }
     }
 
@@ -172,22 +176,24 @@
         sem = sem ? sem : "I MCA-A";
         const res = await fetch(`/api/timetable?semester=${sem}&mode=permanent`);
         const data = await res.json();
-        console.log(data);
-        allSlots = data.schedule || [];
-        // add logic to display permanent timetable
+        allSlots = data?.schedule || [];
         updateStatusLabel();
         renderCurrentView();
       } catch (err) {
         document.getElementById('dailyContainer').innerHTML =
-          '<p style="text-align: center; color: #dc2626; padding: 20px;">Failed to connect to server.</p>';
+          '<p style="text-align: center; color: #991b1b; font-weight: 600; padding: 20px;">Failed to connect to server.</p>';
       }
     }
 
     function setView(mode) {
       currentMode = mode;
       const isDaily = (mode === 'daily');
-      document.getElementById('btnDaily').classList.toggle('active', isDaily);
-      document.getElementById('btnPermanent').classList.toggle('active', !isDaily);
+      const bDaily = document.getElementById('btnDaily');
+      const bPerm = document.getElementById('btnPermanent');
+      bDaily.classList.toggle('active', isDaily);
+      bPerm.classList.toggle('active', !isDaily);
+      bDaily.setAttribute('aria-pressed', isDaily ? 'true' : 'false');
+      bPerm.setAttribute('aria-pressed', !isDaily ? 'true' : 'false');
 
       const legendOverride = document.getElementById('legendOverride');
       if (legendOverride) legendOverride.style.display = isDaily ? 'inline-flex' : 'none';
@@ -271,14 +277,13 @@
       const breakText = BREAK_TIMES[currentDay] || '12:30 PM — 02:00 PM';
 
       let html = morningSlots.map(makeCardHtml).join('');
-      html += `<div class="break-row">Midday Break (${breakText})</div>`;
+      html += `<div class="break-row" role="separator" aria-label="Midday break from ${breakText}">Midday Break (${breakText})</div>`;
       html += afternoonSlots.map(makeCardHtml).join('');
 
       container.innerHTML = html;
     }
 
     function makeCardHtml(s) {
-      console.log("S:", s)
       const isLab = s.isLab || (s.subject || '').toLowerCase().includes('lab');
       let badge = isLab
         ? '<span class="status-pill status-lab">Lab</span>'
@@ -298,7 +303,7 @@
           badge = `<span class="status-pill status-swapped">Swapped (was Slot ${s.newSlot})</span>`;
           cardClass += ' is-swapped';
           if (s.swappedWithSubject) {
-            overrideNote = `<span class="override-reason" style="color: #b45309;">(Swapped with ${s.swappedWithSubject})</span>`;
+            overrideNote = `<span class="override-reason" style="color: #92400e;">(Swapped with ${s.swappedWithSubject})</span>`;
           }
         } else if (s.status === 'RESCHEDULED') {
           badge = '<span class="status-pill status-rescheduled">Rescheduled</span>';
@@ -313,8 +318,10 @@
         ? `${s.faculty} &rarr; <strong>${s.substituteFaculty}</strong>`
         : s.faculty;
 
+      const accessibleLabel = `Slot ${s.slot || ''}, ${s.time || ''}: ${s.subject} (${s.code}), Room ${s.newRoom || s.room}, Faculty ${s.substituteFaculty || s.faculty}, Status ${s.status || 'Confirmed'}`;
+
       return `
-        <div class="slot-card ${cardClass}">
+        <div class="slot-card ${cardClass}" role="article" aria-label="${accessibleLabel}">
           <div class="slot-time-box">
             <span class="slot-label">Slot ${s.slot || ''}</span>
             <span class="slot-time">${(s.time || '').split('-')[0]}</span>
@@ -360,7 +367,7 @@
 
         tableHtml += `
           <tr class="day-group-header">
-            <td colspan="5">
+            <td colspan="6">
               <div class="day-header-flex">
                 <span class="day-title">${day}</span>
                 <span class="day-count-badge">${matchingSlots.length} Classes</span>
@@ -379,7 +386,7 @@
           if (s.isOverridden) {
             if (s.status === 'CANCELLED') {
               statusBadge = `<span class="status-pill status-cancelled">Cancelled${(s.reason && s.reason !== '--') ? ': ' + s.reason : ''}</span>`;
-              rowStyle = 'style="opacity: 0.6; text-decoration: line-through;"';
+              rowStyle = 'style="opacity: 0.85; text-decoration: line-through;"';
             } else if (s.status === 'SWAPPED') {
               statusBadge = `<span class="status-pill status-swapped">Swapped (was Slot ${s.newSlot})</span>`;
             } else if (s.status === 'RESCHEDULED') {
@@ -394,7 +401,7 @@
           tableHtml += `
             <tr ${rowStyle}>
               <td style="white-space:nowrap; font-weight:600; color:var(--primary);">${s.time}</td>
-                           <td>
+              <td>
                 <div style="font-weight:600; color:var(--text-main);">${s.subject}</div>
                 <span class="code-tag">${s.code}</span>
                 ${s.swappedWithSubject ? `<span style="font-size: 11px; color: var(--text-muted); font-style: italic; margin-left: 6px;">(Swapped with ${s.swappedWithSubject})</span>` : ''}
@@ -410,7 +417,7 @@
       });
 
       if (totalVisible === 0) {
-        tableHtml = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No classes matching your search.</td></tr>';
+        tableHtml = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No classes matching your search.</td></tr>';
       }
 
       tbody.innerHTML = tableHtml;
@@ -423,8 +430,12 @@
 
     function selectDay(btn, day) {
       currentDay = day;
-      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.day-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       updateStatusLabel();
       renderDailyView();
     }
@@ -436,7 +447,9 @@
       currentDay = defaultDay;
 
       document.querySelectorAll('.day-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-day') === defaultDay);
+        const isMatch = btn.getAttribute('data-day') === defaultDay;
+        btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
       });
 
       if (isTableView) toggleTableLayout();
@@ -446,7 +459,7 @@
       }
     }
 
-    window.onload = function () {
+    window.addEventListener('DOMContentLoaded', function () {
       const dayIdx = new Date().getDay();
       const realToday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIdx];
       const defaultDay = (realToday === 'Sunday') ? 'Monday' : realToday;
@@ -455,11 +468,13 @@
       document.querySelectorAll('.day-btn').forEach(btn => {
         const d = btn.getAttribute('data-day');
         if (d === realToday) btn.innerHTML = d.slice(0, 3) + ' (Today)';
-        btn.classList.toggle('active', d === defaultDay);
+        const isSelected = (d === defaultDay);
+        btn.classList.toggle('active', isSelected);
+        btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
       });
 
       loadData();
-    };
+    });
   </script>
 </body>
 

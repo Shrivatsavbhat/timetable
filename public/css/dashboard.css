@@ -42,8 +42,8 @@
 
 
 .happening-now-content {
-    color: red;
-    font-weight: 600;
+    color: var(--primary);
+    font-weight: 700;
 }
 
 .notice-title {
@@ -133,40 +133,40 @@
 
 .status-cancelled {
     background: #fff1f0;
-    color: #cf1322;
+    color: #991b1b;
 }
 
 .status-swapped {
-    background: #fffbe6;
-    color: #d4af37;
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .status-substitute {
     background: #f0f9ff;
-    color: #096dd9;
+    color: #0369a1;
 }
 
 .status-rescheduled {
-    background: #f6ffed;
-    color: #389e0d;
+    background: #f0fdf4;
+    color: #166534;
 }
 
 
 .period-card.is-cancelled {
-    opacity: 0.7;
-    border-left: 3px solid #cf1322;
+    opacity: 0.85;
+    border-left: 3px solid #991b1b;
 }
 
 .period-card.is-swapped {
-    border-left: 3px solid #d4af37;
+    border-left: 3px solid #b45309;
 }
 
 .period-card.is-substitute {
-    border-left: 3px solid #096dd9;
+    border-left: 3px solid #0369a1;
 }
 
 .period-card.is-rescheduled {
-    border-left: 3px solid #389e0d;
+    border-left: 3px solid #166534;
 }
 
 
@@ -211,8 +211,8 @@
     font-size: 11px;
     font-weight: 700;
     padding: 2px 8px;
-    background: var(--muted-bg);
-    color: var(--text-muted);
+    background: #f1f5f9;
+    color: #334155;
     border-radius: 4px;
     white-space: nowrap;
 }
@@ -228,14 +228,14 @@
 }
 
 .period-faculty strong {
-    color: var(--accent);
+    color: var(--primary);
     font-weight: 700;
 }
 
 .period-note {
     display: block;
     font-size: 11px;
-    color: #6b7280;
+    color: #475569;
     margin-top: 2px;
 }
 
