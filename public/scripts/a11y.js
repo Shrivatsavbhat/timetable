@@ -95,7 +95,7 @@
         updateThemeUI();
 
         function updateFontSizeUI(size) {
-            document.querySelectorAll('[data-size]').forEach(btn => {
+            document.querySelectorAll('.size-controls [data-size]').forEach(btn => {
                 const s = btn.dataset.size;
                 btn.setAttribute('aria-pressed', s === '0' && size === 0 ? 'true' : 'false');
             });
@@ -103,7 +103,7 @@
 
         let currentSize = normalizeFontSize(localStorage.getItem('fontSize'));
 
-        document.querySelectorAll('[data-size]').forEach(btn => {
+        document.querySelectorAll('.size-controls [data-size]').forEach(btn => {
             btn.onclick = function () {
                 const action = Number.parseInt(btn.dataset.size, 10);
                 currentSize = action === 0 ? 0 : Math.max(-5, Math.min(5, currentSize + action));
