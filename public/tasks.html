@@ -7,7 +7,7 @@
     <title>ReScheduled - Tasks</title>
     <link rel="stylesheet" href="./css/tasks.css">
     <link rel="stylesheet" href="/css/style.css">
-    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');const s=localStorage.getItem('fontSize');if(s)document.documentElement.setAttribute('data-size',s);</script>
+    <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); const s = localStorage.getItem('fontSize'); if (s) document.documentElement.setAttribute('data-size', s);</script>
 </head>
 
 <body>
@@ -26,11 +26,15 @@
             </nav>
             <div class="header-controls">
                 <div class="size-controls" role="group" aria-label="Text size adjustment">
-                    <button type="button" data-size="-1" aria-label="Decrease text size" title="Decrease text size">A−</button>
-                    <button type="button" data-size="0" aria-label="Reset text size" aria-pressed="true" title="Reset text size">A</button>
-                    <button type="button" data-size="1" aria-label="Increase text size" title="Increase text size">A+</button>
+                    <button type="button" data-size="-1" aria-label="Decrease text size"
+                        title="Decrease text size">A−</button>
+                    <button type="button" data-size="0" aria-label="Reset text size" aria-pressed="true"
+                        title="Reset text size">A</button>
+                    <button type="button" data-size="1" aria-label="Increase text size"
+                        title="Increase text size">A+</button>
                 </div>
-                <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
+                <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme"
+                    title="Toggle theme">☾</button>
             </div>
         </div>
     </header>
@@ -304,32 +308,29 @@
 
         load();
 
+        // Check with server session if user is authorized CR
+        async function verifySession() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (!res.ok) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const data = await res.json();
+                if (data.user.role !== 'CR') {
+                    window.showToast('Access restricted to Class Representatives.', 'error');
+                    setTimeout(() => { window.location.href = '/dashboard.html'; }, 1000);
+                }
+            } catch (err) {
+                window.location.href = '/login.html';
+            }
+        }
+        verifySession();
+
         async function logout() {
             await fetch('/api/auth/logout', { method: 'POST' });
             window.location.href = '/login.html';
         }
-
-        async function checkSession() {
-            try {
-                const res = await fetch('/api/auth/me');
-                if (!res.ok) throw new Error("Not authenticated");
-
-                const data = await res.json();
-                const isCr = data.user?.role === 'CR';
-                $("add").disabled = !isCr;
-                $("add").title = isCr
-                    ? "Create a task"
-                    : "Only the Class Representative can create tasks";
-                if (!isCr) {
-                    msg("Only the Class Representative can create tasks.", "error");
-                }
-            } catch (err) {
-                $("add").disabled = true;
-                $("add").title = "Sign in as the Class Representative to create tasks";
-                msg("Sign in as the Class Representative to create tasks.", "error");
-            }
-        }
-        checkSession();
 
     </script>
 
