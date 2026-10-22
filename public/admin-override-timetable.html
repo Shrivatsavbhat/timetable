@@ -4,41 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Override Timetable</title>
+    <title>Daily Overrides - ReScheduled</title>
     <link rel="stylesheet" href="./css/admin-override-timetable.css">
     <link rel="stylesheet" href="./css/style.css">
-    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');const s=localStorage.getItem('fontSize');if(s)document.documentElement.setAttribute('data-size',s);</script>
 </head>
 
 <body>
 
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <div class="page">
-
-        <header role="banner">
-            <div class="brand">
-                <span class="logo" aria-hidden="true">R</span>
-                <b>ReScheduled</b>
-            </div>
-
-            <nav aria-label="Main navigation">
-                <a href="index.html">Home</a>
-                <a href="timetable.html">Timetable</a>
-                <a href="notices.html">Notices</a>
-                <a href="notifications.html">Alerts</a>
+    <!-- Shared Navbar -->
+    <header class="navbar" role="banner">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/admin-master-timetable.html">Master Blueprint</a>
+                <a href="/admin-override-timetable.html" class="active" aria-current="page">Daily Overrides</a>
+                <a href="/admin-add-notice.html">Post Notice</a>
+                <a href="/tasks.html">Tasks</a>
             </nav>
-
-            <div class="size" role="group" aria-label="Text size adjustment">
-                <button type="button" data-size="-1" aria-label="Decrease text size">A−</button>
-                <button type="button" data-size="0" aria-label="Normal text size" aria-pressed="true">A</button>
-                <button type="button" data-size="1" aria-label="Increase text size">A+</button>
-                
+            <div class="header-controls">
+                <div class="size-controls" role="group" aria-label="Text size adjustment">
+                    <button type="button" data-size="small" aria-label="Decrease text size" title="Small text">A−</button>
+                    <button type="button" data-size="normal" aria-label="Normal text size" aria-pressed="true" title="Normal text">A</button>
+                    <button type="button" data-size="large" aria-label="Increase text size" title="Large text">A+</button>
+                </div>
+                <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
             </div>
-            <button type="button" id="themeToggle" aria-label="Toggle dark theme">☾</button>
-        </header>
+        </div>
+    </header>
 
-
+    <div class="page">
         <main id="main">
 
             <section class="intro">
@@ -158,7 +158,6 @@
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <span class="logo-box">R</span>
                     <span class="brand-name">ReScheduled</span>
                 </div>
                 <div class="footer-links">
@@ -451,33 +450,6 @@
             }
         }
 
-
-        /* A− / A / A+ */
-
-        document.querySelectorAll(".size button").forEach(b => {
-
-            b.onclick = () => {
-
-                const change = Number(b.dataset.size);
-
-                if (change === 0)
-                    textSize = 0;
-                else
-                    textSize = Math.max(-3, Math.min(3, textSize + change));
-
-                document.documentElement.style.fontSize =
-                    `${16 + textSize * 2}px`;
-
-                document.querySelectorAll(".size button")
-                    .forEach(x =>
-                        x.setAttribute(
-                            "aria-pressed",
-                            x === b
-                        )
-                    );
-            };
-
-        });
 
 
         $("load").onclick = loadTable;

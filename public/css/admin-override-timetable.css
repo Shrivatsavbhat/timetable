@@ -16,54 +16,7 @@ body{
     margin:auto;
 }
 
-header{
-    min-height:56px;
-    padding:8px 20px;
-    background:#fff;
-    border-bottom:1px solid #64748b;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-}
 
-.brand,nav,.size{
-    display:flex;
-    align-items:center;
-    gap:9px;
-}
-
-nav{gap:20px}
-
-nav a{
-    color:#334155;
-    text-decoration:none;
-}
-
-nav a:hover{text-decoration:underline}
-
-.logo{
-    width:32px;
-    height:32px;
-    display:grid;
-    place-items:center;
-    border-radius:6px;
-    background:#6B3F25;
-    color:#fff;
-}
-
-.size button{
-    min-width:34px;
-    padding:5px;
-    background:#fff;
-    color:#0f172a;
-    border:1px solid #475569;
-}
-
-.size button[aria-pressed="true"]{
-    background:#6B3F25;
-    color:#fff;
-}
 
 main{margin-top:30px}
 

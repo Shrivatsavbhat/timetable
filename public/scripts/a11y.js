@@ -1,44 +1,49 @@
 
 (function () {
-    // 1. Immediately apply saved theme to document
-    function applySavedTheme() {
-        if (localStorage.getItem('theme') === 'dark') {
+    // 1. Immediately apply saved theme & font size to document
+    function applySavedSettings() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             if (document.body) document.body.setAttribute('data-theme', 'dark');
-        } else if (localStorage.getItem('theme') === 'light') {
+        } else if (theme === 'light') {
             document.documentElement.removeAttribute('data-theme');
             if (document.body) document.body.removeAttribute('data-theme');
         }
+
+        const fontSize = localStorage.getItem('fontSize') || 'normal';
+        document.documentElement.setAttribute('data-size', fontSize);
+        if (document.body) document.body.setAttribute('data-size', fontSize);
     }
-    applySavedTheme();
+    applySavedSettings();
 
-    // 2. Initialize and bind the theme toggle button and sync state
-    function setupThemeToggle() {
-        applySavedTheme();
+    // 2. Setup Header Controls (Font Size Controls & Symbol-Only Theme Switch)
+    function setupHeaderControls() {
+        applySavedSettings();
 
-        // Check if an existing toggle button exists (#themeToggle)
-        let btn = document.getElementById('themeToggle');
-        if (!btn) {
-            // Find navbar or header to place the toggle button
-            const nav = document.querySelector('.nav-links') ||
-                        document.querySelector('.nav-container') ||
-                        document.querySelector('header nav') ||
-                        document.querySelector('header');
-            if (nav) {
-                btn = document.createElement('button');
-                btn.id = 'themeToggle';
-                btn.type = 'button';
-                btn.className = 'theme-toggle-btn';
-                nav.appendChild(btn);
+        // Theme Toggle (SYMBOL ONLY)
+        let themeBtn = document.getElementById('themeToggle');
+        if (!themeBtn) {
+            const container = document.querySelector('.header-controls') ||
+                              document.querySelector('.nav-container') ||
+                              document.querySelector('header');
+            if (container) {
+                themeBtn = document.createElement('button');
+                themeBtn.id = 'themeToggle';
+                themeBtn.type = 'button';
+                themeBtn.className = 'theme-toggle-btn';
+                container.appendChild(themeBtn);
             }
         }
 
-        function updateToggleState() {
+        function updateThemeUI() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            if (btn) {
-                btn.innerHTML = isDark ? '☀ Light' : '☾ Dark';
-                btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-                btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+            if (themeBtn) {
+                // Symbol only - NO TEXT
+                themeBtn.textContent = isDark ? '☀' : '☾';
+                themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+                themeBtn.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+                themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
             }
             const profileToggle = document.getElementById('theme-toggle');
             if (profileToggle && profileToggle.checked !== isDark) {
@@ -46,19 +51,19 @@
             }
         }
 
-        if (btn) {
-            btn.onclick = function () {
+        if (themeBtn) {
+            themeBtn.onclick = function () {
                 const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                const nextTheme = isDark ? 'light' : 'dark';
-                if (nextTheme === 'dark') {
+                const next = isDark ? 'light' : 'dark';
+                if (next === 'dark') {
                     document.documentElement.setAttribute('data-theme', 'dark');
                     if (document.body) document.body.setAttribute('data-theme', 'dark');
                 } else {
                     document.documentElement.removeAttribute('data-theme');
                     if (document.body) document.body.removeAttribute('data-theme');
                 }
-                localStorage.setItem('theme', nextTheme);
-                updateToggleState();
+                localStorage.setItem('theme', next);
+                updateThemeUI();
             };
         }
 
@@ -67,26 +72,55 @@
         if (profileToggle) {
             profileToggle.checked = (localStorage.getItem('theme') === 'dark');
             profileToggle.onchange = function () {
-                const nextTheme = profileToggle.checked ? 'dark' : 'light';
-                if (nextTheme === 'dark') {
+                const next = profileToggle.checked ? 'dark' : 'light';
+                if (next === 'dark') {
                     document.documentElement.setAttribute('data-theme', 'dark');
                     if (document.body) document.body.setAttribute('data-theme', 'dark');
                 } else {
                     document.documentElement.removeAttribute('data-theme');
                     if (document.body) document.body.removeAttribute('data-theme');
                 }
-                localStorage.setItem('theme', nextTheme);
-                updateToggleState();
+                localStorage.setItem('theme', next);
+                updateThemeUI();
             };
         }
 
-        updateToggleState();
+        updateThemeUI();
+
+        // Font Size Controls (A- A A+)
+        function updateFontSizeUI(size) {
+            document.querySelectorAll('[data-size]').forEach(btn => {
+                const s = btn.dataset.size;
+                const isMatch = s === size || 
+                               (size === 'small' && s === '-1') ||
+                               (size === 'normal' && s === '0') ||
+                               (size === 'large' && s === '1');
+                btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+            });
+        }
+
+        const currentSize = localStorage.getItem('fontSize') || 'normal';
+        updateFontSizeUI(currentSize);
+
+        document.querySelectorAll('[data-size]').forEach(btn => {
+            btn.onclick = function () {
+                let sizeVal = btn.dataset.size;
+                if (sizeVal === '-1') sizeVal = 'small';
+                if (sizeVal === '0') sizeVal = 'normal';
+                if (sizeVal === '1') sizeVal = 'large';
+
+                document.documentElement.setAttribute('data-size', sizeVal);
+                if (document.body) document.body.setAttribute('data-size', sizeVal);
+                localStorage.setItem('fontSize', sizeVal);
+                updateFontSizeUI(sizeVal);
+            };
+        });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupThemeToggle);
+        document.addEventListener('DOMContentLoaded', setupHeaderControls);
     } else {
-        setupThemeToggle();
+        setupHeaderControls();
     }
 
     let toastContainer = null;

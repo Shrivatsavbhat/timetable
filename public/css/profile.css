@@ -34,59 +34,7 @@ body{
     margin:auto;
 }
 
-header{
-    min-height:56px;
-    padding:8px 20px;
-    background:var(--surface);
-    border-bottom:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-}
 
-.brand,nav,.size{
-    display:flex;
-    align-items:center;
-    gap:9px;
-}
-
-nav{gap:20px}
-
-nav a{
-    color:var(--text-muted);
-    text-decoration:none;
-}
-
-nav a:hover{text-decoration:underline}
-
-.logo{
-    width:32px;
-    height:32px;
-    display:grid;
-    place-items:center;
-    border-radius:6px;
-    background:#6B3F25;
-    color:#fff;
-}
-
-.size button{
-    min-width:34px;
-    padding:5px;
-    background:var(--surface);
-    color:var(--text-main);
-    border:1px solid var(--border);
-}
-
-.size button[aria-pressed="true"]{
-    background:var(--primary);
-    color:#fff;
-}
-
-#themeToggle{
-    min-width:40px;
-    padding:5px;
-}
 
 main{margin-top:30px}
 

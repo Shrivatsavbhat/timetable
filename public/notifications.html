@@ -7,7 +7,7 @@
     <title>ReScheduled - Notification Center</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/notify.css">
-    <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');const s=localStorage.getItem('fontSize');if(s)document.documentElement.setAttribute('data-size',s);</script>
 </head>
 
 <body>
@@ -17,7 +17,6 @@
     <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
-                <span class="logo-box" aria-hidden="true">R</span>
                 <span class="brand-name">ReScheduled</span>
             </a>
             <nav class="nav-links" aria-label="Main navigation">
@@ -25,7 +24,17 @@
                 <a href="/timetable.html">Timetable</a>
                 <a href="/notices.html">Notices</a>
                 <a href="/notifications.html" class="active" aria-current="page">Alerts</a>
+                <a href="/tasks.html">Tasks</a>
+                <a href="/profile.html">Profile</a>
             </nav>
+            <div class="header-controls">
+                <div class="size-controls" role="group" aria-label="Text size adjustment">
+                    <button type="button" data-size="small" aria-label="Decrease text size" title="Small text">A−</button>
+                    <button type="button" data-size="normal" aria-label="Normal text size" aria-pressed="true" title="Normal text">A</button>
+                    <button type="button" data-size="large" aria-label="Increase text size" title="Large text">A+</button>
+                </div>
+                <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
+            </div>
         </div>
     </header>
 
