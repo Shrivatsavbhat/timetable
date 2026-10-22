@@ -5,7 +5,6 @@ const Override = require('../models/Override');
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-// Helper to determine day of week from YYYY-MM-DD without UTC offset bugs
 function getDayNameFromDate(dateStr) {
   if (!dateStr || typeof dateStr !== 'string') return null;
   const parts = dateStr.split('-');
@@ -17,12 +16,10 @@ function getDayNameFromDate(dateStr) {
   return !isNaN(parsed.getTime()) ? DAYS[parsed.getDay()] : null;
 }
 
-// GET /api/timetable?date=2026-10-21&semester=I MCA-A&mode=permanent
 router.get('/', async (req, res) => {
   try {
     const { date, semester, mode } = req.query;
 
-    // 1. Parse date, dayName, and dateString safely
     let dayName = null;
     let dateString = null;
 
@@ -31,7 +28,6 @@ router.get('/', async (req, res) => {
         dateString = date;
         dayName = getDayNameFromDate(date);
       } else {
-        // Handle full date string or object (e.g. from new Date())
         const cleanDateStr = typeof date === 'string' ? date.replace('GMT ', 'GMT+') : date;
         const parsed = new Date(cleanDateStr);
         if (!isNaN(parsed.getTime())) {
@@ -44,14 +40,12 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // 2. Build master filter without overwriting semester
     const masterFilter = {};
     if (semester) masterFilter.semester = semester;
     if (dayName) masterFilter.day = dayName;
 
     console.log(`[Timetable API] Query: date=${dateString || 'all'}, day=${dayName || 'all'}, sem=${semester || 'all'}, mode=${mode || 'merged'}`);
 
-    // 3. Permanent Mode (Raw blueprint with no overrides)
     if (mode === 'permanent') {
       const masterSlots = await MasterSlot.find(masterFilter).sort({ slot: 1 });
       return res.json({
@@ -62,7 +56,6 @@ router.get('/', async (req, res) => {
       });
     }
 
-    // 4. Merged Mode (Default: Master slots + Overrides)
     const masterSlots = await MasterSlot.find(masterFilter).sort({ slot: 1 });
 
     const overrideFilter = {};
@@ -74,14 +67,12 @@ router.get('/', async (req, res) => {
 
 
     const mergedSchedule = masterSlots.map(slot => {
-      // Find override matching slot number AND day/date
       const override = overrides.find(o => {
         if (String(o.slot) !== String(slot.slot)) return false;
         if (dateString) return o.date === dateString;
         return getDayNameFromDate(o.date) === slot.day;
       });
       if (override) {
-        // For SWAPPED slots: Exchange the subject, faculty, code, and room with the partner slot!
         if (override.status === 'SWAPPED' && override.newSlot) {
           const partnerSlot = masterSlots.find(s => s.day === slot.day && String(s.slot) === String(override.newSlot));
           if (partnerSlot) {
@@ -89,7 +80,6 @@ router.get('/', async (req, res) => {
               ...slot.toObject(),
               isOverridden: true,
               status: 'SWAPPED',
-              // Time and slot stay at this position, but the lecture content comes from the swapped slot!
               subject: partnerSlot.subject,
               code: partnerSlot.code,
               faculty: partnerSlot.faculty,
@@ -97,7 +87,7 @@ router.get('/', async (req, res) => {
               room: override.newRoom || partnerSlot.room,
               newRoom: override.newRoom || partnerSlot.room,
               newSlot: override.newSlot,
-              swappedWithSubject: slot.subject, // Reference to original class
+              swappedWithSubject: slot.subject,
               reason: override.reason
             };
           }
@@ -105,7 +95,7 @@ router.get('/', async (req, res) => {
         return {
           ...slot.toObject(),
           isOverridden: true,
-          status: override.status, // 'CANCELLED', 'RESCHEDULED', 'SUBSTITUTE'
+          status: override.status,
           newRoom: override.newRoom || slot.room,
           newSlot: override.newSlot || slot.slot,
           substituteFaculty: override.substituteFaculty || null,

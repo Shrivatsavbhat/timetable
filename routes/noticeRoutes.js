@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-//get the notice by id
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -27,7 +26,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-//create the notice
 router.post('/', async (req, res) => {
     try {
         const notice = await Notice.create(req.body);
@@ -38,7 +36,6 @@ router.post('/', async (req, res) => {
 });
 
 
-//edit the notice by id
 router.put('/:id', async (req, res) => {
     try {
         const notice = await Notice.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
@@ -48,7 +45,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-//delete the post by id
 router.delete('/:id', async (req, res) => {
     try {
         await Notice.findByIdAndDelete(req.params.id);

@@ -24,7 +24,6 @@ function getStartTimeMinutes(time) {
     return hours * 60 + minutes;
 }
 
-// Get all master slots (filter by semester or day if passed in query)
 router.get('/', async (req, res) => {
     try {
         const slots = await MasterSlot.find(req.query);
@@ -39,7 +38,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Add a new master slot
 router.post('/', async (req, res) => {
     try {
         const slot = await MasterSlot.create(req.body);
@@ -49,7 +47,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Permanently update a master slot
 router.put('/:id', async (req, res) => {
     try {
         const updates = Object.fromEntries(
@@ -73,7 +70,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Exchange the schedule positions of two permanent slots.
 router.post('/swap', async (req, res) => {
     const { firstId, secondId } = req.body;
 
@@ -114,7 +110,6 @@ router.post('/swap', async (req, res) => {
     }
 });
 
-// Delete a master slot
 router.delete('/:id', async (req, res) => {
     try {
         await MasterSlot.findByIdAndDelete(req.params.id);

@@ -78,7 +78,7 @@
         <div class="login-wrap">
             <h1 style="margin: 0 0 6px 0; font-size: 24px;">Sign In</h1>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Class Representative / Admin Portal</p>
-            
+
             <div id="login-alert" role="alert" aria-live="assertive" style="display: none; padding: 10px 14px; background: #fee2e2; color: #991b1b; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 16px;"></div>
 
             <form id="login-form">
@@ -115,7 +115,6 @@
 
     <script src="./scripts/a11y.js"></script>
     <script>
-        // Check with server session if user is authorized CR
         async function verifySession() {
             try {
                 const res = await fetch('/api/auth/me');
@@ -126,7 +125,6 @@
                     }
                 }
             } catch (err) {
-                // Stay on login page if not logged in
             }
         }
         verifySession();

@@ -14,7 +14,7 @@
 
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <!-- Shared Navbar -->
+
     <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
@@ -22,6 +22,7 @@
             </a>
             <nav class="nav-links" aria-label="Main navigation">
                 <a href="/admin-dashboard.html">CR Dashboard</a>
+                <a href="/tasks.html">Tasks</a>
                 <a href="/admin-master-timetable.html">Master Blueprint</a>
                 <a href="/admin-override-timetable.html" class="active" aria-current="page">Daily Overrides</a>
                 <a href="/admin-add-notice.html">Post Notice</a>
@@ -106,7 +107,7 @@
     </div>
 
 
-    <!-- Override dialog -->
+
 
     <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle"
         aria-describedby="slotInfo">
@@ -468,13 +469,10 @@
 
         loadMaster();
         window.addEventListener('DOMContentLoaded', () => {
-            // only this week allowed 
             const dInput = document.getElementById('date');
             if (dInput) dInput.min = new Date().toISOString().split("T")[0];
             verifySession();
         });
-
-        // Check with server session if user is authorized CR
         async function verifySession() {
             try {
                 const res = await fetch('/api/auth/me');
@@ -496,7 +494,7 @@
             await fetch('/api/auth/logout', { method: 'POST' });
             window.location.href = '/login.html';
         }
-    
+
 
     </script>
     <script src="./scripts/a11y.js"></script>

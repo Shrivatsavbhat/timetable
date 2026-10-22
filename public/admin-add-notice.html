@@ -13,7 +13,7 @@
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Navbar -->
+
     <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
@@ -21,6 +21,7 @@
             </a>
             <nav class="nav-links" aria-label="Main navigation">
                 <a href="/admin-dashboard.html">CR Dashboard</a>
+                <a href="/tasks.html">Tasks</a>
                 <a href="/admin-master-timetable.html">Master Blueprint</a>
                 <a href="/admin-override-timetable.html">Daily Overrides</a>
                 <a href="/admin-add-notice.html" class="active" aria-current="page">Post Notice</a>
@@ -169,8 +170,6 @@
 
         const esc = s => String(s ?? "").replace(/[&<>"']/g,
             c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
-        // 2. Fetch and render notices 
         async function loadNotices() {
             try {
                 const res = await fetch('/api/notices');
@@ -200,8 +199,6 @@
                 console.error('Failed to load notices:', err);
             }
         }
-
-        // 3. Submit new notice 
         document.getElementById('notice-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -232,8 +229,6 @@
                 window.showToast('Server error publishing notice.', 'error');
             }
         });
-
-        // 4. Delete notice with accessible confirmation
         async function deleteNotice(id, title) {
             const confirmed = await window.accessibleConfirm(`Are you sure you want to delete the notice "${title}"?`);
             if (!confirmed) return;
@@ -277,8 +272,6 @@
                 window.showToast('Error loading notice for editing.', 'error');
             }
         }
-
-        // Single dedicated edit submission handler
         document.getElementById('notice-form-edit').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentEditId) return;
@@ -310,8 +303,6 @@
                 window.showToast('Network error updating notice.', 'error');
             }
         });
-
-        // Check with server session if user is authorized CR
         async function verifySession() {
             try {
                 const res = await fetch('/api/auth/me');

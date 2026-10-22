@@ -8,7 +8,6 @@
         return Number.isFinite(parsed) ? Math.max(-5, Math.min(5, parsed)) : 0;
     }
 
-    // 1. Immediately apply saved theme & font size to document
     function applySavedSettings() {
         const theme = localStorage.getItem('theme');
         if (theme === 'dark') {
@@ -29,11 +28,9 @@
     }
     applySavedSettings();
 
-    // 2. Setup Header Controls (Font Size Controls & Symbol-Only Theme Switch)
     function setupHeaderControls() {
         applySavedSettings();
 
-        // Theme Toggle (SYMBOL ONLY)
         let themeBtn = document.getElementById('themeToggle');
         if (!themeBtn) {
             const container = document.querySelector('.header-controls') ||
@@ -51,7 +48,6 @@
         function updateThemeUI() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             if (themeBtn) {
-                // Symbol only - NO TEXT
                 themeBtn.textContent = isDark ? '☀' : '☾';
                 themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
                 themeBtn.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
@@ -79,7 +75,6 @@
             };
         }
 
-        // Synchronize with a preferences theme checkbox if present
         const profileToggle = document.getElementById('theme-toggle');
         if (profileToggle) {
             profileToggle.checked = (localStorage.getItem('theme') === 'dark');
@@ -99,7 +94,6 @@
 
         updateThemeUI();
 
-        // Font Size Controls (A- A A+)
         function updateFontSizeUI(size) {
             document.querySelectorAll('[data-size]').forEach(btn => {
                 const s = btn.dataset.size;
@@ -132,6 +126,23 @@
             document.body.style.setProperty('--font-size-level', currentSize);
         }
         updateFontSizeUI(currentSize);
+
+        const crLoginButton = document.querySelector('a.cr-login-btn:not(.cr-dashboard-btn)');
+        const headerControls = document.querySelector('.header-controls');
+        if (crLoginButton && headerControls) {
+            fetch('/api/auth/me')
+                .then(response => response.ok ? response.json() : null)
+                .then(data => {
+                    if (data?.user?.role !== 'CR') return;
+
+                    crLoginButton.remove();
+                    const dashboardButton = document.createElement('a');
+                    dashboardButton.href = '/admin-dashboard.html';
+                    dashboardButton.className = 'cr-login-btn cr-dashboard-btn';
+                    dashboardButton.textContent = 'CR Dashboard';
+                    headerControls.appendChild(dashboardButton);
+                });
+        }
     }
 
     if (document.readyState === 'loading') {

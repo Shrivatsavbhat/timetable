@@ -13,7 +13,7 @@
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Shared Navbar -->
+
     <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
@@ -21,6 +21,7 @@
             </a>
             <nav class="nav-links" aria-label="Main navigation">
                 <a href="/admin-dashboard.html">CR Dashboard</a>
+                <a href="/tasks.html">Tasks</a>
                 <a href="/admin-master-timetable.html" class="active" aria-current="page">Master Blueprint</a>
                 <a href="/admin-override-timetable.html">Daily Overrides</a>
                 <a href="/admin-add-notice.html">Post Notice</a>
@@ -48,7 +49,7 @@
             </div>
         </div>
 
-        <!-- Slot Configuration Form -->
+
         <section class="card" aria-labelledby="add-slot-heading">
             <h2 id="add-slot-heading">Add Timetable Slot</h2>
             <form id="slot-form">
@@ -110,7 +111,7 @@
             </form>
         </section>
 
-        <!-- Master Timetable Grid / List -->
+
         <section class="card" aria-labelledby="master-sched-heading">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h2 id="master-sched-heading">Master Schedule</h2>
@@ -238,8 +239,6 @@
                 String(first.slot).localeCompare(String(second.slot), undefined, { numeric: true })
             );
         }
-
-        // Fetch and render master timetable slots
         async function loadSlots() {
             try {
                 const res = await fetch('/api/master');
@@ -366,8 +365,6 @@
                 window.showToast('Network error swapping lectures.', 'error');
             }
         }
-
-        // Add slot
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -401,8 +398,6 @@
                 window.showToast('Network error saving slot.', 'error');
             }
         });
-
-        // Delete slot
         async function deleteSlot(id, name) {
             const confirmed = await window.accessibleConfirm(`Are you sure you want to delete the slot "${name || 'this slot'}"?`);
             if (!confirmed) return;
@@ -422,8 +417,6 @@
 
         filterDay.addEventListener('change', loadSlots);
         loadSlots();
-
-        // Check with server session if user is authorized CR
         async function verifySession() {
             try {
                 const res = await fetch('/api/auth/me');

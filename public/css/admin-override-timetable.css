@@ -214,7 +214,7 @@ th{background:#F1F5F9}
     .filters button{width:100%}
 }
 
-/* Dark Theme (Harmonized with profile.css palette) */
+
 [data-theme="dark"] body,
 body[data-theme="dark"] {
     background: var(--bg-page);

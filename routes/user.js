@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-// Get user profile
 router.get('/', async (req, res) => {
     try {
         let user = await User.findOne();
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Update user profile and preferences
 router.post('/', async (req, res) => {
     try {
         let user = await User.findOne();

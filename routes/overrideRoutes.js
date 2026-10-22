@@ -6,7 +6,6 @@ const Notice = require('../models/Notice');
 const router = express.Router();
 
 
-// GET overrides for a date
 router.get('/date/:date', async (req, res) => {
     try {
 
@@ -30,7 +29,6 @@ router.get('/date/:date', async (req, res) => {
 });
 
 
-// GET all overrides
 router.get('/', async (req, res) => {
     try {
 
@@ -53,7 +51,6 @@ router.get('/', async (req, res) => {
 });
 
 
-// CREATE override
 router.post('/', async (req, res) => {
 
     try {
@@ -79,7 +76,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        // Check original slot
         const original = await MasterSlot.findOne({
             semester,
             slot
@@ -93,7 +89,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        // Prevent duplicate override
         const existing = await Override.findOne({
             semester,
             date,
@@ -108,7 +103,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        // RESCHEDULED
         if (status === 'RESCHEDULED') {
 
             if (!newSlot || !newRoom) {
@@ -152,7 +146,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        // SUBSTITUTE
         if (status === 'SUBSTITUTE') {
 
             if (!substituteFaculty) {
@@ -164,7 +157,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        // SWAPPED
         if (status === 'SWAPPED') {
 
             if (!newSlot) {
@@ -238,7 +230,6 @@ router.post('/', async (req, res) => {
                 await Override.findByIdAndDelete(first._id);
                 throw err;
             }
-            // Auto-create campus notice for swap
             await Notice.create({
                 title: `Class Swap: ${original.subject} (${semester})`,
                 priority: 'Schedule Shift',
@@ -253,7 +244,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        // Normal override
         const override = await Override.create({
             overrideId,
             semester,
@@ -272,7 +262,6 @@ router.post('/', async (req, res) => {
                     : null,
             reason
         });
-        // Auto-create campus notice for other overrides
         await Notice.create({
             title: `Class ${status}: ${original.subject} (${semester})`,
             priority: status === 'CANCELLED' ? 'Urgent' : 'Schedule Shift',
@@ -299,7 +288,6 @@ router.post('/', async (req, res) => {
 });
 
 
-// DELETE override
 router.delete('/:id', async (req, res) => {
 
     try {
@@ -314,7 +302,6 @@ router.delete('/:id', async (req, res) => {
             });
         }
 
-        // If this is a swap, delete its pair
         if (override.status === 'SWAPPED') {
 
             await Override.deleteOne({

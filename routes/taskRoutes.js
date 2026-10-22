@@ -4,7 +4,6 @@ const Task = require('../models/Task');
 const router = express.Router();
 
 
-// GET all tasks
 router.get('/', async (req, res) => {
     try {
         const tasks = await Task.find()
@@ -25,7 +24,6 @@ router.get('/', async (req, res) => {
 });
 
 
-// GET task by ID
 router.get('/:id', async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
@@ -52,7 +50,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// CREATE task
 router.post('/', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'CR') {
         return res.status(403).json({
@@ -79,7 +76,6 @@ router.post('/', async (req, res) => {
 });
 
 
-// UPDATE task
 router.put('/:id', async (req, res) => {
     try {
         const task = await Task.findByIdAndUpdate(
@@ -113,7 +109,6 @@ router.put('/:id', async (req, res) => {
 });
 
 
-// DELETE task
 router.delete('/:id', async (req, res) => {
     try {
         const task = await Task.findByIdAndDelete(req.params.id);

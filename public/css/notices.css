@@ -1,7 +1,7 @@
-/* ================================================= */
-/* CAMPUS NOTICES MODULE STYLES (notices.css)        */
-/* Simple, Clean & Easy to Understand                */
-/* ================================================= */
+
+
+
+
 
 button,
 input {
@@ -14,7 +14,7 @@ input {
   padding: 0 16px 40px;
 }
 
-/* Header */
+
 .top {
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@ input {
   color: var(--text-muted);
 }
 
-/* Toolbar & Filters */
+
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -87,7 +87,7 @@ input {
   width: 220px;
 }
 
-/* Notices Feed */
+
 .feed {
   display: flex;
   flex-direction: column;
@@ -128,7 +128,7 @@ input {
   margin-bottom: 4px;
 }
 
-/* Badges */
+
 .badge {
   padding: 2px 6px;
   border: 1px solid;
@@ -169,7 +169,7 @@ input {
   border-radius: var(--radius-sm);
 }
 
-/* Modal Popup Dialog */
+
 .modal-backdrop {
   display: none;
   position: fixed;
@@ -203,7 +203,7 @@ input {
   color: var(--text-muted);
 }
 
-/* Mobile Friendly */
+
 @media (max-width: 600px) {
   .toolbar {
     flex-direction: column;

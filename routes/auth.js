@@ -9,10 +9,8 @@ const router = express.Router();
 
 
 
-// 1. LOGIN
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    // Check CR / Admin credentials
     if (email === 'cr@123' && password === 'admin123') {
         req.session.user = {
             name: 'Class Representative',
@@ -26,7 +24,6 @@ router.post('/login', async (req, res) => {
 });
 
 
-// 2. GET CURRENT SESSION USER
 router.get('/me', (req, res) => {
     if (req.session && req.session.user) {
         return res.json({ success: true, user: req.session.user });
@@ -34,7 +31,6 @@ router.get('/me', (req, res) => {
     return res.status(401).json({ success: false, message: 'Not authenticated' });
 });
 
-// 3. LOGOUT
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) return res.status(500).json({ success: false, message: 'Logout failed' });

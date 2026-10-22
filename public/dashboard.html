@@ -14,7 +14,7 @@
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Navbar -->
+
     <header class="navbar" role="banner">
         <div class="nav-container">
             <a href="/" class="logo">
@@ -34,6 +34,7 @@
                     <button type="button" data-size="1" aria-label="Increase text size" title="Increase text size">A+</button>
                 </div>
                 <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
+                <a href="/login.html" class="cr-login-btn">CR Login</a>
             </div>
         </div>
     </header>
@@ -66,7 +67,7 @@
                             Timetable
                             &rarr;</a>
                     </div>
-                    <!-- Periods Timeline -->
+
                     <div id="today-schedule-list" role="feed" aria-label="Today's scheduled lectures" aria-live="polite">
                         <div class="period-card">
                             <span class="period-time" id="period-time">--:--</span>
@@ -79,7 +80,7 @@
                 </div>
             </section>
             <section class="notice-task-container">
-                <!--Notices-->
+
                 <aside class="dashboard-sidebar" aria-labelledby="recent-notices-heading">
                     <div class="admin-card">
                         <div
@@ -96,7 +97,7 @@
                     </div>
                 </aside>
 
-                <!--tasks-->
+
                 <aside class="dashboard-sidebar" aria-labelledby="recent-tasks-heading">
                     <div class="admin-card">
                         <div
@@ -124,7 +125,6 @@
                     <span class="brand-name">ReScheduled</span>
                 </div>
                 <nav class="footer-links" aria-label="Footer quick links">
-                    <a href="/admin-add-notice.html">+ Post Notice</a>
                     <a href="/notices.html">View Notices</a>
                     <a href="/timetable.html">View Timetable</a>
                     <a href="/view-tasks.html">View Tasks</a>
@@ -143,8 +143,6 @@
             loadDashboardData();
             getHappeningNow();
             getTodaySchedule();
-
-            // Refresh happening now every 30 seconds rather than 1 second
             window.setInterval(getHappeningNow, 30000);
         });
 
@@ -156,8 +154,6 @@
                 const happening = data?.happeningNow || { subject: 'No lecture currently in session', room: '----' };
                 const subject = happening.subject || 'No lecture currently in session';
                 const room = happening.room || '----';
-
-                // Avoid DOM churn if nothing changed (prevents screen reader disorientation)
                 if (subject === lastSubject && room === lastRoom) return;
                 lastSubject = subject;
                 lastRoom = room;

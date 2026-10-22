@@ -1,4 +1,4 @@
-/* --- Admin Notice Management Page --- */
+
 .admin-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -29,7 +29,7 @@
     margin-bottom: 16px;
 }
 
-/* Form Layout (Pure Flexbox) */
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@
 
 .form-row .form-group {
     flex: 1 1 200px;
-    /* Expands evenly, wraps if screen drops below 200px */
+
 }
 
 .form-group label {
@@ -75,7 +75,7 @@
     box-shadow: 0 0 0 3px rgba(107, 63, 37, 0.2);
 }
 
-/* Submit Button */
+
 .admin-card button[type="submit"] {
     cursor: pointer;
     margin-top: 8px;

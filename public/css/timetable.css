@@ -1,7 +1,7 @@
-/* ================================================= */
-/* TIMETABLE MODULE STYLES (timetable.css)           */
-/* Pure Flexbox & Clean Semantic Table               */
-/* ================================================= */
+
+
+
+
 
 button,
 input,
@@ -22,7 +22,7 @@ select {
   padding: 24px;
 }
 
-/* Header & View Switcher */
+
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -70,7 +70,7 @@ select {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Filters & Search Row */
+
 .filter-row {
   display: flex;
   gap: 16px;
@@ -99,7 +99,7 @@ select {
   outline: none;
 }
 
-/* Day Selector Buttons */
+
 .day-row {
   display: flex;
   gap: 8px;
@@ -127,7 +127,7 @@ select {
   border-color: var(--primary);
 }
 
-/* Legend Row */
+
 .legend-row {
   display: flex;
   justify-content: space-between;
@@ -160,7 +160,7 @@ select {
   margin-right: 5px;
 }
 
-/* Daily View: Slot Cards */
+
 .slot-list {
   display: flex;
   flex-direction: column;
@@ -300,7 +300,7 @@ select {
   color: var(--text-main);
 }
 
-/* Midday Break Banner */
+
 .break-row {
   padding: 12px;
   background: #fffbeb;
@@ -312,7 +312,7 @@ select {
   text-align: center;
 }
 
-/* Clean Weekly Table */
+
 .table-container {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -348,7 +348,7 @@ select {
   background: #fdfaf7;
 }
 
-/* Day Group Separators */
+
 .day-group-header td {
   background: #f8fafc !important;
   padding: 10px 14px;

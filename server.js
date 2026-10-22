@@ -1,4 +1,4 @@
-require('dotenv').config(); // Loads .env
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -29,7 +29,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        maxAge: 1000 * 60 * 60 * 24
     }
 }));
 
@@ -41,7 +41,6 @@ app.use('/api/master-slots', masterSlotRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
-// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB_NAME || 'test' })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB Connection Error:', err));
@@ -59,23 +58,19 @@ app.use('/api/timetable', timetableRoutes);
 
 
 
-//get happening now
 app.get('/api/happening-now', async (req, res) => {
     try {
         const currentTime = new Date();
         const currentDay = currentTime.toLocaleString('en-US', { weekday: 'long' });
 
-        // Get current time as HH:mm string for comparison
         const currentHour = currentTime.getHours().toString().padStart(2, '0');
         const currentMinute = currentTime.getMinutes().toString().padStart(2, '0');
         const currentTimeStr = `${currentHour}:${currentMinute}`;
 
-        // Fetch slots for today
         let slots = await MasterSlot.find({ day: currentDay });
         console.log({ currentDay, currentTimeStr })
         for (const slot of slots) {
             const [startTime, endTime] = slot.time.split('-');
-            // const [hr, min] = [12, 0]; // your test time
             const [hr, min] = currentTimeStr.split(":").map(Number);
 
             const [starthr, startmin] = startTime.split(":").map(Number);
@@ -84,7 +79,6 @@ app.get('/api/happening-now', async (req, res) => {
                 if (hr === starthr && min < startmin) continue;
                 if (hr === endhr && min > endmin) continue;
 
-                // 1. Check if this slot has an override today
                 const today = new Date().toISOString().split('T')[0];
                 const override = await Override.findOne({ date: today, slot: slot.slot });
                 console.log("override", { override })
@@ -101,7 +95,6 @@ app.get('/api/happening-now', async (req, res) => {
                     }
                 }
 
-                // 2. Otherwise return regular subject
                 return res.json({ success: true, happeningNow: { subject: slot.subject, room: slot.room } });
             }
         }

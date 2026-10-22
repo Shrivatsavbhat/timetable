@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Campus Notices — ReScheduled</title>
 
-  <!-- Shared Global Stylesheet -->
+
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- Notices Stylesheet -->
+
   <link rel="stylesheet" href="./css/notices.css?v=2">
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');const s=localStorage.getItem('fontSize');if(s)document.documentElement.setAttribute('data-size',s);</script>
 </head>
 <body>
 
-  <!-- Shared Navbar -->
+
   <header class="navbar" role="banner">
     <div class="nav-container">
       <a href="/" class="logo">
@@ -33,14 +33,15 @@
           <button type="button" data-size="1" aria-label="Increase text size" title="Increase text size">A+</button>
         </div>
         <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
+        <a href="/login.html" class="cr-login-btn">CR Login</a>
       </div>
     </div>
   </header>
 
-  <!-- Main Simple Page Content (Matches Screenshot Layout) -->
+
   <div class="page">
-    
-    <!-- Top Header -->
+
+
     <header class="top">
       <div>
         <h1 class="title">Campus Notices</h1>
@@ -48,7 +49,7 @@
       </div>
     </header>
 
-    <!-- Toolbar: Filter Pills + Search Input -->
+
     <div class="toolbar">
       <div class="filters" role="group" aria-label="Filter notices by category">
         <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">
@@ -75,14 +76,14 @@
       />
     </div>
 
-    <!-- Feed Container -->
+
     <section class="feed" id="noticeContainer">
       <div class="empty">Loading campus notices...</div>
     </section>
 
   </div>
 
-  <!-- Pop-up Modal Dialog for Full Memo Review -->
+
   <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
@@ -94,13 +95,11 @@
     </div>
   </div>
 
-  <!-- Client-Side Logic (Simple, Clean, Easy to Explain in Viva) -->
+
   <script>
     let allNotices = [];
     let activeCategory = 'all';
     let searchQuery = '';
-
-    // 1. Fetch notices from API
     async function fetchNotices() {
       try {
         const res = await fetch('/api/notices');
@@ -113,8 +112,6 @@
           '<div class="empty" style="color: #be123c;">Unable to load notices from server.</div>';
       }
     }
-
-    // 2. Update pill counts
     function updateCounts() {
       const all = allNotices.length;
       const urgent = allNotices.filter(n => {
@@ -135,8 +132,6 @@
       document.getElementById('count-shift').textContent = shift;
       document.getElementById('count-general').textContent = general;
     }
-
-    // 3. Format timestamp like the screenshot ("8 hours ago", "Oct 16, 2026")
     function formatTime(dateVal) {
       if (!dateVal) return "Recent";
       const d = new Date(dateVal);
@@ -149,8 +144,6 @@
 
       return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
-
-    // 4. Render feed cards (Matching the screenshot)
     function renderNotices() {
       const container = document.getElementById('noticeContainer');
       const q = searchQuery.toLowerCase();
@@ -206,22 +199,16 @@
         `;
       }).join('');
     }
-
-    // 5. Category Selection
     function setCategory(cat, btn) {
       activeCategory = cat;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderNotices();
     }
-
-    // 6. Search Filter
     function handleSearch(val) {
       searchQuery = val.trim();
       renderNotices();
     }
-
-    // 7. Pop-up Modal Handlers
     function openModal(id) {
       const item = allNotices.find(n => n._id === id);
       if (!item) return;
@@ -250,6 +237,22 @@
 
     window.onload = fetchNotices;
   </script>
+  <footer role="contentinfo">
+    <hr>
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="brand-name">ReScheduled</span>
+        </div>
+        <nav class="footer-links" aria-label="Footer quick links">
+          <a href="/notices.html">View Notices</a>
+          <a href="/timetable.html">View Timetable</a>
+          <a href="/view-tasks.html">View Tasks</a>
+        </nav>
+      </div>
+      <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+    </div>
+  </footer>
   <script src="./scripts/a11y.js"></script>
 </body>
 </html>

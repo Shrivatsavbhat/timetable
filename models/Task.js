@@ -4,7 +4,7 @@ const taskSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        trim: true // e.g., 'DAA Quiz 1' or 'WT Lab Assignment 3'
+        trim: true
     },
     type: {
         type: String,
@@ -13,16 +13,16 @@ const taskSchema = new mongoose.Schema({
         default: 'Assignment'
     },
     date: {
-        type: String, // Due date (e.g., '2026-10-25')
+        type: String,
         required: true
     },
     room: {
-        type: String, // Optional (e.g., 'LH-204' for offline quiz, or blank for online submission)
+        type: String,
         required: false,
         default: ''
     },
     description: {
-        type: String, // Optional submission notes or syllabus topics
+        type: String,
         required: false,
         default: ''
     },
