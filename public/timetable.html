@@ -49,9 +49,9 @@
           <p>Real-time synchronized student schedule for <strong>I MCA — Semester 1 (Sec A)</strong></p>
         </div>
 
-        <div class="view-switcher" role="tablist" aria-label="Timetable View Mode">
-          <button id="btnDaily" class="view-btn active" role="tab" aria-selected="true" onclick="setView('daily')">Daily View</button>
-          <button id="btnPermanent" class="view-btn" role="tab" aria-selected="false" onclick="setView('permanent')">Permanent Timetable</button>
+        <div class="view-switcher" role="tablist" aria-label="Timetable View Mode" title="Timetable View">
+          <button id="btnDaily" class="view-btn active" onclick="setView('daily')">Daily / Weekly View</button>
+          <button id="btnPermanent" class="view-btn" onclick="setView('permanent')">Permanent Timetable</button>
         </div>
       </div>
 
@@ -86,7 +86,7 @@
       <div class="legend-row">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div id="statusLabel" style="font-weight: 600;" role="status" aria-live="polite">Today's Slots</div>
-          <button id="btnTableToggle" class="table-toggle-btn" style="font-size: 11px; padding: 2px 8px; cursor: pointer;" onclick="toggleTableLayout()" aria-label="Switch between daily cards and weekly table layout">Table View</button>
+          <button id="btnTableToggle" class="table-toggle-btn" style="font-size: 11px; padding: 2px 8px; cursor: pointer;" onclick="toggleTableLayout()" aria-label="Switch between daily cards and weekly table layout">Switch to Weekly TimeTable</button>
         </div>
         <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;" aria-label="Timetable slot status legend">
           <span><span class="legend-dot" style="background: var(--accent-green);" aria-hidden="true"></span>Theory Class</span>
@@ -217,7 +217,7 @@
       document.getElementById('dayButtons').style.display = isTableView ? 'none' : 'flex';
       document.getElementById('dailyContainer').style.display = isTableView ? 'none' : 'flex';
       document.getElementById('weeklyContainer').style.display = isTableView ? 'block' : 'none';
-      document.getElementById('btnTableToggle').textContent = isTableView ? 'Cards View' : 'Table View';
+      document.getElementById('btnTableToggle').textContent = isTableView ? 'Switch to Daily View' : 'Switch to Weekly TimeTable';
       updateStatusLabel();
       renderCurrentView();
     }
