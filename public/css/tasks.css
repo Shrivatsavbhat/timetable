@@ -4,8 +4,8 @@ html{font-size:16px}
 
 body{
     margin:0;
-    background:#FAF0E6;
-    color:#0f172a;
+    background:var(--bg-page,#FAF0E6);
+    color:var(--text-main,#0f172a);
     font:1rem Arial,sans-serif;
     line-height:1.5;
 }
@@ -23,8 +23,8 @@ body[data-size="large"]{font-size:1.15rem}
 header{
     min-height:56px;
     padding:8px 20px;
-    background:#fff;
-    border-bottom:1px solid #64748b;
+    background:var(--surface,#fff);
+    border-bottom:1px solid var(--border,#64748b);
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -77,8 +77,8 @@ h2{margin:0;font-size:1.2rem}
 .card{
     margin-bottom:20px;
     padding:20px;
-    background:#fff;
-    border:1px solid #64748b;
+    background:var(--surface,#fff);
+    border:1px solid var(--border,#64748b);
     border-radius:10px;
 }
 
@@ -119,10 +119,10 @@ textarea:focus{
 select,input,textarea{
     min-height:40px;
     padding:8px 10px;
-    border:1px solid #475569;
+    border:1px solid var(--border,#475569);
     border-radius:6px;
-    background:#fff;
-    color:#0f172a;
+    background:var(--surface,#fff);
+    color:var(--text-main,#0f172a);
     font:inherit;
 }
 
@@ -152,10 +152,10 @@ table{
 th,td{
     padding:12px 10px;
     text-align:left;
-    border-bottom:1px solid #94A3B8;
+    border-bottom:1px solid var(--border,#94A3B8);
 }
 
-th{background:#F8FAFC}
+th{background:var(--surface,#F8FAFC)}
 
 td strong{display:block}
 

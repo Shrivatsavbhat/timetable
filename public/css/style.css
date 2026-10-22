@@ -449,3 +449,188 @@ body {
         opacity: 1;
     }
 }
+
+/* ==========================================================================
+   Unified Dark Theme Engine (Mirrors profile.css palette across all pages)
+   ========================================================================== */
+[data-theme="dark"] {
+    --bg-page: #0f172a;
+    --surface: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --muted-bg: #334155;
+    --border: #475569;
+    --primary: #fbbf24;
+    --primary-hover: #d97706;
+}
+
+[data-theme="dark"] html,
+[data-theme="dark"] body,
+body[data-theme="dark"] {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+}
+
+/* Cards, Sections, Modals, Dialogs */
+[data-theme="dark"] .navbar,
+[data-theme="dark"] header,
+[data-theme="dark"] .card,
+[data-theme="dark"] .card-wrap,
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .admin-card-create,
+[data-theme="dark"] .admin-card-edit,
+[data-theme="dark"] .happening-main,
+[data-theme="dark"] .happening-card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .hero,
+[data-theme="dark"] .login-wrap,
+[data-theme="dark"] .modal-box,
+[data-theme="dark"] .notification,
+[data-theme="dark"] .slot-card,
+[data-theme="dark"] .period-card {
+    background-color: var(--surface) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border) !important;
+}
+
+/* Form Controls */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background-color: #0f172a !important;
+    color: var(--text-main) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #64748b !important;
+}
+
+/* Nav & Text */
+[data-theme="dark"] .nav-links a,
+[data-theme="dark"] header nav a,
+[data-theme="dark"] .footer-links a {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .nav-links a:hover,
+[data-theme="dark"] .nav-links a.active,
+[data-theme="dark"] header nav a:hover {
+    color: var(--primary) !important;
+}
+
+[data-theme="dark"] .brand-name,
+[data-theme="dark"] .footer-logo,
+[data-theme="dark"] header strong,
+[data-theme="dark"] header b {
+    color: var(--text-main);
+}
+
+/* Tables */
+[data-theme="dark"] table,
+[data-theme="dark"] .clean-table {
+    color: var(--text-main);
+}
+
+[data-theme="dark"] table th,
+[data-theme="dark"] .clean-table th {
+    background-color: #0f172a !important;
+    color: var(--text-main) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] table td,
+[data-theme="dark"] .clean-table td {
+    border-color: var(--border) !important;
+    color: var(--text-main);
+}
+
+/* Filters, Toggles, and Tabs */
+[data-theme="dark"] .filters,
+[data-theme="dark"] .view-switcher,
+[data-theme="dark"] .slot-time-box,
+[data-theme="dark"] .day-btn {
+    background-color: #0f172a !important;
+    color: var(--text-muted);
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .filter-btn.active,
+[data-theme="dark"] .view-btn.active,
+[data-theme="dark"] .day-btn.active {
+    background-color: var(--surface) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .table-toggle-btn {
+    background-color: var(--surface) !important;
+    color: var(--primary) !important;
+    border-color: var(--border) !important;
+}
+
+/* Action Buttons & Badges */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .submit-btn,
+[data-theme="dark"] button.btn-pill,
+[data-theme="dark"] a.btn-pill {
+    color: #0f172a !important;
+}
+
+[data-theme="dark"] a.btn-pill:hover,
+[data-theme="dark"] button.btn-pill:hover {
+    background-color: var(--primary) !important;
+    color: #0f172a !important;
+}
+
+[data-theme="dark"] .size button {
+    background-color: var(--surface);
+    color: var(--text-main);
+    border-color: var(--border);
+}
+
+[data-theme="dark"] .size button[aria-pressed="true"] {
+    background-color: var(--primary);
+    color: #0f172a;
+}
+
+[data-theme="dark"] .badge {
+    background-color: #451a03 !important;
+    color: #fde68a !important;
+    border-color: #92400e !important;
+}
+
+/* Universal Navbar Theme Toggle Button */
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+    background-color: #0f172a !important;
+    border-color: var(--border) !important;
+    color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+    border-color: #fbbf24 !important;
+    background-color: rgba(251, 191, 36, 0.15) !important;
+}

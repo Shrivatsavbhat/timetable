@@ -1,5 +1,94 @@
 
 (function () {
+    // 1. Immediately apply saved theme to document
+    function applySavedTheme() {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            if (document.body) document.body.setAttribute('data-theme', 'dark');
+        } else if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.removeAttribute('data-theme');
+            if (document.body) document.body.removeAttribute('data-theme');
+        }
+    }
+    applySavedTheme();
+
+    // 2. Initialize and bind the theme toggle button and sync state
+    function setupThemeToggle() {
+        applySavedTheme();
+
+        // Check if an existing toggle button exists (#themeToggle)
+        let btn = document.getElementById('themeToggle');
+        if (!btn) {
+            // Find navbar or header to place the toggle button
+            const nav = document.querySelector('.nav-links') ||
+                        document.querySelector('.nav-container') ||
+                        document.querySelector('header nav') ||
+                        document.querySelector('header');
+            if (nav) {
+                btn = document.createElement('button');
+                btn.id = 'themeToggle';
+                btn.type = 'button';
+                btn.className = 'theme-toggle-btn';
+                nav.appendChild(btn);
+            }
+        }
+
+        function updateToggleState() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (btn) {
+                btn.innerHTML = isDark ? '☀ Light' : '☾ Dark';
+                btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+                btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+            }
+            const profileToggle = document.getElementById('theme-toggle');
+            if (profileToggle && profileToggle.checked !== isDark) {
+                profileToggle.checked = isDark;
+            }
+        }
+
+        if (btn) {
+            btn.onclick = function () {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                const nextTheme = isDark ? 'light' : 'dark';
+                if (nextTheme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    if (document.body) document.body.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    if (document.body) document.body.removeAttribute('data-theme');
+                }
+                localStorage.setItem('theme', nextTheme);
+                updateToggleState();
+            };
+        }
+
+        // Synchronize with Preferences checkbox on profile.html if present
+        const profileToggle = document.getElementById('theme-toggle');
+        if (profileToggle) {
+            profileToggle.checked = (localStorage.getItem('theme') === 'dark');
+            profileToggle.onchange = function () {
+                const nextTheme = profileToggle.checked ? 'dark' : 'light';
+                if (nextTheme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    if (document.body) document.body.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    if (document.body) document.body.removeAttribute('data-theme');
+                }
+                localStorage.setItem('theme', nextTheme);
+                updateToggleState();
+            };
+        }
+
+        updateToggleState();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupThemeToggle);
+    } else {
+        setupThemeToggle();
+    }
+
     let toastContainer = null;
 
     window.showToast = function (message, type = 'info', duration = 4000) {
@@ -47,11 +136,11 @@
             overlay.setAttribute('aria-labelledby', 'a11y-confirm-msg');
 
             const box = document.createElement('div');
-            box.style.cssText = 'background:#ffffff;padding:24px;border-radius:12px;max-width:420px;width:90%;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);';
+            box.style.cssText = 'background:var(--surface,#ffffff);color:var(--text-main,#0f172a);border:1px solid var(--border,#cbd5e1);padding:24px;border-radius:12px;max-width:420px;width:90%;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);';
 
             const p = document.createElement('p');
             p.id = 'a11y-confirm-msg';
-            p.style.cssText = 'margin:0 0 20px 0;font-size:15px;color:#0f172a;line-height:1.5;font-weight:500;';
+            p.style.cssText = 'margin:0 0 20px 0;font-size:15px;color:inherit;line-height:1.5;font-weight:500;';
             p.textContent = message;
 
             const actions = document.createElement('div');
@@ -60,12 +149,12 @@
             const cancelBtn = document.createElement('button');
             cancelBtn.type = 'button';
             cancelBtn.textContent = 'Cancel';
-            cancelBtn.style.cssText = 'padding:8px 16px;border-radius:6px;border:1px solid #cbd5e1;background:#f8fafc;color:#334155;cursor:pointer;font-weight:500;';
+            cancelBtn.style.cssText = 'padding:8px 16px;border-radius:6px;border:1px solid var(--border,#cbd5e1);background:var(--surface,#f8fafc);color:var(--text-muted,#334155);cursor:pointer;font-weight:500;';
 
             const confirmBtn = document.createElement('button');
             confirmBtn.type = 'button';
             confirmBtn.textContent = 'Confirm';
-            confirmBtn.style.cssText = 'padding:8px 16px;border-radius:6px;border:none;background:#6B3F25;color:#ffffff;font-weight:600;cursor:pointer;';
+            confirmBtn.style.cssText = 'padding:8px 16px;border-radius:6px;border:none;background:var(--primary,#6B3F25);color:var(--surface,#ffffff);font-weight:600;cursor:pointer;';
 
             const cleanup = (val) => {
                 overlay.remove();

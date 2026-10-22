@@ -17,6 +17,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const overrideRoutes = require('./routes/overrideRoutes');
 const masterSlotRoutes = require('./routes/masterSlotRoutes');
 const noticeRoutes = require('./routes/noticeRoutes');
+const userRoutes = require('./routes/user');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -39,6 +40,7 @@ app.use('/api/overrides', overrideRoutes);
 app.use('/api/master-slots', masterSlotRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB_NAME || 'test' })
     .then(() => console.log('Connected to MongoDB'))

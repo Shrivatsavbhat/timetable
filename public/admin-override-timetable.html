@@ -7,6 +7,7 @@
     <title>Override Timetable</title>
     <link rel="stylesheet" href="./css/admin-override-timetable.css">
     <link rel="stylesheet" href="./css/style.css">
+    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
 
 <body>
@@ -32,7 +33,9 @@
                 <button type="button" data-size="-1" aria-label="Decrease text size">A−</button>
                 <button type="button" data-size="0" aria-label="Normal text size" aria-pressed="true">A</button>
                 <button type="button" data-size="1" aria-label="Increase text size">A+</button>
+                
             </div>
+            <button type="button" id="themeToggle" aria-label="Toggle dark theme">☾</button>
         </header>
 
 
@@ -522,6 +525,7 @@
             await fetch('/api/auth/logout', { method: 'POST' });
             window.location.href = '/login.html';
         }
+    
 
     </script>
     <script src="./scripts/a11y.js"></script>

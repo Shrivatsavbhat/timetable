@@ -262,3 +262,50 @@ th{background:#F1F5F9}
 
     .filters button{width:100%}
 }
+
+/* Dark Theme (Harmonized with profile.css palette) */
+[data-theme="dark"] body,
+body[data-theme="dark"] {
+    background: var(--bg-page);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] header,
+[data-theme="dark"] .card,
+[data-theme="dark"] .modal-box {
+    background: var(--surface) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] nav a {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .intro p,
+[data-theme="dark"] .empty,
+[data-theme="dark"] .modal-box > p {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select {
+    background: #0f172a !important;
+    color: var(--text-main) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] th {
+    background: #0f172a !important;
+}
+
+[data-theme="dark"] th,
+[data-theme="dark"] td {
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] #themeToggle {
+    background: #0f172a !important;
+    color: #fbbf24 !important;
+    border-color: var(--border) !important;
+}
