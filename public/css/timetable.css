@@ -399,4 +399,26 @@ select {
     flex-direction: row;
     justify-content: space-around;
   }
+
+  .card-wrap {
+    margin-inline: 0;
+    padding: 16px 12px;
+  }
+
+  .legend-row,
+  .card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .slot-details {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .clean-table {
+    min-width: 680px;
+  }
 }

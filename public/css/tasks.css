@@ -210,3 +210,39 @@ td strong{display:block}
     .controls label{margin-left:0}
     .controls select{width:100%}
 }
+@media(max-width:480px){
+    .page{
+        width:100%;
+        padding-inline:12px;
+    }
+
+    .card{
+        padding:16px;
+    }
+
+    .actions-cell{
+        white-space:normal;
+    }
+
+    .actions-cell button{
+        margin:4px 0 0;
+    }
+
+    .modal{
+        align-items:flex-start;
+        overflow-y:auto;
+        padding:12px;
+    }
+
+    .modal-box{
+        margin-block:12px;
+    }
+
+    .actions{
+        flex-direction:column-reverse;
+    }
+
+    .actions button{
+        width:100%;
+    }
+}

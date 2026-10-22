@@ -238,3 +238,38 @@ input:focus, select:focus {
     border-radius: 8px;
     font-size: 13px;
 }
+
+@media (max-width: 600px) {
+    .page {
+        padding-inline: 12px;
+    }
+
+    .top,
+    .modal-header,
+    .modal-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .top > div:last-child,
+    .slot-actions,
+    .modal-actions {
+        width: 100%;
+    }
+
+    .slot-actions button,
+    .modal-actions button,
+    .submit-btn {
+        width: 100%;
+    }
+
+    .modal {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: 12px;
+    }
+
+    .modal-card {
+        margin-block: 12px;
+    }
+}
