@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CR Dashboard — ReScheduled</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/admin-dashboard.css">
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        const savedFontSize = localStorage.getItem('fontSize');
+        if (savedFontSize) document.documentElement.setAttribute('data-size', savedFontSize);
+    </script>
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="navbar" role="banner">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="brand-name">ReScheduled</span>
+            </a>
+            <nav class="nav-links" aria-label="CR administration navigation">
+                <a href="/admin-dashboard.html" class="active" aria-current="page">CR Dashboard</a>
+                <a href="/dashboard.html">Student View</a>
+            </nav>
+            <div class="header-controls">
+                <div class="size-controls" role="group" aria-label="Text size adjustment">
+                    <button type="button" data-size="-1" aria-label="Decrease text size" title="Decrease text size">A−</button>
+                    <button type="button" data-size="0" aria-label="Reset text size" aria-pressed="true" title="Reset text size">A</button>
+                    <button type="button" data-size="1" aria-label="Increase text size" title="Increase text size">A+</button>
+                </div>
+                <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container" id="main-content">
+        <section class="cr-intro" aria-labelledby="cr-dashboard-title">
+            <p class="eyebrow">Class Representative Portal</p>
+            <h1 id="cr-dashboard-title">CR Dashboard</h1>
+            <p>Choose an area to manage the campus schedule and updates.</p>
+        </section>
+
+        <section class="cr-actions" aria-label="CR management pages">
+            <a class="cr-action" href="/admin-master-timetable.html">
+                <span class="cr-action-title">Master Timetable</span>
+                <span class="cr-action-description">Manage the permanent weekly timetable blueprint.</span>
+            </a>
+            <a class="cr-action" href="/admin-override-timetable.html">
+                <span class="cr-action-title">Daily Overrides</span>
+                <span class="cr-action-description">Apply temporary schedule changes and substitutions.</span>
+            </a>
+            <a class="cr-action" href="/admin-add-notice.html">
+                <span class="cr-action-title">Campus Notices</span>
+                <span class="cr-action-description">Publish and manage official campus notices.</span>
+            </a>
+            <a class="cr-action" href="/tasks.html">
+                <span class="cr-action-title">Class Tasks</span>
+                <span class="cr-action-description">Create and manage assignments, quizzes, and projects.</span>
+            </a>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <hr>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="brand-name">ReScheduled</span>
+                </div>
+                <nav class="footer-links" aria-label="Footer quick links">
+                    <a href="/dashboard.html">Student View</a>
+                    <a href="/notices.html">View Notices</a>
+                    <a href="/timetable.html">View Timetable</a>
+                    <a href="#" id="logout-link">Logout</a>
+                </nav>
+            </div>
+            <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
+        </div>
+    </footer>
+
+    <script src="./scripts/a11y.js"></script>
+    <script>
+        async function verifySession() {
+            try {
+                const response = await fetch('/api/auth/me');
+                const data = response.ok ? await response.json() : null;
+                if (!data?.user || data.user.role !== 'CR') {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        document.getElementById('logout-link').addEventListener('click', async (event) => {
+            event.preventDefault();
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        });
+
+        verifySession();
+    </script>
+</body>
+
+</html>

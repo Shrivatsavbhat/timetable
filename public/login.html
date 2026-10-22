@@ -120,7 +120,10 @@
             try {
                 const res = await fetch('/api/auth/me');
                 if (res.ok) {
-                    window.location.href = '/admin-add-notice.html';
+                    const data = await res.json();
+                    if (data.user?.role === 'CR') {
+                        window.location.href = '/admin-dashboard.html';
+                    }
                 }
             } catch (err) {
                 // Stay on login page if not logged in
@@ -152,7 +155,7 @@
                 if (data.success) {
                     window.showToast('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
-                        window.location.href = '/admin-add-notice.html';
+                        window.location.href = '/admin-dashboard.html';
                     }, 500);
                 } else {
                     const msg = data.message || 'Login failed. Please check your credentials.';
