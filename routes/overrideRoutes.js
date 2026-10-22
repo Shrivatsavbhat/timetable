@@ -2,6 +2,7 @@ const express = require('express');
 const Override = require('../models/Override');
 const MasterSlot = require('../models/MasterSlot');
 const Notice = require('../models/Notice');
+const requireCR = require('./requireCR');
 
 const router = express.Router();
 
@@ -51,7 +52,8 @@ router.get('/', async (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+// CREATE override
+router.post('/', requireCR, async (req, res) => {
 
     try {
 
@@ -288,7 +290,8 @@ router.post('/', async (req, res) => {
 });
 
 
-router.delete('/:id', async (req, res) => {
+// DELETE override
+router.delete('/:id', requireCR, async (req, res) => {
 
     try {
 

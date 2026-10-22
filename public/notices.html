@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +11,17 @@
 
 
   <link rel="stylesheet" href="./css/notices.css?v=2">
-  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');const s=localStorage.getItem('fontSize');if(s)document.documentElement.setAttribute('data-size',s);</script>
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); const s = localStorage.getItem('fontSize'); if (s) document.documentElement.setAttribute('data-size', s);</script>
 </head>
+
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
 
   <header class="navbar" role="banner">
     <div class="nav-container">
       <a href="/" class="logo">
+        <span class="logo-box" aria-hidden="true">R</span>
         <span class="brand-name">ReScheduled</span>
       </a>
       <nav class="nav-links" aria-label="Main navigation">
@@ -29,19 +33,21 @@
       <div class="header-controls">
         <div class="size-controls" role="group" aria-label="Text size adjustment">
           <button type="button" data-size="-1" aria-label="Decrease text size" title="Decrease text size">A−</button>
-          <button type="button" data-size="0" aria-label="Reset text size" aria-pressed="true" title="Reset text size">A</button>
+          <button type="button" data-size="0" aria-label="Reset text size" aria-pressed="true"
+            title="Reset text size">A</button>
           <button type="button" data-size="1" aria-label="Increase text size" title="Increase text size">A+</button>
         </div>
-        <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme" title="Toggle theme">☾</button>
+        <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark theme"
+          title="Toggle theme">☾</button>
         <a href="/login.html" class="cr-login-btn">CR Login</a>
       </div>
     </div>
   </header>
 
+  <!-- Main Simple Page Content (Matches Screenshot Layout) -->
+  <main class="page" id="main-content">
 
-  <div class="page">
-
-
+    <!-- Top Header -->
     <header class="top">
       <div>
         <h1 class="title">Campus Notices</h1>
@@ -52,39 +58,34 @@
 
     <div class="toolbar">
       <div class="filters" role="group" aria-label="Filter notices by category">
-        <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">
+        <button class="filter-btn active" data-cat="all" aria-pressed="true" onclick="setCategory('all', this)">
           All <span class="filter-count" id="count-all">0</span>
         </button>
-        <button class="filter-btn" data-cat="urgent" onclick="setCategory('urgent', this)">
+        <button class="filter-btn" data-cat="urgent" aria-pressed="false" onclick="setCategory('urgent', this)">
           Urgent <span class="filter-count" id="count-urgent">0</span>
         </button>
-        <button class="filter-btn" data-cat="shift" onclick="setCategory('shift', this)">
+        <button class="filter-btn" data-cat="shift" aria-pressed="false" onclick="setCategory('shift', this)">
           Schedule Shift <span class="filter-count" id="count-shift">0</span>
         </button>
-        <button class="filter-btn" data-cat="general" onclick="setCategory('general', this)">
+        <button class="filter-btn" data-cat="general" aria-pressed="false" onclick="setCategory('general', this)">
           General Notices <span class="filter-count" id="count-general">0</span>
         </button>
       </div>
 
-      <input
-        type="search"
-        id="searchInput"
-        class="search-input"
-        placeholder="Search notices..."
-        oninput="handleSearch(this.value)"
-        aria-label="Search notices"
-      />
+      <input type="search" id="searchInput" class="search-input" placeholder="Search notices..."
+        oninput="handleSearch(this.value)" aria-label="Search notices" />
     </div>
 
-
-    <section class="feed" id="noticeContainer">
+    <!-- Feed Container -->
+    <section class="feed" id="noticeContainer" aria-label="Campus notices feed">
       <div class="empty">Loading campus notices...</div>
     </section>
 
-  </div>
+  </main>
 
-
-  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
+  <!-- Pop-up Modal Dialog for Full Memo Review -->
+  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+    onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
       <div id="modalCategory" style="margin-bottom: 8px;"></div>
@@ -185,8 +186,8 @@
         const timeStr = formatTime(item.createdAt || item.date);
 
         return `
-          <article class="notification" onclick="openModal('${item._id}')">
-            <div class="dot"></div>
+          <article class="notification" onclick="openModal('${item._id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('${item._id}');}" tabindex="0" role="article" aria-label="Notice: ${item.title || 'Untitled Notice'}, ${badgeLabel}, ${timeStr}">
+            <div class="dot" aria-hidden="true"></div>
             <div class="notification-content">
               <div class="notification-top">
                 <span class="badge ${badgeClass}">${badgeLabel}</span>
@@ -201,8 +202,12 @@
     }
     function setCategory(cat, btn) {
       activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       renderNotices();
     }
     function handleSearch(val) {
@@ -255,4 +260,5 @@
   </footer>
   <script src="./scripts/a11y.js"></script>
 </body>
+
 </html>

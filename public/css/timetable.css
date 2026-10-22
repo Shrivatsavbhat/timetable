@@ -260,22 +260,22 @@ select {
 
 .status-cancelled {
   background: #fee2e2;
-  color: #b91c1c;
+  color: #991b1b;
 }
 
 .status-swapped {
   background: #fef3c7;
-  color: #b45309;
+  color: #92400e;
 }
 
 .status-rescheduled {
   background: #e0e7ff;
-  color: #4338ca;
+  color: #3730a3;
 }
 
 .status-substitute {
   background: #e0f2fe;
-  color: #0369a1;
+  color: #075985;
 }
 
 .override-reason {
@@ -293,6 +293,8 @@ select {
 }
 
 .venue-pill {
+  display: inline-block;
+  white-space: nowrap;
   background: #f1f5f9;
   padding: 2px 8px;
   border-radius: 4px;

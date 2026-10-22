@@ -317,9 +317,12 @@
                 }
                 const data = await res.json();
                 if (data.user.role !== 'CR') {
+                    $('add').disabled = true;
                     window.showToast('Access restricted to Class Representatives.', 'error');
                     setTimeout(() => { window.location.href = '/dashboard.html'; }, 1000);
+                    return;
                 }
+                $('add').disabled = false;
             } catch (err) {
                 window.location.href = '/login.html';
             }
