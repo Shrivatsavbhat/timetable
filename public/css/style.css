@@ -33,6 +33,7 @@ body {
     line-height: 1.5;
     max-width: 1000px;
     margin: 0 auto;
+    zoom: calc(1 + (var(--font-size-level, 0) * 0.1));
 }
 
 /* Navbar */

@@ -45,7 +45,8 @@
             </section>
 
             <section class="card controls" aria-label="Task controls">
-                <button type="button" id="add" aria-haspopup="dialog" hidden>+ ADD TASK</button>
+                <button type="button" id="add" aria-haspopup="dialog" disabled
+                    title="Only the Class Representative can create tasks">+ ADD TASK</button>
 
                 <label for="filter">Filter</label>
                 <select id="filter">
@@ -311,12 +312,21 @@
         async function checkSession() {
             try {
                 const res = await fetch('/api/auth/me');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.user?.role === 'CR') $("add").hidden = false;
+                if (!res.ok) throw new Error("Not authenticated");
+
+                const data = await res.json();
+                const isCr = data.user?.role === 'CR';
+                $("add").disabled = !isCr;
+                $("add").title = isCr
+                    ? "Create a task"
+                    : "Only the Class Representative can create tasks";
+                if (!isCr) {
+                    msg("Only the Class Representative can create tasks.", "error");
                 }
             } catch (err) {
-                msg("Unable to verify task permissions.", "error");
+                $("add").disabled = true;
+                $("add").title = "Sign in as the Class Representative to create tasks";
+                msg("Sign in as the Class Representative to create tasks.", "error");
             }
         }
         checkSession();

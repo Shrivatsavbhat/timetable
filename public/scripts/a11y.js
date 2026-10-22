@@ -1,5 +1,13 @@
 
 (function () {
+    function normalizeFontSize(value) {
+        if (value === 'small') return -1;
+        if (value === 'normal') return 0;
+        if (value === 'large') return 1;
+        const parsed = Number.parseInt(value, 10);
+        return Number.isFinite(parsed) ? Math.max(-5, Math.min(5, parsed)) : 0;
+    }
+
     // 1. Immediately apply saved theme & font size to document
     function applySavedSettings() {
         const theme = localStorage.getItem('theme');
@@ -11,9 +19,13 @@
             if (document.body) document.body.removeAttribute('data-theme');
         }
 
-        const fontSize = localStorage.getItem('fontSize') || 'normal';
-        document.documentElement.setAttribute('data-size', fontSize);
-        if (document.body) document.body.setAttribute('data-size', fontSize);
+        const fontSize = normalizeFontSize(localStorage.getItem('fontSize'));
+        document.documentElement.setAttribute('data-size', String(fontSize));
+        document.documentElement.style.setProperty('--font-size-level', fontSize);
+        if (document.body) {
+            document.body.setAttribute('data-size', String(fontSize));
+            document.body.style.setProperty('--font-size-level', fontSize);
+        }
     }
     applySavedSettings();
 
@@ -88,14 +100,6 @@
         updateThemeUI();
 
         // Font Size Controls (A- A A+)
-        function normalizeFontSize(value) {
-            if (value === 'small') return -1;
-            if (value === 'normal') return 0;
-            if (value === 'large') return 1;
-            const parsed = Number.parseInt(value, 10);
-            return Number.isFinite(parsed) ? Math.max(-5, Math.min(5, parsed)) : 0;
-        }
-
         function updateFontSizeUI(size) {
             document.querySelectorAll('[data-size]').forEach(btn => {
                 const s = btn.dataset.size;

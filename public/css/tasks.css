@@ -1,7 +1,5 @@
 *{box-sizing:border-box}
 
-html{font-size:16px}
-
 body{
     margin:0;
     background:var(--bg-page,#FAF0E6);
