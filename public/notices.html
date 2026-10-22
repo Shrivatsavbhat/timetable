@@ -13,11 +13,13 @@
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');const s=localStorage.getItem('fontSize');if(s)document.documentElement.setAttribute('data-size',s);</script>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Shared Navbar -->
   <header class="navbar" role="banner">
     <div class="nav-container">
       <a href="/" class="logo">
+        <span class="logo-box" aria-hidden="true">R</span>
         <span class="brand-name">ReScheduled</span>
       </a>
       <nav class="nav-links" aria-label="Main navigation">
@@ -38,7 +40,7 @@
   </header>
 
   <!-- Main Simple Page Content (Matches Screenshot Layout) -->
-  <div class="page">
+  <main class="page" id="main-content">
     
     <!-- Top Header -->
     <header class="top">
@@ -51,16 +53,16 @@
     <!-- Toolbar: Filter Pills + Search Input -->
     <div class="toolbar">
       <div class="filters" role="group" aria-label="Filter notices by category">
-        <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">
+        <button class="filter-btn active" data-cat="all" aria-pressed="true" onclick="setCategory('all', this)">
           All <span class="filter-count" id="count-all">0</span>
         </button>
-        <button class="filter-btn" data-cat="urgent" onclick="setCategory('urgent', this)">
+        <button class="filter-btn" data-cat="urgent" aria-pressed="false" onclick="setCategory('urgent', this)">
           Urgent <span class="filter-count" id="count-urgent">0</span>
         </button>
-        <button class="filter-btn" data-cat="shift" onclick="setCategory('shift', this)">
+        <button class="filter-btn" data-cat="shift" aria-pressed="false" onclick="setCategory('shift', this)">
           Schedule Shift <span class="filter-count" id="count-shift">0</span>
         </button>
-        <button class="filter-btn" data-cat="general" onclick="setCategory('general', this)">
+        <button class="filter-btn" data-cat="general" aria-pressed="false" onclick="setCategory('general', this)">
           General Notices <span class="filter-count" id="count-general">0</span>
         </button>
       </div>
@@ -76,14 +78,14 @@
     </div>
 
     <!-- Feed Container -->
-    <section class="feed" id="noticeContainer">
+    <section class="feed" id="noticeContainer" aria-label="Campus notices feed">
       <div class="empty">Loading campus notices...</div>
     </section>
 
-  </div>
+  </main>
 
   <!-- Pop-up Modal Dialog for Full Memo Review -->
-  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
+  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
       <div id="modalCategory" style="margin-bottom: 8px;"></div>
@@ -192,8 +194,8 @@
         const timeStr = formatTime(item.createdAt || item.date);
 
         return `
-          <article class="notification" onclick="openModal('${item._id}')">
-            <div class="dot"></div>
+          <article class="notification" onclick="openModal('${item._id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('${item._id}');}" tabindex="0" role="article" aria-label="Notice: ${item.title || 'Untitled Notice'}, ${badgeLabel}, ${timeStr}">
+            <div class="dot" aria-hidden="true"></div>
             <div class="notification-content">
               <div class="notification-top">
                 <span class="badge ${badgeClass}">${badgeLabel}</span>
@@ -210,8 +212,12 @@
     // 5. Category Selection
     function setCategory(cat, btn) {
       activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       renderNotices();
     }
 

@@ -13,10 +13,13 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- Shared Team Navbar -->
   <header class="navbar" role="banner">
     <div class="nav-container">
       <a href="/" class="logo">
+        <span class="logo-box" aria-hidden="true">R</span>
         <span class="brand-name">ReScheduled</span>
       </a>
       <nav class="nav-links" aria-label="Main navigation">
@@ -36,7 +39,7 @@
     </div>
   </header>
 
-  <main class="page-wrap">
+  <main class="page-wrap" id="main-content">
     <div class="card-wrap">
 
       <!-- Header Row with Exactly 2 Toggles: Daily View vs Permanent Timetable -->
@@ -46,9 +49,9 @@
           <p>Real-time synchronized student schedule for <strong>I MCA — Semester 1 (Sec A)</strong></p>
         </div>
 
-        <div class="view-switcher" title="Timetable View">
-          <button id="btnDaily" class="view-btn active" onclick="setView('daily')">Daily View</button>
-          <button id="btnPermanent" class="view-btn" onclick="setView('permanent')">Permanent Timetable</button>
+        <div class="view-switcher" role="tablist" aria-label="Timetable View Mode">
+          <button id="btnDaily" class="view-btn active" role="tab" aria-selected="true" onclick="setView('daily')">Daily View</button>
+          <button id="btnPermanent" class="view-btn" role="tab" aria-selected="false" onclick="setView('permanent')">Permanent Timetable</button>
         </div>
       </div>
 
@@ -70,25 +73,25 @@
       </div>
 
       <!-- Day Selector (Monday–Saturday) -->
-      <div class="day-row" id="dayButtons">
-        <button class="day-btn" data-day="Monday" onclick="selectDay(this, 'Monday')">Mon (5)</button>
-        <button class="day-btn" data-day="Tuesday" onclick="selectDay(this, 'Tuesday')">Tue (3)</button>
-        <button class="day-btn" data-day="Wednesday" onclick="selectDay(this, 'Wednesday')">Wed (4)</button>
-        <button class="day-btn" data-day="Thursday" onclick="selectDay(this, 'Thursday')">Thu (5)</button>
-        <button class="day-btn" data-day="Friday" onclick="selectDay(this, 'Friday')">Fri (4)</button>
-        <button class="day-btn" data-day="Saturday" onclick="selectDay(this, 'Saturday')">Sat (4)</button>
+      <div class="day-row" id="dayButtons" role="group" aria-label="Select day of the week">
+        <button class="day-btn" data-day="Monday" aria-pressed="true" onclick="selectDay(this, 'Monday')">Mon (5)</button>
+        <button class="day-btn" data-day="Tuesday" aria-pressed="false" onclick="selectDay(this, 'Tuesday')">Tue (3)</button>
+        <button class="day-btn" data-day="Wednesday" aria-pressed="false" onclick="selectDay(this, 'Wednesday')">Wed (4)</button>
+        <button class="day-btn" data-day="Thursday" aria-pressed="false" onclick="selectDay(this, 'Thursday')">Thu (5)</button>
+        <button class="day-btn" data-day="Friday" aria-pressed="false" onclick="selectDay(this, 'Friday')">Fri (4)</button>
+        <button class="day-btn" data-day="Saturday" aria-pressed="false" onclick="selectDay(this, 'Saturday')">Sat (4)</button>
       </div>
 
       <!-- Status Header & Legend -->
       <div class="legend-row">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <div id="statusLabel" style="font-weight: 600;">Today's Slots</div>
-          <button id="btnTableToggle" class="table-toggle-btn" style="font-size: 11px; padding: 2px 8px; cursor: pointer;" onclick="toggleTableLayout()">Table View</button>
+          <div id="statusLabel" style="font-weight: 600;" role="status" aria-live="polite">Today's Slots</div>
+          <button id="btnTableToggle" class="table-toggle-btn" style="font-size: 11px; padding: 2px 8px; cursor: pointer;" onclick="toggleTableLayout()" aria-label="Switch between daily cards and weekly table layout">Table View</button>
         </div>
-        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-          <span><span class="legend-dot" style="background: var(--accent-green);"></span>Theory Class</span>
-          <span><span class="legend-dot" style="background: var(--primary);"></span>Practical Lab</span>
-          <span id="legendOverride" style="display: inline-flex; align-items: center; gap: 6px;"><span class="legend-dot" style="background: #ef4444;"></span>Override / Change</span>
+        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;" aria-label="Timetable slot status legend">
+          <span><span class="legend-dot" style="background: var(--accent-green);" aria-hidden="true"></span>Theory Class</span>
+          <span><span class="legend-dot" style="background: var(--primary);" aria-hidden="true"></span>Practical Lab</span>
+          <span id="legendOverride" style="display: inline-flex; align-items: center; gap: 6px;"><span class="legend-dot" style="background: #ef4444;" aria-hidden="true"></span>Override / Change</span>
         </div>
       </div>
 
@@ -100,13 +103,14 @@
       <!-- 2. Simple Clean Weekly Schedule Table -->
       <div class="table-container" id="weeklyContainer" style="display: none;">
         <table class="clean-table">
+          <caption class="sr-only">Weekly Class Timetable Matrix</caption>
           <thead>
             <tr>
-              <th>Time</th>
-              <th>Subject</th>
-              <th>Room</th>
-              <th>Faculty</th>
-              <th>Type</th>
+              <th scope="col">Time</th>
+              <th scope="col">Subject</th>
+              <th scope="col">Room</th>
+              <th scope="col">Faculty</th>
+              <th scope="col">Type</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -114,10 +118,10 @@
       </div>
 
       <!-- Footer Info -->
-      <div class="card-footer">
+      <footer class="card-footer" role="contentinfo">
         <span id="footerSyncStatus">Live sync active with Department Master & Overrides</span>
         <span>Class: <strong>I MCA Section A</strong></span>
-      </div>
+      </footer>
 
     </div>
   </main>
@@ -184,8 +188,12 @@
     function setView(mode) {
       currentMode = mode;
       const isDaily = (mode === 'daily');
-      document.getElementById('btnDaily').classList.toggle('active', isDaily);
-      document.getElementById('btnPermanent').classList.toggle('active', !isDaily);
+      const btnDaily = document.getElementById('btnDaily');
+      const btnPermanent = document.getElementById('btnPermanent');
+      btnDaily.classList.toggle('active', isDaily);
+      btnPermanent.classList.toggle('active', !isDaily);
+      btnDaily.setAttribute('aria-selected', isDaily ? 'true' : 'false');
+      btnPermanent.setAttribute('aria-selected', !isDaily ? 'true' : 'false');
 
       const legendOverride = document.getElementById('legendOverride');
       if (legendOverride) legendOverride.style.display = isDaily ? 'inline-flex' : 'none';
@@ -308,7 +316,7 @@
         : s.faculty;
 
       return `
-        <div class="slot-card ${cardClass}">
+        <div class="slot-card ${cardClass}" role="article" aria-label="Slot ${s.slot || ''}: ${s.time || ''}, ${s.subject || ''}, ${s.faculty || ''}, ${s.newRoom || s.room || ''}">
           <div class="slot-time-box">
             <span class="slot-label">Slot ${s.slot || ''}</span>
             <span class="slot-time">${(s.time || '').split('-')[0]}</span>
@@ -416,8 +424,12 @@
 
     function selectDay(btn, day) {
       currentDay = day;
-      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.day-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       updateStatusLabel();
       renderDailyView();
     }
@@ -429,7 +441,9 @@
       currentDay = defaultDay;
 
       document.querySelectorAll('.day-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-day') === defaultDay);
+        const isActive = (btn.getAttribute('data-day') === defaultDay);
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
 
       if (isTableView) toggleTableLayout();
@@ -448,7 +462,9 @@
       document.querySelectorAll('.day-btn').forEach(btn => {
         const d = btn.getAttribute('data-day');
         if (d === realToday) btn.innerHTML = d.slice(0, 3) + ' (Today)';
-        btn.classList.toggle('active', d === defaultDay);
+        const isActive = (d === defaultDay);
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
 
       loadData();
