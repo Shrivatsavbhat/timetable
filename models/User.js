@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     studentId: { type: String, default: 'MCA202401' },
     role: { type: String, enum: ['Student', 'CR'], default: 'CR' },
     department: { type: String, default: 'MCA' },
-    semester: { type: String, default: 'MCA Sem 2' },
+    semester: { type: String, default: 'I MCA-A' },
     batch: { type: String, default: '2024-2026' },
     theme: { type: String, default: 'light' },
     emailAlerts: { type: Boolean, default: true },

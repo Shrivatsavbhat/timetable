@@ -7,7 +7,7 @@
     <title>ReScheduled - Notification Center</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/notify.css">
-    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+    <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
 </head>
 
 <body>
@@ -29,227 +29,222 @@
         </div>
     </header>
 
-<main class="page" id="main-content">
+    <main class="page" id="main-content">
 
-    <div class="top">
-        <div>
-            <h1 class="title">Notification Center</h1>
-            <p class="subtitle">
-                Live log of timetable adjustments, room changes and notices.
-            </p>
-        </div>
-    </div>
-
-    <div class="toolbar">
-
-        <div class="filters" role="group" aria-label="Filter notifications by type">
-
-            <button class="filter-btn active" data-filter="all" aria-pressed="true">
-                All <span class="filter-count" id="all-count">0</span>
-            </button>
-
-            <button class="filter-btn" data-filter="cancellations" aria-pressed="false">
-                Cancellations
-                <span class="filter-count" id="cancel-count">0</span>
-            </button>
-
-            <button class="filter-btn" data-filter="room-swaps" aria-pressed="false">
-                Room Swaps
-                <span class="filter-count" id="room-count">0</span>
-            </button>
-
-            <button class="filter-btn" data-filter="notices" aria-pressed="false">
-                General Notices
-                <span class="filter-count" id="notice-count">0</span>
-            </button>
-
+        <div class="top">
+            <div>
+                <h1 class="title">Notification Center</h1>
+                <p class="subtitle">
+                    Live log of timetable adjustments, room changes and notices.
+                </p>
+            </div>
         </div>
 
-    </div>
+        <div class="toolbar">
 
-    <section class="feed" id="notification-list" role="feed" aria-label="Notification feed" aria-live="polite">
-        <div class="empty">Loading notifications...</div>
-    </section>
+            <div class="filters" role="group" aria-label="Filter notifications by type">
 
-    <div class="archive" role="note">
-        Historical records beyond 7 days archived
-    </div>
+                <button class="filter-btn active" data-filter="all" aria-pressed="true">
+                    All <span class="filter-count" id="all-count">0</span>
+                </button>
 
-</main>
+                <button class="filter-btn" data-filter="cancellations" aria-pressed="false">
+                    Cancellations
+                    <span class="filter-count" id="cancel-count">0</span>
+                </button>
 
-<script>
+                <button class="filter-btn" data-filter="room-swaps" aria-pressed="false">
+                    Room Swaps
+                    <span class="filter-count" id="room-count">0</span>
+                </button>
 
-let notifications = [];
-let currentFilter = "all";
+                <button class="filter-btn" data-filter="notices" aria-pressed="false">
+                    General Notices
+                    <span class="filter-count" id="notice-count">0</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <section class="feed" id="notification-list" role="feed" aria-label="Notification feed" aria-live="polite">
+            <div class="empty">Loading notifications...</div>
+        </section>
+
+        <div class="archive" role="note">
+            Historical records beyond 7 days archived
+        </div>
+
+    </main>
+
+    <script>
+
+        let notifications = [];
+        let currentFilter = "all";
 
 
-/* =========================
-   FETCH NOTIFICATIONS
-========================= */
+        /* =========================
+           FETCH NOTIFICATIONS
+        ========================= */
 
-async function getNotifications() {
+        async function getNotifications() {
 
-    try {
+            try {
 
-        const response = await fetch("/api/notices");
+                const response = await fetch("/api/notices");
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch notifications");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch notifications");
+                }
+
+                const data = await response.json();
+
+                console.log("API response:", data);
+
+                if (!data.success) {
+                    throw new Error(data.message || "Failed to load notices");
+                }
+
+                notifications = data.notices || [];
+
+                updateCounts();
+                displayNotifications();
+
+            } catch (error) {
+
+                console.error("Notification Error:", error);
+
+                document.getElementById("notification-list").innerHTML =
+                    `<div class="empty">Unable to load notifications.</div>`;
+            }
         }
 
-        const data = await response.json();
 
-        console.log("API response:", data);
+        /* =========================
+           FORMAT TIME
+        ========================= */
 
-        if (!data.success) {
-            throw new Error(data.message || "Failed to load notices");
+        function formatTime(date) {
+
+            const d = new Date(date);
+
+            if (isNaN(d.getTime())) {
+                return "";
+            }
+
+            const diff = Math.floor((new Date() - d) / 1000);
+
+            if (diff < 60) {
+                return "Just now";
+            }
+
+            if (diff < 3600) {
+                return Math.floor(diff / 60) + " mins ago";
+            }
+
+            if (diff < 86400) {
+                return Math.floor(diff / 3600) + " hours ago";
+            }
+
+            return d.toLocaleDateString([], {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            });
         }
 
-        notifications = data.notices || [];
-
-        updateCounts();
-        displayNotifications();
-
-    } catch (error) {
-
-        console.error("Notification Error:", error);
-
-        document.getElementById("notification-list").innerHTML =
-            `<div class="empty">Unable to load notifications.</div>`;
-    }
-}
 
 
-/* =========================
-   FORMAT TIME
-========================= */
 
-function formatTime(date) {
+        function getBadge(priority) {
 
-    const d = new Date(date);
+            const badges = {
 
-    if (isNaN(d.getTime())) {
-        return "";
-    }
+                Urgent: [
+                    "Urgent",
+                    "cancelled"
+                ],
 
-    const diff = Math.floor((new Date() - d) / 1000);
+                High: [
+                    "High",
+                    "room"
+                ],
 
-    if (diff < 60) {
-        return "Just now";
-    }
+                "Schedule Shift": [
+                    "Schedule Shift",
+                    "room"
+                ],
 
-    if (diff < 3600) {
-        return Math.floor(diff / 60) + " mins ago";
-    }
+                General: [
+                    "Notice",
+                    "general"
+                ]
 
-    if (diff < 86400) {
-        return Math.floor(diff / 3600) + " hours ago";
-    }
+            };
 
-    return d.toLocaleDateString([], {
-        day: "2-digit",
-        month: "short",
-        year: "numeric"
-    });
-}
+            return badges[priority] || badges.General;
+        }
 
 
-/* =========================
-   BADGE
-========================= */
 
-function getBadge(priority) {
+        function displayNotifications() {
 
-    const badges = {
+            const list = document.getElementById("notification-list");
 
-        Urgent: [
-            "Urgent",
-            "cancelled"
-        ],
-
-        High: [
-            "High",
-            "room"
-        ],
-
-        "Schedule Shift": [
-            "Schedule Shift",
-            "room"
-        ],
-
-        General: [
-            "Notice",
-            "general"
-        ]
-
-    };
-
-    return badges[priority] || badges.General;
-}
+            let filtered = notifications;
 
 
-/* =========================
-   DISPLAY NOTIFICATIONS
-========================= */
-
-function displayNotifications() {
-
-    const list = document.getElementById("notification-list");
-
-    let filtered = notifications;
 
 
-    /* FILTER */
+            if (currentFilter === "cancellations") {
 
-    if (currentFilter === "cancellations") {
+                filtered = notifications.filter(
+                    n => n.priority === "Urgent"
+                );
 
-        filtered = notifications.filter(
-            n => n.priority === "Urgent"
-        );
+            }
 
-    }
+            else if (currentFilter === "room-swaps") {
 
-    else if (currentFilter === "room-swaps") {
+                filtered = notifications.filter(
+                    n =>
+                        n.priority === "High" ||
+                        n.priority === "Schedule Shift"
+                );
 
-        filtered = notifications.filter(
-            n =>
-                n.priority === "High" ||
-                n.priority === "Schedule Shift"
-        );
+            }
 
-    }
+            else if (currentFilter === "notices") {
 
-    else if (currentFilter === "notices") {
+                filtered = notifications.filter(
+                    n => n.priority === "General"
+                );
 
-        filtered = notifications.filter(
-            n => n.priority === "General"
-        );
-
-    }
+            }
 
 
-    /* EMPTY */
+            /* EMPTY */
 
-    if (!filtered.length) {
+            if (!filtered.length) {
 
-        list.innerHTML =
-            `<div class="empty">No notifications found.</div>`;
+                list.innerHTML =
+                    `<div class="empty">No notifications found.</div>`;
 
-        return;
-    }
+                return;
+            }
 
 
-    // to display
+            // to display
 
-    list.innerHTML = filtered.map(n => {
+            list.innerHTML = filtered.map(n => {
 
-        const [text, className] =
-            getBadge(n.priority);
+                const [text, className] =
+                    getBadge(n.priority);
 
-        const timeStr = formatTime(n.createdAt);
-        const ariaLabel = `${text} priority alert: ${n.title}, posted ${timeStr}. ${n.content}`;
+                const timeStr = formatTime(n.createdAt);
+                const ariaLabel = `${text} priority alert: ${n.title}, posted ${timeStr}. ${n.content}`;
 
-        return `
+                return `
 
             <article class="notification" tabindex="0" role="article" aria-label="${ariaLabel}">
 
@@ -283,68 +278,67 @@ function displayNotifications() {
 
         `;
 
-    }).join("");
-}
+            }).join("");
+        }
 
 
-function updateCounts() { //updating the count
+        function updateCounts() { //updating the count
 
-    document.getElementById("all-count").textContent =
-        notifications.length;
-
-
-    document.getElementById("cancel-count").textContent =
-        notifications.filter(
-            n => n.priority === "Urgent"
-        ).length;
+            document.getElementById("all-count").textContent =
+                notifications.length;
 
 
-    document.getElementById("room-count").textContent =
-        notifications.filter(
-            n =>
-                n.priority === "High" ||
-                n.priority === "Schedule Shift"
-        ).length;
+            document.getElementById("cancel-count").textContent =
+                notifications.filter(
+                    n => n.priority === "Urgent"
+                ).length;
 
 
-    document.getElementById("notice-count").textContent =
-        notifications.filter(
-            n => n.priority === "General"
-        ).length;
-}
+            document.getElementById("room-count").textContent =
+                notifications.filter(
+                    n =>
+                        n.priority === "High" ||
+                        n.priority === "Schedule Shift"
+                ).length;
 
 
-/* =========================
-   FILTER BUTTONS
-========================= */
+            document.getElementById("notice-count").textContent =
+                notifications.filter(
+                    n => n.priority === "General"
+                ).length;
+        }
 
-document.querySelectorAll(".filter-btn").forEach(btn => {
 
-    btn.addEventListener("click", () => {
 
-        document.querySelectorAll(".filter-btn").forEach(b => {
-            b.classList.remove("active");
-            b.setAttribute("aria-pressed", "false");
+
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                document.querySelectorAll(".filter-btn").forEach(b => {
+                    b.classList.remove("active");
+                    b.setAttribute("aria-pressed", "false");
+                });
+
+                btn.classList.add("active");
+                btn.setAttribute("aria-pressed", "true");
+
+                currentFilter =
+                    btn.dataset.filter;
+
+                displayNotifications();
+
+            });
+
         });
 
-        btn.classList.add("active");
-        btn.setAttribute("aria-pressed", "true");
+        getNotifications();
 
-        currentFilter =
-            btn.dataset.filter;
+        setInterval(getNotifications, 30000);
 
-        displayNotifications();
-
-    });
-
-});
-
-getNotifications();
-
-setInterval(getNotifications, 30000);
-
-</script>
-<script src="./scripts/a11y.js"></script>
+    </script>
+    <script src="./scripts/a11y.js"></script>
 
 </body>
+
 </html>
