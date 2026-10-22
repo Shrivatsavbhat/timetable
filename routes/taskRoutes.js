@@ -54,6 +54,13 @@ router.get('/:id', async (req, res) => {
 
 // CREATE task
 router.post('/', async (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'CR') {
+        return res.status(403).json({
+            success: false,
+            message: 'Only the Class Representative can create tasks'
+        });
+    }
+
     try {
         const task = await Task.create(req.body);
 

@@ -700,28 +700,8 @@ body[data-theme="dark"] {
 }
 
 /* Global Font Size Scaling Rules */
-html[data-size="small"], html[data-size="-1"] {
-    font-size: 14px;
-}
-
-html[data-size="normal"], html[data-size="0"] {
-    font-size: 16px;
-}
-
-html[data-size="large"], html[data-size="1"] {
-    font-size: 18px;
-}
-
-body[data-size="small"], body[data-size="-1"] {
-    font-size: 0.88rem;
-}
-
-body[data-size="normal"], body[data-size="0"] {
-    font-size: 1rem;
-}
-
-body[data-size="large"], body[data-size="1"] {
-    font-size: 1.15rem;
+html {
+    font-size: calc(16px + (var(--font-size-level, 0) * 2px));
 }
 
 /* Hide legacy logo square */

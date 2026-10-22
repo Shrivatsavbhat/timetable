@@ -67,7 +67,7 @@
             };
         }
 
-        // Synchronize with Preferences checkbox on profile.html if present
+        // Synchronize with a preferences theme checkbox if present
         const profileToggle = document.getElementById('theme-toggle');
         if (profileToggle) {
             profileToggle.checked = (localStorage.getItem('theme') === 'dark');
@@ -88,33 +88,46 @@
         updateThemeUI();
 
         // Font Size Controls (A- A A+)
+        function normalizeFontSize(value) {
+            if (value === 'small') return -1;
+            if (value === 'normal') return 0;
+            if (value === 'large') return 1;
+            const parsed = Number.parseInt(value, 10);
+            return Number.isFinite(parsed) ? Math.max(-5, Math.min(5, parsed)) : 0;
+        }
+
         function updateFontSizeUI(size) {
             document.querySelectorAll('[data-size]').forEach(btn => {
                 const s = btn.dataset.size;
-                const isMatch = s === size || 
-                               (size === 'small' && s === '-1') ||
-                               (size === 'normal' && s === '0') ||
-                               (size === 'large' && s === '1');
-                btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+                btn.setAttribute('aria-pressed', s === '0' && size === 0 ? 'true' : 'false');
             });
         }
 
-        const currentSize = localStorage.getItem('fontSize') || 'normal';
-        updateFontSizeUI(currentSize);
+        let currentSize = normalizeFontSize(localStorage.getItem('fontSize'));
 
         document.querySelectorAll('[data-size]').forEach(btn => {
             btn.onclick = function () {
-                let sizeVal = btn.dataset.size;
-                if (sizeVal === '-1') sizeVal = 'small';
-                if (sizeVal === '0') sizeVal = 'normal';
-                if (sizeVal === '1') sizeVal = 'large';
+                const action = Number.parseInt(btn.dataset.size, 10);
+                currentSize = action === 0 ? 0 : Math.max(-5, Math.min(5, currentSize + action));
 
-                document.documentElement.setAttribute('data-size', sizeVal);
-                if (document.body) document.body.setAttribute('data-size', sizeVal);
-                localStorage.setItem('fontSize', sizeVal);
-                updateFontSizeUI(sizeVal);
+                document.documentElement.setAttribute('data-size', String(currentSize));
+                document.documentElement.style.setProperty('--font-size-level', currentSize);
+                if (document.body) {
+                    document.body.setAttribute('data-size', String(currentSize));
+                    document.body.style.setProperty('--font-size-level', currentSize);
+                }
+                localStorage.setItem('fontSize', String(currentSize));
+                updateFontSizeUI(currentSize);
             };
         });
+
+        document.documentElement.setAttribute('data-size', String(currentSize));
+        document.documentElement.style.setProperty('--font-size-level', currentSize);
+        if (document.body) {
+            document.body.setAttribute('data-size', String(currentSize));
+            document.body.style.setProperty('--font-size-level', currentSize);
+        }
+        updateFontSizeUI(currentSize);
     }
 
     if (document.readyState === 'loading') {

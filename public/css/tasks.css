@@ -10,9 +10,6 @@ body{
     line-height:1.5;
 }
 
-body[data-size="small"]{font-size:.9rem}
-body[data-size="normal"]{font-size:1rem}
-body[data-size="large"]{font-size:1.15rem}
 
 .page{
     width:92%;

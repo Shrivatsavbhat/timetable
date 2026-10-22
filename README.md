@@ -40,7 +40,7 @@ Instead of burying schedule shifts, room swaps, and cancellations in noisy chat 
 | :--- | :--- | :--- |
 | **Srijan** | `index.html`<br>`admin-add-notice.html` | **Central Portal & Notice Management**<br>• Real-time "Happening Now" lecture countdown & status banner<br>• Combined "Today's Agenda" view merging master slots with date overrides<br>• Urgent notice broadcast marquee/ticker<br>• CR notice publishing form & management table with Edit/Delete controls |
 | **Prajwal** | `timetable.html`<br>`notices.html` | **Student Schedule View & Announcements (No Login Required)**<br>• Interactive Timetable Grid (Current Week vs Permanent Master Grid)<br>• Department / Semester dropdown filters<br>• Color-coded period cards highlighting rescheduled/cancelled classes<br>• Campus Notices Feed with category filter and search modal |
-| **Royston** | `admin-master-timetable.html`<br>`profile.html` | **Permanent Academic Master Blueprint & User Settings**<br>• Permanent recurring weekly blueprint grid (Monday–Saturday constant template)<br>• Blueprint inputs: Course Code, Subject, Default Faculty, Room/Lab<br>• User Profile with Student vs Class Representative (CR) badge<br>• Batch selector & Dark / Light mode UI theme switcher |
+| **Royston** | `admin-master-timetable.html` | **Permanent Academic Master Blueprint**<br>• Permanent recurring weekly blueprint grid (Monday–Saturday constant template)<br>• Blueprint inputs: Course Code, Subject, Default Faculty, Room/Lab |
 | **Shrivatsa** | `admin-override-timetable.html`<br>`notifications.html` | **Daily / Weekly Overrides & Live Alert Feed**<br>• Daily / Weekly Override Manager (CR login required)<br>• Calendar date-picker & slot status editor (Cancelled, Rescheduled, Substitute)<br>• Live Notification Center displaying all timetable shifts & memos<br>• Unread alert counter pill & "Mark all as read" button |
 | **Shared / Open** | `login.html` | **CR Admin Authentication (CR Only)**<br>• Admin login gateway exclusively for the Class Representative (CR)<br>• Protected route redirects (protects `admin-*.html` while keeping student pages public)<br>• CR session persistence & navbar Admin/Logout toggle |
 
@@ -62,7 +62,7 @@ For project documentation, report submission, and viva presentations, the system
 
 ### Tier 3: User Experience & Utility (Supporting Importance)
 - **Module 7: Live Notification Center**: Chronological audit feed of timetable events with unread tracking.
-- **Module 8: User Profile & Theme Customization**: Batch selection, role display badge, and CSS theme persistence (`localStorage`).
+- **Module 8: Accessibility & Theme Customization**: Continuous text sizing and CSS theme persistence (`localStorage`).
 - **Module 9: Access Control & Admin Login Gatekeeper**: Single administrative login protecting CR management routes (`admin-*.html`), while keeping all student pages accessible without authentication.
 
 ---
@@ -81,7 +81,6 @@ timetable/
 │   ├── timetable.html             # Prajwal: Student Timetable Grid
 │   ├── notices.html               # Prajwal: Campus Notices Feed
 │   ├── admin-master-timetable.html# Royston: Master Blueprint Setup
-│   ├── profile.html               # Royston: User Profile & Theme
 │   ├── admin-override-timetable.html # Shrivatsa: Daily Override Manager
 │   ├── notifications.html         # Shrivatsa: Notification Center
 │   ├── css/
