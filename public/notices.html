@@ -5,63 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Campus Notices — ReScheduled</title>
 
-  <!-- Google Fonts: Poppins (matches team typography) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <!-- Shared Global Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
 
   <!-- Notices Stylesheet -->
-  <link rel="stylesheet" href="./css/notices.css">
+  <link rel="stylesheet" href="./css/notices.css?v=2">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Shared Navbar -->
-  <header class="navbar" role="banner">
+  <header class="navbar">
     <div class="nav-container">
       <a href="/" class="logo">
-        <span class="logo-box" aria-hidden="true">R</span>
+        <span class="logo-box">R</span>
         <span class="brand-name">ReScheduled</span>
       </a>
-      <nav class="nav-links" aria-label="Main navigation">
+      <div class="nav-links">
         <a href="/dashboard.html">Dashboard</a>
         <a href="/timetable.html">Timetable</a>
-        <a href="/notices.html" class="active" aria-current="page">Notices</a>
+        <a href="/notices.html" class="active">Notices</a>
         <a href="/notifications.html">Alerts</a>
-      </nav>
+      </div>
     </div>
   </header>
 
   <!-- Main Simple Page Content (Matches Screenshot Layout) -->
-  <main class="page" id="main-content">
+  <div class="page">
     
     <!-- Top Header -->
-    <div class="top">
+    <header class="top">
       <div>
         <h1 class="title">Campus Notices</h1>
         <p class="subtitle">Live log of timetable adjustments, room changes and official notices.</p>
       </div>
-      <div>
-        <a href="/timetable.html" class="nav-btn">&larr; Timetable</a>
-      </div>
-    </div>
+    </header>
 
     <!-- Toolbar: Filter Pills + Search Input -->
     <div class="toolbar">
       <div class="filters" role="group" aria-label="Filter notices by category">
-        <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)" aria-pressed="true">
+        <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">
           All <span class="filter-count" id="count-all">0</span>
         </button>
-        <button class="filter-btn" data-cat="urgent" onclick="setCategory('urgent', this)" aria-pressed="false">
+        <button class="filter-btn" data-cat="urgent" onclick="setCategory('urgent', this)">
           Urgent <span class="filter-count" id="count-urgent">0</span>
         </button>
-        <button class="filter-btn" data-cat="shift" onclick="setCategory('shift', this)" aria-pressed="false">
+        <button class="filter-btn" data-cat="shift" onclick="setCategory('shift', this)">
           Schedule Shift <span class="filter-count" id="count-shift">0</span>
         </button>
-        <button class="filter-btn" data-cat="general" onclick="setCategory('general', this)" aria-pressed="false">
+        <button class="filter-btn" data-cat="general" onclick="setCategory('general', this)">
           General Notices <span class="filter-count" id="count-general">0</span>
         </button>
       </div>
@@ -73,19 +64,18 @@
         placeholder="Search notices..."
         oninput="handleSearch(this.value)"
         aria-label="Search notices"
-        autocomplete="off"
       />
     </div>
 
     <!-- Feed Container -->
-    <section class="feed" id="noticeContainer" role="feed" aria-label="Campus notices feed" aria-live="polite">
+    <section class="feed" id="noticeContainer">
       <div class="empty">Loading campus notices...</div>
     </section>
 
-  </main>
+  </div>
 
   <!-- Pop-up Modal Dialog for Full Memo Review -->
-  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="closeModal(event)">
+  <div class="modal-backdrop" id="noticeModal" role="dialog" aria-modal="true" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
       <div id="modalCategory" style="margin-bottom: 8px;"></div>
@@ -97,7 +87,6 @@
   </div>
 
   <!-- Client-Side Logic (Simple, Clean, Easy to Explain in Viva) -->
-  <script src="./scripts/a11y.js"></script>
   <script>
     let allNotices = [];
     let activeCategory = 'all';
@@ -113,7 +102,7 @@
         renderNotices();
       } catch (err) {
         document.getElementById('noticeContainer').innerHTML =
-          '<div class="empty" style="color: #9f1239; font-weight: 600;">Unable to load notices from server.</div>';
+          '<div class="empty" style="color: #be123c;">Unable to load notices from server.</div>';
       }
     }
 
@@ -193,11 +182,10 @@
         }
 
         const timeStr = formatTime(item.createdAt || item.date);
-        const ariaLabel = `${item.title || 'Notice'}, priority ${badgeLabel}, posted ${timeStr}. Press Enter or click to open full memo.`;
 
         return `
-          <article class="notification" tabindex="0" role="button" aria-haspopup="dialog" aria-label="${ariaLabel}" onclick="openModal('${item._id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('${item._id}');}">
-            <div class="dot" aria-hidden="true"></div>
+          <article class="notification" onclick="openModal('${item._id}')">
+            <div class="dot"></div>
             <div class="notification-content">
               <div class="notification-top">
                 <span class="badge ${badgeClass}">${badgeLabel}</span>
@@ -214,12 +202,8 @@
     // 5. Category Selection
     function setCategory(cat, btn) {
       activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-pressed', 'false');
-      });
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      btn.setAttribute('aria-pressed', 'true');
       renderNotices();
     }
 
@@ -230,13 +214,9 @@
     }
 
     // 7. Pop-up Modal Handlers
-    let lastActiveNoticeTrigger = null;
-
     function openModal(id) {
       const item = allNotices.find(n => n._id === id);
       if (!item) return;
-
-      lastActiveNoticeTrigger = document.activeElement;
 
       const p = (item.priority || item.category || 'general').toLowerCase();
       let badgeClass = 'general';
@@ -249,26 +229,18 @@
       document.getElementById('modalTitle').textContent = item.title || 'Announcement';
       document.getElementById('modalDate').textContent = 'Posted: ' + formatTime(item.createdAt || item.date);
       document.getElementById('modalContent').textContent = item.content || item.description || '';
-      
-      const modal = document.getElementById('noticeModal');
-      modal.classList.add('show');
-      const closeBtn = modal.querySelector('.modal-close');
-      if (closeBtn) closeBtn.focus();
+      document.getElementById('noticeModal').classList.add('show');
     }
 
     function closeModal() {
-      const modal = document.getElementById('noticeModal');
-      modal.classList.remove('show');
-      if (lastActiveNoticeTrigger && typeof lastActiveNoticeTrigger.focus === 'function') {
-        lastActiveNoticeTrigger.focus();
-      }
+      document.getElementById('noticeModal').classList.remove('show');
     }
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeModal();
     });
 
-    window.addEventListener('DOMContentLoaded', fetchNotices);
+    window.onload = fetchNotices;
   </script>
 </body>
 </html>
