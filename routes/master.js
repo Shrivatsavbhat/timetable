@@ -60,7 +60,7 @@ router.put('/:id', async (req, res) => {
         const slot = await MasterSlot.findByIdAndUpdate(
             req.params.id,
             { $set: updates },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
 
         if (!slot) {

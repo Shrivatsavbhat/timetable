@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 //edit the notice by id
 router.put('/:id', async (req, res) => {
     try {
-        const notice = await Notice.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const notice = await Notice.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
         res.json(notice);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -60,4 +60,3 @@ router.delete('/:id', async (req, res) => {
 
 
 module.exports = router;
-

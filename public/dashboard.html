@@ -25,7 +25,7 @@
                 <a href="/dashboard.html" class="active" aria-current="page">Dashboard</a>
                 <a href="/timetable.html">Timetable</a>
                 <a href="/notices.html">Notices</a>
-                <a href="/notifications.html">Alerts</a>
+                <a href="/view-tasks.html">Tasks</a>
             </nav>
             <div class="header-controls">
                 <div class="size-controls" role="group" aria-label="Text size adjustment">
@@ -102,7 +102,7 @@
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <h3 id="recent-tasks-heading" style="margin: 0;">Recent Tasks</h3>
-                            <a href="/tasks.html"
+                            <a href="/view-tasks.html"
                                 style="font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none;" aria-label="View all tasks">View
                                 All</a>
                         </div>
@@ -127,7 +127,7 @@
                     <a href="/admin-add-notice.html">+ Post Notice</a>
                     <a href="/notices.html">View Notices</a>
                     <a href="/timetable.html">View Timetable</a>
-                    <a href="/notifications.html">View Alerts</a>
+                    <a href="/view-tasks.html">View Tasks</a>
                 </nav>
             </div>
             <p>&copy; Copyrights reserved 2026 | ReScheduled</p>
@@ -218,7 +218,7 @@
                         taskDiv.className = 'sidebar-task-item';
                         taskDiv.setAttribute('role', 'article');
                         taskDiv.innerHTML = `
-                            <div class="task-title">${task.name}</div>
+                            <a href="/view-tasks.html" class="task-title">${task.name}</a>
                             <div class="task-desc">Due Date: <span style="color: var(--primary); font-weight: 600; padding: 2px 6px; background-color: #f1f5f9; border-radius: 4px;">${task.date}</span></div>
                         `;
                         taskContainer.appendChild(taskDiv);

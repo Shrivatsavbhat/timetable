@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
     try {
         let user = await User.findOne();
         if (user) {
-            user = await User.findByIdAndUpdate(user._id, req.body, { new: true });
+            user = await User.findByIdAndUpdate(user._id, req.body, { returnDocument: 'after' });
         } else {
             user = await User.create(req.body);
         }
