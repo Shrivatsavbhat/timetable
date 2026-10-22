@@ -2,7 +2,7 @@ require('dotenv').config(); // Loads .env
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-
+const path = require('path');
 
 
 const authRoutes = require('./routes/auth');
@@ -47,6 +47,11 @@ mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB_NAME || '
 app.get('/health', (req, res) => {
     return res.send('ok');
 });
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.use('/api/timetable', timetableRoutes);
 
 
