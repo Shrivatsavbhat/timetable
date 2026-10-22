@@ -27,13 +27,20 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
     background-color: var(--bg-page);
     color: var(--text-main);
     line-height: 1.5;
     max-width: 1000px;
     margin: 0 auto;
     zoom: calc(1 + (var(--font-size-level, 0) * 0.1));
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
 }
 
 

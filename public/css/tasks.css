@@ -4,7 +4,7 @@ body{
     margin:0;
     background:var(--bg-page,#FAF0E6);
     color:var(--text-main,#0f172a);
-    font:1rem Arial,sans-serif;
+    font-family:'Poppins', Arial, sans-serif;
     line-height:1.5;
 }
 
