@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const MasterSlot = require('../models/MasterSlot');
+const requireCR = require('./requireCR');
 
 const editableFields = ['day', 'slot', 'time', 'code', 'subject', 'faculty', 'room'];
 const dayOrder = {
@@ -40,7 +41,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new master slot
-router.post('/', async (req, res) => {
+router.post('/', requireCR, async (req, res) => {
     try {
         const slot = await MasterSlot.create(req.body);
         res.status(201).json(slot);
@@ -50,7 +51,7 @@ router.post('/', async (req, res) => {
 });
 
 // Permanently update a master slot
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireCR, async (req, res) => {
     try {
         const updates = Object.fromEntries(
             editableFields
@@ -74,7 +75,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Exchange the schedule positions of two permanent slots.
-router.post('/swap', async (req, res) => {
+router.post('/swap', requireCR, async (req, res) => {
     const { firstId, secondId } = req.body;
 
     if (!firstId || !secondId || firstId === secondId) {
@@ -115,7 +116,7 @@ router.post('/swap', async (req, res) => {
 });
 
 // Delete a master slot
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireCR, async (req, res) => {
     try {
         await MasterSlot.findByIdAndDelete(req.params.id);
         res.json({ message: 'Slot deleted successfully' });

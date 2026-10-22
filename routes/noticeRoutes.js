@@ -3,6 +3,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Notice = require('../models/Notice');
+const requireCR = require('./requireCR');
 
 const router = express.Router();
 
@@ -28,7 +29,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //create the notice
-router.post('/', async (req, res) => {
+router.post('/', requireCR, async (req, res) => {
     try {
         const notice = await Notice.create(req.body);
         res.status(201).json(notice);
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
 
 
 //edit the notice by id
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireCR, async (req, res) => {
     try {
         const notice = await Notice.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
         res.json(notice);
@@ -49,7 +50,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //delete the post by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireCR, async (req, res) => {
     try {
         await Notice.findByIdAndDelete(req.params.id);
         res.json({ message: 'Notice deleted successfully' });

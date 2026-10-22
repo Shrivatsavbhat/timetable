@@ -1,5 +1,6 @@
 const express = require('express');
 const Task = require('../models/Task');
+const requireCR = require('./requireCR');
 
 const router = express.Router();
 
@@ -53,14 +54,7 @@ router.get('/:id', async (req, res) => {
 
 
 // CREATE task
-router.post('/', async (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'CR') {
-        return res.status(403).json({
-            success: false,
-            message: 'Only the Class Representative can create tasks'
-        });
-    }
-
+router.post('/', requireCR, async (req, res) => {
     try {
         const task = await Task.create(req.body);
 
@@ -80,7 +74,7 @@ router.post('/', async (req, res) => {
 
 
 // UPDATE task
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireCR, async (req, res) => {
     try {
         const task = await Task.findByIdAndUpdate(
             req.params.id,
@@ -114,7 +108,7 @@ router.put('/:id', async (req, res) => {
 
 
 // DELETE task
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireCR, async (req, res) => {
     try {
         const task = await Task.findByIdAndDelete(req.params.id);
 
